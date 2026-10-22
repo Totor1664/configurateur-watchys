@@ -67,3 +67,7 @@ Sélectionner les variantes sur ordinateur et mobile ; ajouter deux fois la mêm
 ## GitHub Pages
 
 Les chemins sont relatifs pour supporter une publication sous `/configurateur-watchys/`. La branche `gh-pages` contient les fichiers statiques du prototype. Dans GitHub : **Settings → Pages → Build and deployment → Deploy from a branch → gh-pages → / (root) → Save**. L’adresse attendue après déploiement réussi est `https://totor1664.github.io/configurateur-watchys/`. Pour un dépôt privé, GitHub Pages dépend du forfait et des droits du propriétaire. Ne rendez pas le dépôt public sans décision explicite de son propriétaire. Le rendu importé et le panier restent propres au navigateur ; ils ne sont pas publiés.
+
+## Proposition de bracelet fermé
+
+`public/proposition-bracelet-bleu-ferme.png` est une simulation générée, présentée dans une section distincte « Proposition à valider ». Courbure et texture reconstituées ; inscription SWISS MADE manquante. Elle n'est pas enregistrée comme rendu fidèle dans `src/images.js` et ne remplace pas les aperçus indisponibles. Visible sur le site à l'ancre `#proposition`.
