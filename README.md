@@ -26,7 +26,7 @@ L'interface propose un seul aperçu **Simulation visuelle**. Chaque sélecteur a
 Les visuels sont des simulations générées à partir du rendu de référence et des références des composants visibles dans la conversation ; les fichiers originaux des photos n'étaient pas disponibles dans le workspace. Les bracelets fermés sont reconstitués. Les détails horlogers, inscriptions et finitions restent à valider. Ces images ne sont pas contractuelles.
 
 - `public/components.png` : illustrations des huit composants ; affichage par fenêtres SVG pour conserver leurs proportions.
-- `public/watch-blue-blue.png`, `watch-blue-black.png`, `watch-black-blue.png`, `watch-black-black.png` : quatre planches haute résolution, une par couple cadran/bracelet. Chaque planche contient quatre vues (haut gauche chromées/poli, haut droite chromées/sablé, bas gauche noires/poli, bas droite noires/sablé). Une vue utilise un quart de la surface au lieu d'un seizième dans l'ancienne planche.
+- `public/watch-blue-blue.png` : base haute résolution commune. Quatre vues pour les aiguilles et carrures (haut gauche chromées/poli, haut droite chromées/sablé, bas gauche noires/poli, bas droite noires/sablé). Le cadran et le bracelet noirs sont simulés à l’affichage par désaturation SVG des seules zones concernées ; leur géométrie ne change jamais. Les autres planches restent archivées pour les anciens liens et ne sont plus utilisées par le configurateur.
 - Les anciens fichiers de propositions restent disponibles pour les liens déjà partagés, mais ne sont plus utilisés dans l'interface.
 
 Le mode « Aperçu fidèle » et l'import de rendu ont été retirés à la demande de l'utilisateur. Le registre `src/images.js` reste un module indépendant pour une éventuelle future intégration de rendus validés ; il n'est pas utilisé par l'interface actuelle.
@@ -53,3 +53,7 @@ Publication autorisée par l'utilisateur après la première version locale. Bra
 `src/alignment.js` conserve, pour chacune des 16 vues, le centre et le rayon mesurés du cadran dans les images sources. `simulationFrame()` calcule le cadrage SVG pour afficher systématiquement le centre en `(320, 320)` et un rayon de `166` dans une fenêtre carrée de référence de `640`. L'aperçu et le panier partagent ce même rendu. Chaque cellule de la planche est masquée séparément pour éviter de montrer la montre voisine. Les images sources ne sont ni déformées ni modifiées.
 
 Si les planches sont remplacées, les repères doivent être remesurés. Cet alignement corrige les décalages et différences d'échelle ; il ne supprime pas les différences de géométrie, de cuir, d'ombres ou de détails entre les simulations générées.
+
+### Stabilité des changements de couleur
+
+Changer le cadran ou le bracelet ne change plus de photographie complète. À jeu d'aiguilles et carrure identiques, la source, le cadrage, les inscriptions et les coutures restent strictement les mêmes. Un filtre SVG désature uniquement le disque du cadran et/ou les deux parties du bracelet, en conservant les parties blanches. Le rendu noir est donc une simulation de couleur issue de la base bleue, pas la photographie originale du composant noir. Les quatre vues aiguilles/carrure restent celles précédemment validées par l'utilisateur.
