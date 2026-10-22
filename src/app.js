@@ -2,7 +2,7 @@ import {groups,defaultSelection,money} from './catalog.js';
 import {components,nomenclature,configurationId} from './selection.js';
 import {price} from './pricing.js';
 import * as basket from './cart.js';
-import {simulationElement,componentElement} from './simulation.js?v=stable-colors-1';
+import {simulationElement,componentElement} from './simulation.js?v=fixed-layers-2';
 const $=s=>document.querySelector(s);
 let selection={...defaultSelection}, cart=[];
 try {cart=basket.restore(localStorage.getItem(basket.CART_KEY));}catch {$('#storage-status').textContent='Stockage indisponible : le panier reste disponible pendant cette session.';}
