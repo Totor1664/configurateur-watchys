@@ -71,3 +71,11 @@ Les chemins sont relatifs pour supporter une publication sous `/configurateur-wa
 ## Proposition de bracelet fermé
 
 `public/proposition-bracelet-bleu-ferme.png` est une simulation générée, présentée dans une section distincte « Proposition à valider ». Courbure et texture reconstituées ; inscription SWISS MADE manquante. Elle n'est pas enregistrée comme rendu fidèle dans `src/images.js` et ne remplace pas les aperçus indisponibles. Visible sur le site à l'ancre `#proposition`.
+
+## Comparaison visuelle interactive des 16 combinaisons
+
+Le mode par défaut **Simulation visuelle** affiche des propositions générées depuis le rendu de montre au bracelet fermé et les références visibles dans la conversation. Les photos originales des composants n'étaient pas accessibles comme fichiers dans le workspace ; elles ne sont donc pas livrées dans le dépôt. Il ne s'agit pas d'un assemblage photographique exact de ces fichiers.
+
+`src/simulation.js` associe chaque sélection à une cellule distincte de `public/simulations-16.png` (grille 4 × 4). Les lignes représentent cadran/bracelet bleu-bleu, bleu-noir, noir-bleu et noir-noir ; les colonnes représentent aiguilles/boîtier chromées-poli, chromées-sablé, noires-poli et noires-sablé. Des miniatures sont présentées dans les sélecteurs et le panier. Le prix et les données restent indépendants des visuels.
+
+**Limites visibles :** bracelets fermés reconstitués, détails des inscriptions et des petites aiguilles non garantis, géométrie et finitions approximatives, résolution limitée à une cellule de la planche. Ces simulations servent à comparer les couleurs et ne sont pas des photos contractuelles ou des rendus fidèles validés. Le bouton **Aperçu fidèle** utilise uniquement le registre séparé `src/images.js` et le rendu importé, ou indique « Aperçu non disponible ». Les simulations ne sont jamais enregistrées dans ce registre. Les originaux et des rendus corrigés restent nécessaires pour atteindre la fidélité demandée.
