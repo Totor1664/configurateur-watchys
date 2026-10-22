@@ -47,3 +47,9 @@ Identifiant stable : `watchys-7750--<cadran>--<bracelet>--<aiguilles>--<boîtier
 ## GitHub Pages
 
 Publication autorisée par l'utilisateur après la première version locale. Branche `gh-pages`, dossier `/ (root)`, source **Deploy from a branch**. Les chemins relatifs supportent l'adresse `https://totor1664.github.io/configurateur-watchys/`. L'envoi Git ne prouve pas la réussite du déploiement : vérifier **Actions → pages build and deployment**.
+
+## Alignement des vues
+
+`src/alignment.js` conserve, pour chacune des 16 vues, le centre et le rayon mesurés du cadran dans les images sources. `simulationFrame()` calcule le cadrage SVG pour afficher systématiquement le centre en `(320, 320)` et un rayon de `166` dans une fenêtre carrée de référence de `640`. L'aperçu et le panier partagent ce même rendu. Chaque cellule de la planche est masquée séparément pour éviter de montrer la montre voisine. Les images sources ne sont ni déformées ni modifiées.
+
+Si les planches sont remplacées, les repères doivent être remesurés. Cet alignement corrige les décalages et différences d'échelle ; il ne supprime pas les différences de géométrie, de cuir, d'ombres ou de détails entre les simulations générées.

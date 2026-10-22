@@ -7,3 +7,5 @@
 .watch-simulation,.cart-simulation{background-size:200% 200%}.component-thumbnail{width:76px;height:76px;flex-shrink:0;background-size:200% 400%;background-repeat:no-repeat;background-color:white}.choice{min-height:96px}.cart-section{margin-top:64px}.preview-top{margin-bottom:12px}@media(max-width:760px){.component-thumbnail{width:60px;height:60px}.choice{min-height:82px}}
 .component-thumbnail{display:block;overflow:hidden;background:white}.watch-simulation{max-width:600px;margin:auto}.choice>span{min-width:0}
 .cart-item>.cart-simulation:first-child{width:120px;max-width:120px;height:120px;flex:0 0 120px}@media(max-width:760px){.cart-item>.cart-simulation:first-child{width:80px;max-width:80px;height:80px;flex-basis:80px}}
+/* All watch views use a measured common dial anchor and scale. */
+.watch-simulation,.cart-simulation{display:block;overflow:hidden;background:white;aspect-ratio:1}

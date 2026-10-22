@@ -1,14 +1,29 @@
 import { components } from './selection.js';
+import { dialAlignment } from './alignment.js';
 export function simulationAsset(selection) {
  components(selection);
  return {src:`./public/watch-${selection.dial==='dial-blue'?'blue':'black'}-${selection.strap==='strap-blue'?'blue':'black'}.png`,x:selection.case==='case-sandblasted'?100:0,y:selection.hands==='hands-black'?100:0};
 }
+export function simulationFrame(selection) {
+ const asset=simulationAsset(selection),name=asset.src.split('/').pop();
+ const column=asset.x/100,row=asset.y/100;
+ const dial=dialAlignment[name][row*2+column];
+ // Every dial is placed at (320, 320) with radius 166 in a 640-square viewport.
+ const side=dial.radius*640/166;
+ return {...asset,dial,viewBox:[dial.cx-side/2,dial.cy-side/2,side,side],clip:{x:column*627,y:row*627,width:627,height:627}};
+}
+let watchClipId=0;
 export function simulationElement(selection, className='watch-simulation') {
- const asset=simulationAsset(selection),el=document.createElement('div');
- el.className=className;el.setAttribute('role','img');
+ const frame=simulationFrame(selection),ns='http://www.w3.org/2000/svg';
+ const el=document.createElementNS(ns,'svg');el.classList.add(className);
+ el.setAttribute('viewBox',frame.viewBox.join(' '));el.setAttribute('role','img');
  el.setAttribute('aria-label','Simulation : '+components(selection).map(c=>c.category+' '+c.label).join(', '));
- el.style.backgroundImage=`url("${asset.src}")`;
- el.style.backgroundPosition=`${asset.x}% ${asset.y}%`;
+ const defs=document.createElementNS(ns,'defs'),clip=document.createElementNS(ns,'clipPath'),rect=document.createElementNS(ns,'rect');
+ clip.id='watch-frame-'+(++watchClipId);clip.setAttribute('clipPathUnits','userSpaceOnUse');
+ for(const [key,value] of Object.entries(frame.clip))rect.setAttribute(key,String(value));
+ clip.append(rect);defs.append(clip);el.append(defs);
+ const image=document.createElementNS(ns,'image');image.setAttribute('href',frame.src);
+ image.setAttribute('width','1254');image.setAttribute('height','1254');image.setAttribute('clip-path',`url(#${clip.id})`);el.append(image);
  return el;
 }
 export function componentElement(group,option) {
