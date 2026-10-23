@@ -33,20 +33,31 @@ Calcul : 5 × 2 × 2 × 2 = 40. Tous les suppléments du catalogue sont à zéro
 
 Un seul aperçu « Simulation visuelle ». Les sélecteurs montrent uniquement le composant concerné ; le panier montre les montres assemblées.
 
-Les visuels sont des simulations issues du rendu de référence. Le fichier original détouré du cadran gris clair a été fourni et est maintenant inclus dans le dépôt ; les autres photographies de composants affichées dans la conversation ne sont pas disponibles comme fichiers. Bracelets fermés, teintes, matière et détails restent à valider ; ces images ne sont pas contractuelles. Le gris clair utilise désormais la photographie réelle, sans inversion de couleurs : brossage, chiffres, index et compteurs proviennent du fichier fourni. Son placement reste une adaptation de perspective dans une montre simulée.
+Les visuels sont des simulations issues du rendu de référence. Les cinq cadrans sont maintenant fournis en PNG détourés dans le dépôt ; les photographies originales des autres composants ne sont pas disponibles comme fichiers. Bracelets fermés, teintes, matière et détails restent à valider ; ces images ne sont pas contractuelles. Le gris clair utilise désormais la photographie réelle, sans inversion de couleurs : brossage, chiffres, index et compteurs proviennent du fichier fourni. Son placement reste une adaptation de perspective dans une montre simulée.
 
 `public/watch-blue-blue.png` fournit une seule base géométrique. Les aiguilles noires et la carrure sablée sont des calques limités à leur composant par des masques SVG fixes. Les centres/rayons mesurés sont dans `src/alignment.js`. Toutes les vues partagent un cadran centré en `(320, 320)`, rayon `166`, dans un repère carré de `640`.
 
-Les couleurs sont définies dans `src/dial-colors.js` et appliquées à l'affichage : désaturation pour le noir, teinte verte, gris anthracite, photographie du gris clair. Le rendu protège les aiguilles, les fenêtres jour/date et les index lumineux du gris clair. Le bracelet noir est une simulation de couleur sur la même géométrie bleue. Changer une option ne redimensionne pas les autres composants.
+Les cinq cadrans utilisent exclusivement les photographies d'origine répertoriées dans `src/dial-colors.js`, sans filtre de couleur. Les échelles de placement compensent le décentrage de l'axe de chaque photo, les masques laissent passer les aiguilles et l'affichage jour/date. Le bracelet noir conserve sa simulation de couleur sur la même géométrie bleue. Les autres composants ne changent pas de taille lors du changement de cadran.
 
-`public/components.png` fournit les vignettes des composants ; les teintes simulées utilisent les mêmes transformations pour conserver leurs proportions ; la vignette du gris clair utilise son vrai PNG détouré. Les anciennes planches et propositions restent archivées pour les liens déjà partagés, sans être utilisées par l'interface. Le registre `src/images.js`, indépendant de l'interface actuelle, permet de préparer une future association de rendus validés.
+Chaque vignette possède le même repère carré de 100 unités, un centre en `(50, 50)` et un diamètre visible de 80 unités. Les dimensions utiles de chaque cadran sont mesurées, indépendamment des marges transparentes du fichier : le gris clair n'est donc plus plus gros que les autres.
+
+`public/components.png` reste utilisé uniquement pour les bracelets, aiguilles et carrures. Les anciennes planches sont archivées pour préserver les liens partagés. Le registre `src/images.js` est indépendant de l'interface actuelle.
+
+### Origine et limites des fichiers
+
+- `dial-grey-original.png` : archive utilisateur `Photoroom_20261023_095112.png.zip`.
+- `dial-blue-original.png`, `dial-black-original.png`, `dial-green-original.png`, `dial-anthracite-original.png` : fichiers de l'archive utilisateur `Archive.zip`.
+- Les PNG de 1100 × 1422 sont extraits sans modification ni génération. Seul leur placement SVG est adapté.
+- Le détourage du noir conserve des parties opaques dans les ouvertures jour/date. Des fenêtres d'affichage explicites les masquent pour laisser apparaître MON/28.
+- Le détourage du vert a effacé des portions de certaines graduations. Les originaux sont conservés ; ces graduations ne sont pas redessinées ou inventées. Une version mieux détourée serait nécessaire pour restituer tous ces détails.
+- Les ouvertures centrales transparentes sont présentées sur un fond neutre adapté au cadran, derrière les moyeux. L'assemblage reste une simulation, pas une photo réelle de la montre terminée.
 
 ## Organisation
 
 - `src/catalog.js` : composants, prix, identifiants locaux, champs facultatifs `prestashopProductId` et `prestashopCombinationId`.
 - `src/selection.js` : configurations et nomenclature complète.
 - `src/pricing.js` : calcul du prix, séparé des visuels et de l'interface.
-- `src/dial-colors.js` : simulations des cinq teintes de cadran.
+- `src/dial-colors.js` : photographies des cinq cadrans, repères de placement et normalisation des vignettes.
 - `src/simulation.js` : calques, cadrages et vignettes de composants.
 - `src/cart.js` : ajout, regroupement, quantité, suppression, validation et total.
 - `src/app.js` : interactions et sauvegarde `localStorage` (`watchys.cart.v1`).
