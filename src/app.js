@@ -2,7 +2,7 @@ import {groups,defaultSelection,money} from './catalog.js?v=five-dials-1';
 import {components,nomenclature,configurationId} from './selection.js?v=five-dials-1';
 import {price} from './pricing.js?v=five-dials-1';
 import * as basket from './cart.js?v=five-dials-1';
-import {simulationElement,componentElement} from './simulation.js?v=five-dials-1';
+import {simulationElement,componentElement} from './simulation.js?v=grey-photo-1';
 const $=s=>document.querySelector(s);
 let selection={...defaultSelection}, cart=[];
 try {cart=basket.restore(localStorage.getItem(basket.CART_KEY));}catch {$('#storage-status').textContent='Stockage indisponible : le panier reste disponible pendant cette session.';}
@@ -13,7 +13,7 @@ function render(){
  $('#summary').innerHTML=components(selection).map(c=>`<div><dt>${c.category}</dt><dd>${c.label}</dd></div>`).join('');$('#price').textContent=money(price(selection));
  $('#image-area').replaceChildren(simulationElement(selection));
  $('#visual-status').textContent='SIMULATION VISUELLE';
- $('#preview-note').textContent='Simulation : bracelet fermé et couleurs reconstitués, détails et finitions à valider.';
+ $('#preview-note').textContent=selection.dial==='dial-grey'?'Cadran gris clair : photographie du composant réel. Assemblage et autres composants simulés, à valider.':'Simulation : bracelet fermé et couleurs reconstitués, détails et finitions à valider.';
 }
 function renderCart(){
  $('#count').textContent=cart.reduce((n,i)=>n+i.quantity,0);$('#total').textContent=money(basket.total(cart));

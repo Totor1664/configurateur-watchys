@@ -4,5 +4,5 @@ export const dialColors = {
  'dial-black': { label:'Noir', filter:{type:'saturate',values:'0'} },
  'dial-green': { label:'Vert', filter:{type:'hueRotate',values:'-90'} },
  'dial-anthracite': { label:'Anthracite', filter:{type:'matrix',values:'.17 .57 .06 0 .12 .17 .57 .06 0 .12 .17 .57 .06 0 .12 0 0 0 1 0'} },
- 'dial-grey': { label:'Gris clair', filter:{type:'matrix',values:'-.186 -.626 -.063 0 .925 -.186 -.626 -.063 0 .925 -.186 -.626 -.063 0 .925 0 0 0 1 0'}, light:true }
+ 'dial-grey': { label:'Gris clair', filter:null, photo:{src:'./public/dial-grey-original.png',width:1100,height:1422,cx:550,cy:635,rx:380,top:273,bottom:1032} }
 };

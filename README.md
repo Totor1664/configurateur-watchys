@@ -33,13 +33,13 @@ Calcul : 5 × 2 × 2 × 2 = 40. Tous les suppléments du catalogue sont à zéro
 
 Un seul aperçu « Simulation visuelle ». Les sélecteurs montrent uniquement le composant concerné ; le panier montre les montres assemblées.
 
-Les visuels sont des simulations issues du rendu de référence. Les fichiers originaux des photos affichées dans la conversation ne sont pas disponibles dans le dépôt. Bracelets fermés, teintes, matière et détails restent à valider ; ces images ne sont pas contractuelles. Le gris clair simule un fond clair, les chiffres foncés et des index lumineux clairs, mais ne reproduit pas exactement le brossage ou les reliefs de la référence.
+Les visuels sont des simulations issues du rendu de référence. Le fichier original détouré du cadran gris clair a été fourni et est maintenant inclus dans le dépôt ; les autres photographies de composants affichées dans la conversation ne sont pas disponibles comme fichiers. Bracelets fermés, teintes, matière et détails restent à valider ; ces images ne sont pas contractuelles. Le gris clair utilise désormais la photographie réelle, sans inversion de couleurs : brossage, chiffres, index et compteurs proviennent du fichier fourni. Son placement reste une adaptation de perspective dans une montre simulée.
 
 `public/watch-blue-blue.png` fournit une seule base géométrique. Les aiguilles noires et la carrure sablée sont des calques limités à leur composant par des masques SVG fixes. Les centres/rayons mesurés sont dans `src/alignment.js`. Toutes les vues partagent un cadran centré en `(320, 320)`, rayon `166`, dans un repère carré de `640`.
 
-Les couleurs sont définies dans `src/dial-colors.js` et appliquées à l'affichage : désaturation pour le noir, teinte verte, gris anthracite, gris clair avec chiffres foncés. Le rendu protège les aiguilles, les fenêtres jour/date et les index lumineux du gris clair. Le bracelet noir est une simulation de couleur sur la même géométrie bleue. Changer une option ne redimensionne pas les autres composants.
+Les couleurs sont définies dans `src/dial-colors.js` et appliquées à l'affichage : désaturation pour le noir, teinte verte, gris anthracite, photographie du gris clair. Le rendu protège les aiguilles, les fenêtres jour/date et les index lumineux du gris clair. Le bracelet noir est une simulation de couleur sur la même géométrie bleue. Changer une option ne redimensionne pas les autres composants.
 
-`public/components.png` fournit les vignettes des composants ; les nouvelles couleurs du cadran utilisent les mêmes transformations pour conserver leurs proportions. Les anciennes planches et propositions restent archivées pour les liens déjà partagés, sans être utilisées par l'interface. Le registre `src/images.js`, indépendant de l'interface actuelle, permet de préparer une future association de rendus validés.
+`public/components.png` fournit les vignettes des composants ; les teintes simulées utilisent les mêmes transformations pour conserver leurs proportions ; la vignette du gris clair utilise son vrai PNG détouré. Les anciennes planches et propositions restent archivées pour les liens déjà partagés, sans être utilisées par l'interface. Le registre `src/images.js`, indépendant de l'interface actuelle, permet de préparer une future association de rendus validés.
 
 ## Organisation
 
@@ -58,3 +58,9 @@ Identifiant stable : `watchys-7750--<cadran>--<bracelet>--<aiguilles>--<boîtier
 ## GitHub Pages
 
 Publication autorisée par l'utilisateur. Branche `gh-pages`, dossier `/ (root)`, source **Deploy from a branch**. Adresse : `https://totor1664.github.io/configurateur-watchys/`. Vérifier le résultat dans **Actions → pages build and deployment** : un envoi Git seul ne prouve pas que le site a fini son déploiement.
+
+## Photographie du cadran gris clair
+
+`public/dial-grey-original.png` est le PNG RGBA de 1100 × 1422 pixels extrait sans modification de l’archive utilisateur `Photoroom_20261023_095112.png.zip`. Aucun filtre de teinte ou inversion n'est appliqué. La vignette utilise la même photo.
+
+Le placement SVG se fait autour de l'axe source `(550, 635)` ; le rayon horizontal source est de `380` pixels, le bord supérieur à `273` et le bord inférieur à `1032`. Deux échelles verticales se rejoignent sur l'axe pour corriger le décentrage de la photographie tout en gardant l'axe des aiguilles à `(320, 320)` et les bords à `154/486`. Les ouvertures jour/date laissent apparaître l'affichage existant. Le fond de l'orifice central est neutralisé derrière le moyeu. Les aiguilles sont protégées par leur masque de pixels neutres et les autres composants conservent leur géométrie. Cette intégration ne constitue pas un nouveau rendu 3D ou une photo de la montre assemblée.

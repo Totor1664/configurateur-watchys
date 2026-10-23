@@ -1,6 +1,6 @@
 import { components } from './selection.js?v=five-dials-1';
 import { dialAlignment } from './alignment.js';
-import { dialColors } from './dial-colors.js';
+import { dialColors } from './dial-colors.js?v=grey-photo-1';
 // All configurations share the same fixed base and independent component layers.
 export function simulationAsset(selection) {
  components(selection);
@@ -36,6 +36,23 @@ export function simulationElement(selection, className='watch-simulation') {
  if(frame.handsBlack){const layer=make('g',{'clip-path':mask('hands',[make('path',{d:componentMasks.hands})])});layer.append(source(2));composition.append(layer);}
  el.append(composition);
  const dialColor=dialColors[frame.dialColor];
+ if(dialColor.photo){
+  const photo=dialColor.photo;
+  // Register the original photograph around its arbor. Separate upper/lower
+  // vertical scales compensate its off-centre perspective without moving other components.
+  const photoGroup=make('g');
+  photoGroup.append(make('path',{d:'M486 320A166 166 0 1 0 154 320A166 166 0 1 0 486 320Z M365 305H451V337H365Z',fill:'#bfc0bc','fill-rule':'evenodd'}));
+  for(const upper of [true,false]){
+   const scaleX=166/photo.rx,scaleY=166/(upper?photo.cy-photo.top:photo.bottom-photo.cy);
+   const half=make('g',{'clip-path':mask(upper?'photo-top':'photo-bottom',[make('rect',{x:0,y:upper?0:320,width:640,height:320})])});
+   const placement=make('g',{transform:`translate(320 320) scale(${scaleX} ${scaleY}) translate(${-photo.cx} ${-photo.cy})`});
+   placement.append(make('image',{href:photo.src,width:photo.width,height:photo.height}));half.append(placement);photoGroup.append(half);
+  }
+  const protectedMask=make('mask',{id:id+'-photo-mask',maskUnits:'userSpaceOnUse',x:0,y:0,width:640,height:640});protectedMask.append(make('circle',{cx:320,cy:320,r:166,fill:'white'}));
+  const neutral=make('filter',{id:id+'-photo-hands','color-interpolation-filters':'sRGB'});neutral.append(make('feColorMatrix',{type:'matrix',values:'0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 8 0 -8 0 1'}));defs.append(neutral);
+  const hands=make('g',{'clip-path':mask('photo-hands-shape',[make('path',{d:componentMasks.hands})]),filter:`url(#${neutral.id})`});hands.append(composition.cloneNode(true));protectedMask.append(hands);defs.append(protectedMask);
+  photoGroup.setAttribute('mask',`url(#${protectedMask.id})`);el.append(photoGroup);
+ }
  if(dialColor.filter){
   const filter=make('filter',{id:id+'-dial-color','color-interpolation-filters':'sRGB'});filter.append(make('feColorMatrix',dialColor.filter));defs.append(filter);
   // Protect the independently selected hands and the white day/date windows.
@@ -62,6 +79,11 @@ export function simulationElement(selection, className='watch-simulation') {
  return el;
 }
 export function componentElement(group,option) {
+ if(group==='dial'&&dialColors[option]?.photo){
+  const photo=dialColors[option].photo,ns='http://www.w3.org/2000/svg';
+  const el=document.createElementNS(ns,'svg');el.classList.add('component-thumbnail');el.dataset.component=option;el.setAttribute('aria-hidden','true');el.setAttribute('viewBox','150 253 800 800');
+  const image=document.createElementNS(ns,'image');image.setAttribute('href',photo.src);image.setAttribute('width',String(photo.width));image.setAttribute('height',String(photo.height));el.append(image);return el;
+ }
  const row=['dial','strap','hands','case'].indexOf(group);
  const column=group==='dial'?0:option===({dial:'dial-blue',strap:'strap-blue',hands:'hands-chrome',case:'case-polished'})[group]?0:1;
  const ns='http://www.w3.org/2000/svg';
