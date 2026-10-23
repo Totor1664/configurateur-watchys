@@ -2,7 +2,7 @@ import {groups,defaultSelection,money} from './catalog.js?v=five-dials-1';
 import {components,nomenclature,configurationId} from './selection.js?v=five-dials-1';
 import {price} from './pricing.js?v=five-dials-1';
 import * as basket from './cart.js?v=five-dials-1';
-import {simulationElement,componentElement} from './simulation.js?v=all-dial-photos-1';
+import {simulationElement,componentElement} from './simulation.js?v=white-index-black-hands-1';
 const $=s=>document.querySelector(s);
 let selection={...defaultSelection}, cart=[];
 try {cart=basket.restore(localStorage.getItem(basket.CART_KEY));}catch {$('#storage-status').textContent='Stockage indisponible : le panier reste disponible pendant cette session.';}

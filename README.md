@@ -49,7 +49,7 @@ Chaque vignette possède le même repère carré de 100 unités, un centre en `(
 - `dial-blue-original.png`, `dial-black-original.png`, `dial-green-original.png`, `dial-anthracite-original.png` : fichiers de l'archive utilisateur `Archive.zip`.
 - Les PNG de 1100 × 1422 sont extraits sans modification ni génération. Seul leur placement SVG est adapté.
 - Le détourage du noir conserve des parties opaques dans les ouvertures jour/date. Des fenêtres d'affichage explicites les masquent pour laisser apparaître MON/28.
-- Le détourage du vert a effacé des portions de certaines graduations. Les originaux sont conservés ; ces graduations ne sont pas redessinées ou inventées. Une version mieux détourée serait nécessaire pour restituer tous ces détails.
+- Le détourage du vert a effacé des portions de certaines graduations. Les originaux sont conservés ; les 13 fragments effacés sont maintenant restaurés en blanc à l’affichage, à la demande de l’utilisateur, selon leurs contours de transparence.
 - Les ouvertures centrales transparentes sont présentées sur un fond neutre adapté au cadran, derrière les moyeux. L'assemblage reste une simulation, pas une photo réelle de la montre terminée.
 
 ## Organisation
@@ -75,3 +75,9 @@ Publication autorisée par l'utilisateur. Branche `gh-pages`, dossier `/ (root)`
 `public/dial-grey-original.png` est le PNG RGBA de 1100 × 1422 pixels extrait sans modification de l’archive utilisateur `Photoroom_20261023_095112.png.zip`. Aucun filtre de teinte ou inversion n'est appliqué. La vignette utilise la même photo.
 
 Le placement SVG se fait autour de l'axe source `(550, 635)` ; le rayon horizontal source est de `380` pixels, le bord supérieur à `273` et le bord inférieur à `1032`. Deux échelles verticales se rejoignent sur l'axe pour corriger le décentrage de la photographie tout en gardant l'axe des aiguilles à `(320, 320)` et les bords à `154/486`. Les ouvertures jour/date laissent apparaître l'affichage existant. Le fond de l'orifice central est neutralisé derrière le moyeu. Les aiguilles sont protégées par leur masque de pixels neutres et les autres composants conservent leur géométrie. Cette intégration ne constitue pas un nouveau rendu 3D ou une photo de la montre assemblée.
+
+## Corrections ciblées des index et aiguilles
+
+`src/dial-repairs.js` restaure en blanc 13 fragments de graduations du cadran vert effacés par le détourage. Les contours sont tracés sur les trous de transparence de la couronne des index ; les chiffres et la texture ne sont pas régénérés. Ces retouches SVG sont appliquées à l'aperçu et à la vignette, en conservant le PNG original.
+
+Pour le jeu noir, seules les heures/minutes conservent leur intérieur blanc. Un calque limité à la trotteuse centrale et aux trois petites aiguilles neutralise leurs reflets et centres clairs, puis leur applique un noir uniforme. Leurs formes, positions et les autres composants restent fixes. La vignette du jeu noir est corrigée de la même manière pour ses petites aiguilles.
