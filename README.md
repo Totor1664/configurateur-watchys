@@ -1,63 +1,60 @@
 # Watchys — configurateur de montre
 
-Prototype interactif en français : 16 compositions, prix fictifs de 490 à 565 CHF, panier persistant local. Sans PrestaShop, paiement, stock réel, calcul de TVA ou livraison.
+Prototype interactif en français : **40 compositions à 490 CHF chacune**, panier local persistant. Aucun supplément pour le cadran, le bracelet, les aiguilles ou la carrure. Sans PrestaShop, paiement, stock réel, TVA ou livraison. Prix de démonstration ; la tarification du mouvement et de l'emboîtage atelier sera ajoutée dans une évolution ultérieure.
 
 ## Lancer et tester
 
-Node.js 20 ou supérieur. Aucune dépendance à installer et aucun build.
+Node.js 20 ou supérieur. Aucune dépendance à installer, aucun build.
 
 ```sh
 cd /workspace/configurateur-watchys
 npm start
 ```
 
-Sur votre machine, utilisez le chemin de votre clone à la place de `/workspace/configurateur-watchys`. Ouvrez `http://127.0.0.1:5173` sur la machine exécutant le serveur ; pour une machine distante, redirigez le port 5173. Arrêt avec Ctrl+C. Port alternatif : `PORT=5174 npm start`.
+Sur votre machine, utiliser le chemin de votre clone au lieu de `/workspace/configurateur-watchys`. Ouvrir `http://127.0.0.1:5173` sur la machine du serveur. Pour une machine distante, rediriger le port 5173. Arrêt : Ctrl+C. Port alternatif : `PORT=5174 npm start`.
 
 ```sh
 npm test
 ```
 
-Les tests vérifient les 16 configurations, chaque prix, identifiants, nomenclature, ajout/regroupement/quantités/suppression/total/restauration du panier, données invalides et association des visuels.
+Les tests vérifient les 40 configurations, leurs prix, identifiants stables et nomenclatures, les métadonnées PrestaShop facultatives, les opérations et la restauration du panier, et la stabilité de la géométrie des simulations. Les anciens paniers bleu/noir conservent leurs configurations et quantités ; tous leurs prix sont recalculés à partir du catalogue actuel, à 490 CHF par montre.
 
-## Interface et images
+## Composants
 
-L'interface propose un seul aperçu **Simulation visuelle**. Chaque sélecteur affiche uniquement le composant concerné : cadran, bracelet, jeu d'aiguilles ou boîtier. Le panier affiche les montres composées.
+- Cadran : bleu, noir, vert, anthracite, gris clair. Les références vert et anthracite sont celles déjà fournies ; le gris clair correspond à la nouvelle référence à chiffres foncés.
+- Bracelet cuir 20 mm : bleu ou noir.
+- Aiguilles : chromées ou noires.
+- Boîtier titane 41 mm : poli ou sablé.
+- Mouvement commun dans la nomenclature : ETA/Valjoux 7750.
 
-Les visuels sont des simulations générées à partir du rendu de référence et des références des composants visibles dans la conversation ; les fichiers originaux des photos n'étaient pas disponibles dans le workspace. Les bracelets fermés sont reconstitués. Les détails horlogers, inscriptions et finitions restent à valider. Ces images ne sont pas contractuelles.
+Calcul : 5 × 2 × 2 × 2 = 40. Tous les suppléments du catalogue sont à zéro. Le calcul de prix reste dans un module indépendant ; ne pas inventer de tarif atelier ou mouvement avant la définition de ces prestations.
 
-- `public/components.png` : illustrations des huit composants ; affichage par fenêtres SVG pour conserver leurs proportions.
-- `public/watch-blue-blue.png` : base haute résolution commune. Quatre vues pour les aiguilles et carrures (haut gauche chromées/poli, haut droite chromées/sablé, bas gauche noires/poli, bas droite noires/sablé). Le cadran et le bracelet noirs sont simulés à l’affichage par désaturation SVG des seules zones concernées ; leur géométrie ne change jamais. Les autres planches restent archivées pour les anciens liens et ne sont plus utilisées par le configurateur.
-- Les anciens fichiers de propositions restent disponibles pour les liens déjà partagés, mais ne sont plus utilisés dans l'interface.
+## Visuels et stabilité
 
-Le mode « Aperçu fidèle » et l'import de rendu ont été retirés à la demande de l'utilisateur. Le registre `src/images.js` reste un module indépendant pour une éventuelle future intégration de rendus validés ; il n'est pas utilisé par l'interface actuelle.
+Un seul aperçu « Simulation visuelle ». Les sélecteurs montrent uniquement le composant concerné ; le panier montre les montres assemblées.
+
+Les visuels sont des simulations issues du rendu de référence. Les fichiers originaux des photos affichées dans la conversation ne sont pas disponibles dans le dépôt. Bracelets fermés, teintes, matière et détails restent à valider ; ces images ne sont pas contractuelles. Le gris clair simule un fond clair, les chiffres foncés et des index lumineux clairs, mais ne reproduit pas exactement le brossage ou les reliefs de la référence.
+
+`public/watch-blue-blue.png` fournit une seule base géométrique. Les aiguilles noires et la carrure sablée sont des calques limités à leur composant par des masques SVG fixes. Les centres/rayons mesurés sont dans `src/alignment.js`. Toutes les vues partagent un cadran centré en `(320, 320)`, rayon `166`, dans un repère carré de `640`.
+
+Les couleurs sont définies dans `src/dial-colors.js` et appliquées à l'affichage : désaturation pour le noir, teinte verte, gris anthracite, gris clair avec chiffres foncés. Le rendu protège les aiguilles, les fenêtres jour/date et les index lumineux du gris clair. Le bracelet noir est une simulation de couleur sur la même géométrie bleue. Changer une option ne redimensionne pas les autres composants.
+
+`public/components.png` fournit les vignettes des composants ; les nouvelles couleurs du cadran utilisent les mêmes transformations pour conserver leurs proportions. Les anciennes planches et propositions restent archivées pour les liens déjà partagés, sans être utilisées par l'interface. Le registre `src/images.js`, indépendant de l'interface actuelle, permet de préparer une future association de rendus validés.
 
 ## Organisation
 
-- `src/catalog.js` : composants, prix, mouvement ETA/Valjoux 7750 commun, champs facultatifs `prestashopProductId` et `prestashopCombinationId`.
-- `src/selection.js` : identifiants stables et nomenclature complète.
-- `src/pricing.js` : calcul des prix.
-- `src/simulation.js` : association des vues et vignettes de composants.
-- `src/cart.js` : panier et validation de la sauvegarde.
-- `src/app.js` : interactions et persistance `localStorage`.
+- `src/catalog.js` : composants, prix, identifiants locaux, champs facultatifs `prestashopProductId` et `prestashopCombinationId`.
+- `src/selection.js` : configurations et nomenclature complète.
+- `src/pricing.js` : calcul du prix, séparé des visuels et de l'interface.
+- `src/dial-colors.js` : simulations des cinq teintes de cadran.
+- `src/simulation.js` : calques, cadrages et vignettes de composants.
+- `src/cart.js` : ajout, regroupement, quantité, suppression, validation et total.
+- `src/app.js` : interactions et sauvegarde `localStorage` (`watchys.cart.v1`).
 - `src/style.css` : interface adaptative, bleu #5C7EA2 et gris #D1D2D4.
-- `server.mjs` : serveur statique local sans dépendances.
+- `server.mjs` : serveur statique local.
 
-Identifiant stable : `watchys-7750--<cadran>--<bracelet>--<aiguilles>--<boîtier>`. La nomenclature contient le mouvement et les quatre composants. Le prix est recalculé depuis le catalogue. Les montres identiques sont regroupées et le panier (`watchys.cart.v1`) reste après actualisation, dans le même navigateur et sur la même origine.
+Identifiant stable : `watchys-7750--<cadran>--<bracelet>--<aiguilles>--<boîtier>`. Le panier conserve la sélection et la quantité, pas un ancien prix qui pourrait devenir faux. La sauvegarde reste propre au navigateur et à l'origine du site.
 
 ## GitHub Pages
 
-Publication autorisée par l'utilisateur après la première version locale. Branche `gh-pages`, dossier `/ (root)`, source **Deploy from a branch**. Les chemins relatifs supportent l'adresse `https://totor1664.github.io/configurateur-watchys/`. L'envoi Git ne prouve pas la réussite du déploiement : vérifier **Actions → pages build and deployment**.
-
-## Alignement des vues
-
-`src/alignment.js` conserve, pour chacune des 16 vues, le centre et le rayon mesurés du cadran dans les images sources. `simulationFrame()` calcule le cadrage SVG pour afficher systématiquement le centre en `(320, 320)` et un rayon de `166` dans une fenêtre carrée de référence de `640`. L'aperçu et le panier partagent ce même rendu. Chaque cellule de la planche est masquée séparément pour éviter de montrer la montre voisine. Les images sources ne sont ni déformées ni modifiées.
-
-Si les planches sont remplacées, les repères doivent être remesurés. Cet alignement corrige les décalages et différences d'échelle ; il ne supprime pas les différences de géométrie, de cuir, d'ombres ou de détails entre les simulations générées.
-
-### Stabilité des changements de couleur
-
-Changer le cadran ou le bracelet ne change plus de photographie complète. À jeu d'aiguilles et carrure identiques, la source, le cadrage, les inscriptions et les coutures restent strictement les mêmes. Un filtre SVG désature uniquement le disque du cadran et/ou les deux parties du bracelet, en conservant les parties blanches. Le rendu noir est donc une simulation de couleur issue de la base bleue, pas la photographie originale du composant noir. Les vues sources des aiguilles et de la carrure sont désormais superposées uniquement dans des masques fixes, sans remplacer le bracelet ou le cadran.
-
-### Isolation de tous les composants
-
-Le rendu utilise une seule géométrie de base pour les 16 combinaisons. Les aiguilles noires et la carrure sablée sont des calques SVG extraits de leurs vues sources, recalés sur la même référence. Les masques fixes `componentMasks` limitent ces calques à leur composant et excluent les deux parties du bracelet, le cadran et ses inscriptions selon le calque concerné. Les changements de couleur se font ensuite sur l'ensemble composé. L'aperçu et les miniatures du panier utilisent le même moteur. Des tests vérifient la stabilité de la géométrie pour tous les choix ; les captures navigateur contrôlent que les pixels du bracelet et l'inscription SWISS MADE restent inchangés lors des changements d'aiguilles ou de carrure. Les petits raccords de calques et les détails des simulations restent à valider sur des visuels réels.
+Publication autorisée par l'utilisateur. Branche `gh-pages`, dossier `/ (root)`, source **Deploy from a branch**. Adresse : `https://totor1664.github.io/configurateur-watchys/`. Vérifier le résultat dans **Actions → pages build and deployment** : un envoi Git seul ne prouve pas que le site a fini son déploiement.

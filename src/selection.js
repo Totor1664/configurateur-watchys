@@ -1,4 +1,4 @@
-import { groups, movement } from './catalog.js';
+import { groups, movement } from './catalog.js?v=five-dials-1';
 export function components(selection) {
  return groups.map(g=>{ const item=g.options.find(o=>o.id===selection[g.id]); if(!item) throw new Error('Sélection invalide'); return { group:g.id, category:g.label, ...item }; });
 }

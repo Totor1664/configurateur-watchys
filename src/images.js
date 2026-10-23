@@ -1,5 +1,5 @@
-import { configurationId } from './selection.js';
-import { defaultSelection } from './catalog.js';
+import { configurationId } from './selection.js?v=five-dials-1';
+import { defaultSelection } from './catalog.js?v=five-dials-1';
 export const referenceId=configurationId(defaultSelection);
 // Only exact, validated full renders may be registered here. No recoloring.
 export const renders = {};
