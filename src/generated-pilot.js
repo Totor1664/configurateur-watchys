@@ -3,6 +3,11 @@ export const pilotSelection=Object.freeze({dial:'dial-blue',strap:'strap-blue',h
 export const pilotAsset=Object.freeze({path:'public/review/blue-blue-chrome-polished.png',width:1254,height:1254,status:'awaiting-review'});
 export const pilotLayers=Object.freeze([{id:'strap',label:'Bracelet bleu fermé'},{id:'dial',label:'Cadran bleu'},{id:'date',label:'Jour et date de démonstration'},{id:'case',label:'Boîtier titane poli'},{id:'hands',label:'Aiguilles chromées'}]);
 export const pilotGeometry=Object.freeze({cx:615,cy:625,dialRadius:318,dialScale:318/554,caseScale:318/462,mainHandsScale:.44,counterHandsScale:.44});
+// Corrected closed strap silhouette, with narrow edges and fixed lug attachments.
+export const pilotStrapSlots=Object.freeze([
+ Object.freeze({sx:476,sy:104,sw:303,sh:380,x:435,y:88,w:360,h:247}),
+ Object.freeze({sx:476,sy:900,sw:303,sh:275,x:435,y:934,w:360,h:250})
+]);
 export function isPilotSelection(selection){return Object.entries(pilotSelection).every(([key,value])=>selection?.[key]===value);}
 let sequence=0;
 const asset=name=>new URL(`../public/generated-7750/${name}.png`,import.meta.url).href;
@@ -14,7 +19,7 @@ export function createPilotPreview(visibleLayers=pilotLayers.map(l=>l.id)){
  const image=name=>make('image',{href:asset(name),width:1254,height:1254});
  const groups=Object.fromEntries(pilotLayers.map(l=>{const g=make('g',{'data-pilot-layer':l.id});g.style.display=visibleLayers.includes(l.id)?'':'none';return[l.id,g];}));
  // Two visible closed strap ends, in fixed shared slots, hidden behind the case.
- for(const r of [{sx:497,sy:68,sw:258,sh:190,x:440,y:60,w:350,h:258},{sx:497,sy:996,sw:258,sh:190,x:440,y:950,w:350,h:258}]){const slot=make('svg',{x:r.x,y:r.y,width:r.w,height:r.h,viewBox:`${r.sx} ${r.sy} ${r.sw} ${r.sh}`,preserveAspectRatio:'none'});slot.style.overflow='hidden';slot.append(image('strap-blue-closed'));groups.strap.append(slot);}
+ for(const r of pilotStrapSlots){const slot=make('svg',{x:r.x,y:r.y,width:r.w,height:r.h,viewBox:`${r.sx} ${r.sy} ${r.sw} ${r.sh}`,preserveAspectRatio:'none'});slot.style.overflow='hidden';slot.append(image('strap-blue-closed-fitted'));groups.strap.append(slot);}
  const {cx,cy,dialScale,caseScale,mainHandsScale,counterHandsScale}=pilotGeometry;
  groups.dial.append(make('circle',{cx,cy,r:27,fill:'#304b6c'}));
  const dial=make('g',{transform:`translate(${cx} ${cy}) scale(${dialScale}) translate(-627 -625)`});dial.append(image('dial-blue'));groups.dial.append(dial);
@@ -32,6 +37,6 @@ export function createPilotPreview(visibleLayers=pilotLayers.map(l=>l.id)){
  for(const l of pilotLayers)svg.append(groups[l.id]);return svg;
 }
 export function generatedComponentThumbnail(group){
- const ns='http://www.w3.org/2000/svg',regions={dial:{name:'dial-blue',x:74,y:71,w:1105,h:1111},strap:{name:'strap-blue-closed',x:480,y:40,w:300,h:1190},hands:{name:'hands-chrome',x:280,y:180,w:915,h:940},case:{name:'case-polished',x:85,y:25,w:1155,h:1205}};
+ const ns='http://www.w3.org/2000/svg',regions={dial:{name:'dial-blue',x:74,y:71,w:1105,h:1111},strap:{name:'strap-blue-closed-fitted',x:460,y:90,w:330,h:1100},hands:{name:'hands-chrome',x:280,y:180,w:915,h:940},case:{name:'case-polished',x:85,y:25,w:1155,h:1205}};
  if(!(group in regions))throw new Error('Composant inconnu');const r=regions[group],svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 100 100');svg.setAttribute('aria-hidden','true');svg.classList.add('pilot-component');const inner=document.createElementNS(ns,'svg');for(const[k,v]of Object.entries({x:10,y:10,width:80,height:80,viewBox:`${r.x} ${r.y} ${r.w} ${r.h}`}))inner.setAttribute(k,String(v));inner.style.overflow='hidden';const img=document.createElementNS(ns,'image');img.setAttribute('href',asset(r.name));img.setAttribute('width','1254');img.setAttribute('height','1254');inner.append(img);svg.append(inner);return svg;
 }

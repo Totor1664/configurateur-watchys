@@ -32,3 +32,11 @@ Les 10 PNG transparents du ZIP utilisateur `7750.zip` sont conservés sans modif
 Les composants restent des visuels générés : textures, reflets, formes exactes, petits contrepoids et détourage doivent être comparés aux photographies réelles. La transparence de l'orifice central est présentée sur un fond bleu neutre sous le moyeu. Les ombres et reflets d'un assemblage 3D physique ne sont pas recalculés. Ne pas considérer ce rendu comme une photo contractuelle.
 
 Pour les cinq couleurs, le ZIP contient seulement les cadrans bleu et noir. Les références originales vert, anthracite et gris clair sont conservées, mais leurs nouveaux rendus générés attendent la validation de cette première direction visuelle.
+
+## Révision du bracelet après la référence de montage
+
+Le cadran, la carrure, les aiguilles et MON/28 conservent leurs repères approuvés. Seul le bracelet est révisé : un nouveau calque transparent `strap-blue-closed-fitted.png` reprend le cuir bleu en supprimant les gros replis latéraux et en rapprochant les coutures des bords. Il s'agit d'une adaptation générée, pas d'une extraction exacte de l'image de référence. L'original du ZIP reste disponible sans modification.
+
+Les deux extrémités sont centrées sur l'axe 615, avec une largeur commune de 360 pixels. Le haut occupe les coordonnées `(435,88)` à `(795,335)` et le bas `(435,934)` à `(795,1184)`, derrière la carrure. Les zones visibles du cuir sont recadrées pour se rapprocher des deux panneaux de la référence. La date reste affichée conformément au prototype ; son absence dans la référence n'est pas reprise.
+
+Le contrôle de captures avant/après vérifie que tous les pixels hors des zones du bracelet sont identiques. La silhouette et les raccords restent soumis à validation visuelle avant les autres variantes.
