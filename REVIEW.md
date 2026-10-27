@@ -44,3 +44,7 @@ Le contrôle de captures avant/après vérifie que tous les pixels hors des zone
 ### Raccord serré aux cornes
 
 Le bracelet a été élargi derrière les cornes pour supprimer les jours résiduels dus aux marges transparentes du PNG. Les points de contact sont contrôlés sur les deux côtés, en haut et en bas, à partir des pixels opaques des deux composants. Les repères de la tête et la longueur visible restent inchangés.
+
+### Cuir superposé aux faces intérieures des cornes
+
+Un second passage du même calque de bracelet est affiché après la carrure, limité par `pilotLugFaces` aux quatre petites faces intérieures des cornes. Un masque protège le cercle de la lunette (rayon 353). Le cuir couvre ainsi les faces intérieures sans effacer le PNG de la carrure ni modifier les placements du cadran, des aiguilles ou de la date. Le passage supérieur réemploie les mêmes images et repères : masquer le bracelet retire aussi sa superposition et restitue les faces métalliques d’origine. La forme et les proportions du bracelet restent celles de la révision précédente.

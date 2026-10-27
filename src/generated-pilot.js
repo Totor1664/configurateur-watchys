@@ -8,6 +8,8 @@ export const pilotStrapSlots=Object.freeze([
  Object.freeze({sx:476,sy:104,sw:303,sh:380,x:413,y:88,w:404,h:247}),
  Object.freeze({sx:476,sy:900,sw:303,sh:275,x:413,y:934,w:404,h:250})
 ]);
+// Only the inward-facing lug facets are covered; the circular bezel is protected.
+export const pilotLugFaces='M425 224L437 217L439 326L425 331Z M791 217L805 224L805 331L789 326Z M425 939L440 945L438 1035L425 1027Z M790 945L805 939L805 1027L792 1035Z';
 export function isPilotSelection(selection){return Object.entries(pilotSelection).every(([key,value])=>selection?.[key]===value);}
 let sequence=0;
 const asset=name=>new URL(`../public/generated-7750/${name}.png`,import.meta.url).href;
@@ -34,7 +36,8 @@ export function createPilotPreview(visibleLayers=pilotLayers.map(l=>l.id)){
  const main=make('g',{transform:`translate(${cx} ${cy}) scale(${mainHandsScale}) translate(-643 -667)`});const mainImage=image('hands-chrome');mainImage.setAttribute('mask',`url(#${mainMask.id})`);main.append(mainImage);groups.hands.append(main);
  const counterData=[{sx:630,sy:370,tx:cx+(628-627)*dialScale,ty:cy+(360-625)*dialScale,angle:0,box:{x:590,y:190,width:90,height:270}},{sx:350,sy:690,tx:cx+(353-627)*dialScale,ty:cy,angle:-125,box:{x:300,y:530,width:100,height:250}},{sx:630,sy:953,tx:cx,ty:cy+(891-625)*dialScale,angle:0,box:{x:590,y:790,width:90,height:250}}];
  for(const [i,c]of counterData.entries()){const part=make('g',{transform:`translate(${c.tx} ${c.ty}) rotate(${c.angle}) scale(${counterHandsScale}) translate(${-c.sx} ${-c.sy})`});const img=image('hands-chrome');img.setAttribute('clip-path',clip('counter-'+i,[make('rect',c.box)]));part.append(img);groups.hands.append(part);}
- for(const l of pilotLayers)svg.append(groups[l.id]);return svg;
+ const contactMask=make('mask',{id:id+'-lug-contact',maskUnits:'userSpaceOnUse',x:0,y:0,width:1254,height:1254});contactMask.append(make('path',{d:pilotLugFaces,fill:'white'}),make('circle',{cx,cy,r:353,fill:'black'}));defs.append(contactMask);
+ for(const l of pilotLayers){svg.append(groups[l.id]);if(l.id==='case'){const contact=make('g',{mask:`url(#${contactMask.id})`,'data-pilot-attachment':'strap'});contact.style.display=visibleLayers.includes('strap')?'':'none';for(const child of groups.strap.children)contact.append(child.cloneNode(true));svg.append(contact);}}return svg;
 }
 export function generatedComponentThumbnail(group){
  const ns='http://www.w3.org/2000/svg',regions={dial:{name:'dial-blue',x:74,y:71,w:1105,h:1111},strap:{name:'strap-blue-closed-fitted',x:460,y:90,w:330,h:1100},hands:{name:'hands-chrome',x:280,y:180,w:915,h:940},case:{name:'case-polished',x:85,y:25,w:1155,h:1205}};
