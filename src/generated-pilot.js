@@ -5,8 +5,8 @@ export const pilotLayers=Object.freeze([{id:'strap',label:'Bracelet bleu fermé'
 export const pilotGeometry=Object.freeze({cx:615,cy:625,dialRadius:318,dialScale:318/554,caseScale:318/462,mainHandsScale:.44,counterHandsScale:.44});
 // Corrected closed strap silhouette, with narrow edges and fixed lug attachments.
 export const pilotStrapSlots=Object.freeze([
- Object.freeze({sx:476,sy:104,sw:303,sh:380,x:435,y:88,w:360,h:247}),
- Object.freeze({sx:476,sy:900,sw:303,sh:275,x:435,y:934,w:360,h:250})
+ Object.freeze({sx:476,sy:104,sw:303,sh:380,x:413,y:88,w:404,h:247}),
+ Object.freeze({sx:476,sy:900,sw:303,sh:275,x:413,y:934,w:404,h:250})
 ]);
 export function isPilotSelection(selection){return Object.entries(pilotSelection).every(([key,value])=>selection?.[key]===value);}
 let sequence=0;
