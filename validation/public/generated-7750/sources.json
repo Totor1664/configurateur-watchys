@@ -1,0 +1,125 @@
+{
+  "model": "classic-valjoux-7750-41",
+  "canvas": [
+    1254,
+    1254
+  ],
+  "sources": [
+    {
+      "asset": "hands-chrome.png",
+      "original": "7750/AIGUILLE/Aiguilles chromées Luminova.png"
+    },
+    {
+      "asset": "hands-dauphine-rose-gold.png",
+      "original": "7750/AIGUILLE/Aiguilles Dauphine en or rose.png"
+    },
+    {
+      "asset": "hands-dauphine-red.png",
+      "original": "7750/AIGUILLE/Aiguilles Dauphine rouges.png"
+    },
+    {
+      "asset": "hands-dauphine-black.png",
+      "original": "7750/AIGUILLE/Aiguilles Dauphine noires.png"
+    },
+    {
+      "asset": "hands-dauphine-gold.png",
+      "original": "7750/AIGUILLE/Aiguilles Dauphine en or.png"
+    },
+    {
+      "asset": "hands-dauphine-royal-blue.png",
+      "original": "7750/AIGUILLE/Aiguilles Dauphine bleu royal.png"
+    },
+    {
+      "asset": "hands-black.png",
+      "original": "7750/AIGUILLE/Aiguilles noires Luminova.png"
+    },
+    {
+      "asset": "hands-dauphine-chrome.png",
+      "original": "7750/AIGUILLE/Aiguilles de montre chromées.png"
+    },
+    {
+      "asset": "dial-blue.png",
+      "original": "7750/CADRAN/Cadran bleu Valjoux 7750 isolé.png"
+    },
+    {
+      "asset": "dial-grey.png",
+      "original": "7750/CADRAN/Cadran argenté rayonnant, détails noirs et ouvertures.png"
+    },
+    {
+      "asset": "dial-green.png",
+      "original": "7750/CADRAN/Cadran vert forêt, vue de face.png"
+    },
+    {
+      "asset": "dial-anthracite.png",
+      "original": "7750/CADRAN/Cadran anthracite à index blancs.png"
+    },
+    {
+      "asset": "dial-black.png",
+      "original": "7750/CADRAN/Cadran noir Valjoux 7750 isolé.png"
+    },
+    {
+      "asset": "case-black-brushed.png",
+      "original": "7750/CARRURE/Boîtier de montre noir brossé.png"
+    },
+    {
+      "asset": "case-black-pvd.png",
+      "original": "7750/CARRURE/Boîtier de montre noir PVD polie.png"
+    },
+    {
+      "asset": "case-sandblasted.png",
+      "original": "7750/CARRURE/Boîtier de montre chrome sablé.png"
+    },
+    {
+      "asset": "case-polished.png",
+      "original": "7750/CARRURE/Boîtier de montre chrome polie.png"
+    },
+    {
+      "asset": "strap-black-open.png",
+      "original": "7750/BRACELET/Bracelet de montre noir 20-22 mm.png"
+    },
+    {
+      "asset": "strap-blue-closed.png",
+      "original": "7750/BRACELET/Bracelet de montre bleu 20-22 mm ferme.png"
+    },
+    {
+      "asset": "strap-red-open.png",
+      "original": "7750/BRACELET/Bracelet de montre rouge 20-22 mm.png"
+    },
+    {
+      "asset": "strap-blue-open.png",
+      "original": "7750/BRACELET/Bracelet de montre bleu 20-22 mm.png"
+    },
+    {
+      "asset": "strap-red-closed.png",
+      "original": "7750/BRACELET/Bracelet de montre rouge 20-22 mm ferme.png"
+    },
+    {
+      "asset": "strap-black-closed.png",
+      "original": "7750/BRACELET/Bracelet de montre noir 20-22 mm ferme.png"
+    },
+    {
+      "asset": "strap-orange-closed.png",
+      "original": "7750/BRACELET/Bracelet de montre orange 20-22 mm ferme.png"
+    },
+    {
+      "asset": "strap-orange-open.png",
+      "original": "7750/BRACELET/Bracelet de montre orange 20-22 mm.png"
+    },
+    {
+      "asset": "strap-green-closed.png",
+      "original": "7750/BRACELET/Bracelet de montre vert 20-22 mm ferme.png"
+    },
+    {
+      "asset": "strap-brown-open.png",
+      "original": "7750/BRACELET/Bracelet de montre brun 20-22 mm.png"
+    },
+    {
+      "asset": "strap-brown-closed.png",
+      "original": "7750/BRACELET/Bracelet de montre brun 20-22 mm ferme.png"
+    },
+    {
+      "asset": "strap-green-open.png",
+      "original": "7750/BRACELET/Bracelet de montre vert 20-22 mm.png"
+    }
+  ]
+}
