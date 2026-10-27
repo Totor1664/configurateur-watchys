@@ -81,3 +81,7 @@ Le placement SVG se fait autour de l'axe source `(550, 635)` ; le rayon horizont
 `src/dial-repairs.js` restaure en blanc 13 fragments de graduations du cadran vert effacés par le détourage. Les contours sont tracés sur les trous de transparence de la couronne des index ; les chiffres et la texture ne sont pas régénérés. Ces retouches SVG sont appliquées à l'aperçu et à la vignette, en conservant le PNG original.
 
 Pour le jeu noir, seules les heures/minutes conservent leur intérieur blanc. Un calque limité à la trotteuse centrale et aux trois petites aiguilles neutralise leurs reflets et centres clairs, puis leur applique un noir uniforme. Leurs formes, positions et les autres composants restent fixes. La vignette du jeu noir est corrigée de la même manière pour ses petites aiguilles.
+
+## Première proposition avec les nouveaux composants générés
+
+Sur la branche `watchys/generated-preview`, voir [REVIEW.md](REVIEW.md) et la page locale `/public/review/index.html`. Une seule composition bleu/bleu/chromé/poli est assemblée depuis les PNG indépendants du ZIP `7750.zip`, pour validation avant déclinaison. L'ancien configurateur et le site publié ne sont pas remplacés. Le module de composition et ses styles sont séparés dans `src/generated-pilot.js`, `src/review-page.js` et `src/review.css`.
