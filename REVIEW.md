@@ -1,3 +1,5 @@
+> Archive de la première composition. Cette étape a été validée ; pour le configurateur actuel à 960 options, consulter [VALIDATION.md](VALIDATION.md).
+
 # Proposition Watchys — bleu / bleu / chromé / poli
 
 **Branche de travail : `watchys/generated-preview`.** La version existante, ses 40 compositions à 490 CHF et son panier persistant restent conservés. Cette proposition n'est pas publiée sur GitHub Pages.

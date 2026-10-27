@@ -1,8 +1,8 @@
-# Watchys — configurateur de montre
+# Watchys — Classic Valjoux 7750 · 41 mm
 
-Prototype interactif en français : **40 compositions à 490 CHF chacune**, panier local persistant. Aucun supplément pour le cadran, le bracelet, les aiguilles ou la carrure. Sans PrestaShop, paiement, stock réel, TVA ou livraison. Prix de démonstration ; la tarification du mouvement et de l'emboîtage atelier sera ajoutée dans une évolution ultérieure.
+Configurateur interactif en français : **960 compositions à 490 CHF chacune**, à partir des composants transparents du ZIP utilisateur `7750.zip`. Panier de démonstration persistant, sans paiement, PrestaShop, gestion réelle de stock, TVA ou livraison. La tarification future du mouvement et de l'emboîtage atelier n'est pas encore ajoutée.
 
-## Lancer et tester
+## Lancer
 
 Node.js 20 ou supérieur. Aucune dépendance à installer, aucun build.
 
@@ -11,81 +11,63 @@ cd /workspace/configurateur-watchys
 npm start
 ```
 
-Sur votre machine, utiliser le chemin de votre clone au lieu de `/workspace/configurateur-watchys`. Ouvrir `http://127.0.0.1:5173` sur la machine du serveur. Pour une machine distante, rediriger le port 5173. Arrêt : Ctrl+C. Port alternatif : `PORT=5174 npm start`.
+Sur votre Mac, remplacer ce chemin par celui du clone. Ouvrir `http://127.0.0.1:5173`. Arrêt : Ctrl+C. Autre port : `PORT=5174 npm start`. En environnement distant, transférer le port 5173.
 
 ```sh
 npm test
 ```
 
-Les tests vérifient les 40 configurations, leurs prix, identifiants stables et nomenclatures, les métadonnées PrestaShop facultatives, les opérations et la restauration du panier, et la stabilité de la géométrie des simulations. Les anciens paniers bleu/noir conservent leurs configurations et quantités ; tous leurs prix sont recalculés à partir du catalogue actuel, à 490 CHF par montre.
+Les 61 tests couvrent les 960 configurations, les prix, les identifiants, la nomenclature, tous les fichiers utilisés, le panier et sa restauration. Les tests de l'ancien moteur photographique restent limités à ses 40 configurations historiques.
 
-## Composants
+Vérification complémentaire dans Chromium (serveur démarré dans un autre terminal) :
 
-- Cadran : bleu, noir, vert, anthracite, gris clair. Les références vert et anthracite sont celles déjà fournies ; le gris clair correspond à la nouvelle référence à chiffres foncés.
-- Bracelet cuir 20 mm : bleu ou noir.
-- Aiguilles : chromées ou noires.
-- Boîtier titane 41 mm : poli ou sablé.
-- Mouvement commun dans la nomenclature : ETA/Valjoux 7750.
+```sh
+npm install --no-save --package-lock=false playwright
+npx playwright install chromium
+npm run test:browser
+```
 
-Calcul : 5 × 2 × 2 × 2 = 40. Tous les suppléments du catalogue sont à zéro. Le calcul de prix reste dans un module indépendant ; ne pas inventer de tarif atelier ou mouvement avant la définition de ces prestations.
+Ce contrôle parcourt les 960 sélections dans l'interface, vérifie les calques indépendants, le rendu de référence pixel par pixel, le panier et les petits écrans. `WATCHYS_URL` permet de tester une autre adresse ; `WATCHYS_CHROMIUM_PATH` permet d'utiliser un Chromium déjà installé. Les captures sont enregistrées dans un dossier temporaire affiché à la fin.
 
-## Visuels et stabilité
+## Options du modèle
 
-Un seul aperçu « Simulation visuelle ». Les sélecteurs montrent uniquement le composant concerné ; le panier montre les montres assemblées.
+| Composant | Options |
+| --- | --- |
+| Cadran (5) | Bleu, noir, vert, anthracite, gris clair argenté |
+| Bracelet cuir 20 mm (6) | Bleu, noir, rouge, orange, vert, brun |
+| Aiguilles (8) | Chromées Luminova, noires Luminova ; Dauphine chromées, noires, or, or rose, rouges, bleu royal |
+| Carrure 41 mm (4) | Polie, sablée, noire brossée, noire PVD polie |
+| Mouvement commun | ETA/Valjoux 7750 |
 
-Les visuels sont des simulations issues du rendu de référence. Les cinq cadrans sont maintenant fournis en PNG détourés dans le dépôt ; les photographies originales des autres composants ne sont pas disponibles comme fichiers. Bracelets fermés, teintes, matière et détails restent à valider ; ces images ne sont pas contractuelles. Le gris clair utilise désormais la photographie réelle, sans inversion de couleurs : brossage, chiffres, index et compteurs proviennent du fichier fourni. Son placement reste une adaptation de perspective dans une montre simulée.
+5 × 6 × 8 × 4 = **960**. Les carrures 44 mm appartiendront à d'autres modèles ; elles ne sont pas proposées ici. Les noms « or » et « or rose » désignent les variantes de visuel fournies, sans certification du matériau.
 
-`public/watch-blue-blue.png` fournit une seule base géométrique. Les aiguilles noires et la carrure sablée sont des calques limités à leur composant par des masques SVG fixes. Les centres/rayons mesurés sont dans `src/alignment.js`. Toutes les vues partagent un cadran centré en `(320, 320)`, rayon `166`, dans un repère carré de `640`.
+## Visuels
 
-Les cinq cadrans utilisent exclusivement les photographies d'origine répertoriées dans `src/dial-colors.js`, sans filtre de couleur. Les échelles de placement compensent le décentrage de l'axe de chaque photo, les masques laissent passer les aiguilles et l'affichage jour/date. Le bracelet noir conserve sa simulation de couleur sur la même géométrie bleue. Les autres composants ne changent pas de taille lors du changement de cadran.
+Un seul assemblage de calques transparents indépendants, jamais 960 montres générées séparément. La composition bleu/bleu/Luminova chromées/polie conserve exactement le rendu validé : centre `(615, 625)`, rayon de cadran `318`, canevas carré de `1254`. Changer une option remplace seulement son calque ; les autres conservent leurs sources et transformations.
 
-Chaque vignette possède le même repère carré de 100 unités, un centre en `(50, 50)` et un diamètre visible de 80 unités. Les dimensions utiles de chaque cadran sont mesurées, indépendamment des marges transparentes du fichier : le gris clair n'est donc plus plus gros que les autres.
+- `src/model-assets.js` : sources, recadrages et repères propres à chaque image.
+- `src/generated-pilot.js` : assemblage sur la géométrie commune, masque de carrure, séparation des aiguilles principales et des compteurs.
+- `src/validation-renderer.js` : disponibilité des visuels, aperçu, vignettes.
+- `public/generated-7750/sources.json` : correspondance exhaustive avec les 29 PNG du ZIP, conservés sans retouche. Les versions ouvertes des bracelets sont archivées mais ne constituent pas des options supplémentaires.
 
-`public/components.png` reste utilisé uniquement pour les bracelets, aiguilles et carrures. Les anciennes planches sont archivées pour préserver les liens partagés. Le registre `src/images.js` est indépendant de l'interface actuelle.
+Les nouveaux cadrans sont recalés localement sur les axes des compteurs et les fenêtres du cadran bleu. Les bracelets fermés utilisent tous les deux emplacements validés ; la silhouette bleue ajustée masque les replis latéraux des autres sources. Le bleu reste le dérivé ajusté déjà validé (`strap-blue-closed-fitted.png`). Le noir et les autres couleurs utilisent maintenant leurs propres images, sans recoloration du bleu. Les vignettes montrent seulement le composant choisi, dans un gabarit identique par famille.
 
-### Origine et limites des fichiers
+Les Luminova gardent leur intérieur blanc ; les petites aiguilles et la trotteuse du jeu noir sont noires. Les Dauphine suivent les images fournies, avec des facettes métalliques sans ajout d'intérieur blanc. Les heures/minutes restent vers 10 h 10 ; la trotteuse fine est dirigée entre 4 et 5. MON/28 est une inscription de démonstration ajoutée dans les ouvertures du cadran.
 
-- `dial-grey-original.png` : archive utilisateur `Photoroom_20261023_095112.png.zip`.
-- `dial-blue-original.png`, `dial-black-original.png`, `dial-green-original.png`, `dial-anthracite-original.png` : fichiers de l'archive utilisateur `Archive.zip`.
-- Les PNG de 1100 × 1422 sont extraits sans modification ni génération. Seul leur placement SVG est adapté.
-- Le détourage du noir conserve des parties opaques dans les ouvertures jour/date. Des fenêtres d'affichage explicites les masquent pour laisser apparaître MON/28.
-- Le détourage du vert a effacé des portions de certaines graduations. Les originaux sont conservés ; les 13 fragments effacés sont maintenant restaurés en blanc à l’affichage, à la demande de l’utilisateur, selon leurs contours de transparence.
-- Les ouvertures centrales transparentes sont présentées sur un fond neutre adapté au cadran, derrière les moyeux. L'assemblage reste une simulation, pas une photo réelle de la montre terminée.
+Ces assemblages restent des simulations : le recalage et le recadrage adaptent les proportions des fichiers générés ; textures, reflets et petites différences de gravures restent ceux des images fournies. Certaines graduations du cadran vert sont plus sombres dans le nouveau fichier et sont conservées telles quelles. Aucun détail horloger nouveau n'est généré pour cette intégration.
 
-## Organisation
+## Données et panier
 
-- `src/catalog.js` : composants, prix, identifiants locaux, champs facultatifs `prestashopProductId` et `prestashopCombinationId`.
-- `src/selection.js` : configurations et nomenclature complète.
-- `src/pricing.js` : calcul du prix, séparé des visuels et de l'interface.
-- `src/dial-colors.js` : photographies des cinq cadrans, repères de placement et normalisation des vignettes.
-- `src/simulation.js` : calques, cadrages et vignettes de composants.
-- `src/cart.js` : ajout, regroupement, quantité, suppression, validation et total.
-- `src/app.js` : interactions et sauvegarde `localStorage` (`watchys.cart.v1`).
-- `src/style.css` : interface adaptative, bleu #5C7EA2 et gris #D1D2D4.
-- `server.mjs` : serveur statique local.
+- `src/catalog.js` : modèle `classic-valjoux-7750-41`, composants, prix et champs PrestaShop facultatifs.
+- `src/selection.js` : sélection, identifiants stables et nomenclature (mouvement, cadran, bracelet, aiguilles, carrure).
+- `src/pricing.js` : calcul indépendant, suppléments à zéro.
+- `src/cart.js` : ajout, regroupement, quantités 1 à 999, suppression, total, restauration.
+- `src/app.js` : interface et stockage `watchys.validation.cart.v1`.
 
-Identifiant stable : `watchys-7750--<cadran>--<bracelet>--<aiguilles>--<boîtier>`. Le panier conserve la sélection et la quantité, pas un ancien prix qui pourrait devenir faux. La sauvegarde reste propre au navigateur et à l'origine du site.
+Les anciens identifiants `watchys-7750--…` et le panier de validation existant restent compatibles. Le stockage `watchys.cart.v1` du site historique n'est pas modifié. Les futurs modèles devront disposer de leur propre catalogue de composants et d'un préfixe de configuration distinct.
 
-## GitHub Pages
+## Page de validation séparée
 
-Publication autorisée par l'utilisateur. Branche `gh-pages`, dossier `/ (root)`, source **Deploy from a branch**. Adresse : `https://totor1664.github.io/configurateur-watchys/`. Vérifier le résultat dans **Actions → pages build and deployment** : un envoi Git seul ne prouve pas que le site a fini son déploiement.
+`https://totor1664.github.io/configurateur-watchys/validation/`
 
-## Photographie du cadran gris clair
-
-`public/dial-grey-original.png` est le PNG RGBA de 1100 × 1422 pixels extrait sans modification de l’archive utilisateur `Photoroom_20261023_095112.png.zip`. Aucun filtre de teinte ou inversion n'est appliqué. La vignette utilise la même photo.
-
-Le placement SVG se fait autour de l'axe source `(550, 635)` ; le rayon horizontal source est de `380` pixels, le bord supérieur à `273` et le bord inférieur à `1032`. Deux échelles verticales se rejoignent sur l'axe pour corriger le décentrage de la photographie tout en gardant l'axe des aiguilles à `(320, 320)` et les bords à `154/486`. Les ouvertures jour/date laissent apparaître l'affichage existant. Le fond de l'orifice central est neutralisé derrière le moyeu. Les aiguilles sont protégées par leur masque de pixels neutres et les autres composants conservent leur géométrie. Cette intégration ne constitue pas un nouveau rendu 3D ou une photo de la montre assemblée.
-
-## Corrections ciblées des index et aiguilles
-
-`src/dial-repairs.js` restaure en blanc 13 fragments de graduations du cadran vert effacés par le détourage. Les contours sont tracés sur les trous de transparence de la couronne des index ; les chiffres et la texture ne sont pas régénérés. Ces retouches SVG sont appliquées à l'aperçu et à la vignette, en conservant le PNG original.
-
-Pour le jeu noir, seules les heures/minutes conservent leur intérieur blanc. Un calque limité à la trotteuse centrale et aux trois petites aiguilles neutralise leurs reflets et centres clairs, puis leur applique un noir uniforme. Leurs formes, positions et les autres composants restent fixes. La vignette du jeu noir est corrigée de la même manière pour ses petites aiguilles.
-
-## Première proposition avec les nouveaux composants générés
-
-Sur la branche `watchys/generated-preview`, voir [REVIEW.md](REVIEW.md) et la page locale `/public/review/index.html`. Une seule composition bleu/bleu/chromé/poli est assemblée depuis les PNG indépendants du ZIP `7750.zip`, pour validation avant déclinaison. L'ancien configurateur et le site publié ne sont pas remplacés. Le module de composition et ses styles sont séparés dans `src/generated-pilot.js`, `src/review-page.js` et `src/review.css`.
-
-## Configurateur interactif de validation
-
-Voir [VALIDATION.md](VALIDATION.md). La racine de cette branche est désormais le configurateur de test : 40 choix, 16 rendus générés bleu/noir disponibles, 24 rendus en attente, panier de test indépendant. Le bracelet antérieur à la superposition sur les cornes est rétabli. La version en ligne est ajoutée sous `/validation/`, sans remplacer la page historique.
+Développement sur `watchys/classic-7750-options`. La branche `watchys/generated-preview` conserve la version précédemment validée. La publication de test met à jour uniquement `validation/` sur `gh-pages` ; l'accueil historique et `main` restent inchangés. Voir [VALIDATION.md](VALIDATION.md).

@@ -5,7 +5,8 @@ import {defaultSelection,groups} from '../src/catalog.js';
 import {price} from '../src/pricing.js';
 import {add,remove,quantity,total,restore} from '../src/cart.js';
 import {imageFor} from '../src/images.js';
-const selections=allSelections();
+// Historical photo renderer remains covered on its original 40 configurations.
+const selections=allSelections().filter(s=>['strap-blue','strap-black'].includes(s.strap)&&['hands-chrome','hands-black'].includes(s.hands)&&['case-polished','case-sandblasted'].includes(s.case));
 test('40 configurations uniques, nomenclature complète et identifiants stables',()=>{assert.equal(selections.length,40);assert.equal(new Set(selections.map(configurationId)).size,40);for(const s of selections){assert.equal(nomenclature(s).length,5);assert.equal(nomenclature(s)[0].id,'movement-eta-valjoux-7750');for(const c of nomenclature(s)){assert.ok(c.id);assert.equal(c.prestashopProductId,null);assert.equal(c.prestashopCombinationId,null);}assert.equal(configurationId({...s}),configurationId(s));}});
 for(const s of selections)test('Prix '+configurationId(s),()=>{const expected=490;assert.equal(price(s),expected);});
 test('Prix unique de 490 CHF, sans supplément sur les 40 compositions',()=>{assert.equal(Math.min(...selections.map(price)),490);assert.equal(Math.max(...selections.map(price)),490);assert.equal(price(defaultSelection),490);});

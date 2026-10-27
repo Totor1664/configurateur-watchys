@@ -1,39 +1,40 @@
-# Configurateur de validation
+# Validation — Classic Valjoux 7750, 41 mm
 
-Cette version utilise les nouveaux composants générés du ZIP `7750.zip` et rétablit le bracelet de la révision **54d9a6d**, avant la superposition sur les faces intérieures des cornes. Elle est développée sur `watchys/generated-preview`.
+Page séparée : <https://totor1664.github.io/configurateur-watchys/validation/>
 
-## Essayer
+Branche : `watchys/classic-7750-options`. La version validée précédemment reste conservée sur `watchys/generated-preview` (`a204f7a`). L'accueil GitHub Pages historique et la branche `main` ne sont pas remplacés.
 
-La page de test est publiée séparément sous :
+## Nouvelle collection
 
-`https://totor1664.github.io/configurateur-watchys/validation/`
+- 5 cadrans : bleu, noir, vert, anthracite, gris clair.
+- 6 bracelets fermés : bleu, noir, rouge, orange, vert, brun.
+- 8 jeux d'aiguilles : 2 Luminova (chromées et noires), 6 Dauphine (chromées, noires, or, or rose, rouges, bleu royal).
+- 4 carrures 41 mm : polie, sablée, noire brossée, noire PVD polie.
+- 960 compositions, toutes disponibles visuellement et toutes à 490 CHF.
 
-L'accueil historique et ses fichiers restent inchangés. La publication ajoute seulement le dossier `validation/` à `gh-pages`, sans fusionner cette branche de travail dans `main`. Un envoi Git ne garantit pas que le déploiement Pages est terminé.
+Les images ouvertes et fermées d'une même couleur représentent une seule option de bracelet. Le 44 mm fera l'objet d'autres modèles, avec leurs propres carrures.
 
-Localement : `npm start`, puis ouvrir la racine du serveur, port 5173.
+## Préservation du rendu approuvé
 
-## Ce qui est prêt
+La composition bleu/bleu/chromées Luminova/polie garde le rendu validé, comparé pixel par pixel dans Chromium. Les nouvelles options sont enregistrées sur la même géométrie. Un changement d'option ne modifie pas les calques des autres composants.
 
-- Interface française, ordinateur et mobile, vignettes de composants isolés.
-- 40 choix de configuration : cinq cadrans, deux bracelets, deux jeux d'aiguilles et deux carrures.
-- Prix unique de 490 CHF, sans supplément.
-- 16 aperçus assemblés depuis les cadrans générés bleu/noir et les composants disponibles, sur la même géométrie fixe.
-- 24 configurations vert/anthracite/gris clair sélectionnables sans visuel, avec « Aperçu non disponible ».
-- Panier de démonstration : regroupement, quantité, suppression, total et conservation après rechargement. Le stockage est séparé (`watchys.validation.cart.v1`) et ne modifie pas le panier du site historique.
-- Les aiguilles et carrures sont des calques indépendants. Le bracelet noir reste une simulation par désaturation du cuir bleu corrigé pour conserver exactement sa silhouette ; son nouveau rendu propre pourra le remplacer ensuite.
-- Les textes MON/28 sont un affichage de démonstration, pas une mécanique jour/date.
+Les 29 originaux du ZIP sont archivés dans `public/generated-7750/` ; `sources.json` documente leurs noms d'origine. Le bracelet bleu reste le dérivé ajusté précédemment accepté. Les autres bracelets sont placés et masqués sur les mêmes deux emplacements. Les cadrans vert, anthracite et gris clair sont recalés sur les fenêtres et compteurs du bleu. Le jour/date MON/28 reste une démonstration.
 
-## À valider dans cette version
+Les détails, reflets et variations de gravures des sources générées sont conservés ; le recalage des cadrans et les raccords des bracelets restent une simulation. Les Dauphine ont les facettes des images fournies, sans Luminova ajouté. Les graduations sombres visibles sur le vert proviennent du nouveau fichier utilisateur.
 
-1. Composer plusieurs montres bleu/noir, changer aiguilles/carrure et vérifier la stabilité des autres composants.
-2. Vérifier les proportions, raccords du bracelet et détails des visuels sur ordinateur et mobile.
-3. Ajouter plusieurs configurations, modifier les quantités, recharger la page et supprimer des lignes.
-4. Vérifier que les choix sans nouveau cadran restent utilisables, mais sans aperçu inventé.
+## Vérifications
 
-## Fichiers à fournir ensuite
+`npm test` : 61 tests, dont les prix, la disponibilité et les identifiants uniques des 960 configurations, les 23 options visuelles, les anciens paniers et toutes les opérations de panier sur les 960 compositions.
 
-Pour le modèle 7750 : cadrans générés vert, anthracite et gris clair, puis toute variante supplémentaire et éventuellement un bracelet noir fermé au même gabarit que le bleu retenu.
+Contrôle Chromium : parcours des 960 sélections dans l'interface ; vérification des prix et récapitulatifs ; comparaison des 24 variantes de calques indépendants ; comparaison pixel par pixel de la composition approuvée ; ajout, regroupement, quantité, suppression et persistance du panier ; absence de modification du stockage historique ; unicité des identifiants SVG ; contrôle des ressources et du rendu sur ordinateur et téléphone.
 
-Préparer un ZIP par modèle, avec des noms explicites (`cadran-vert.png`, `bracelet-noir-ferme.png`, `aiguilles-noires.png`, `carrure-sablee.png`). Chaque composant doit avoir un fond transparent, la même vue de face, une définition suffisante et des repères stables : centre/diamètre du cadran, axes des compteurs, points de fixation du bracelet. Éviter de changer perspective, lumière ou échelle entre deux variantes d'un même composant. Inclure un rendu complet de référence par modèle et un inventaire des composants compatibles.
+Le panier conserve la clé `watchys.validation.cart.v1`. Les anciens choix et leurs quantités sont restaurés. Les champs facultatifs PrestaShop restent à `null`. Aucun nouveau tarif d'atelier, stock réel, paiement ou connexion externe n'est ajouté.
 
-Le modèle courant conserve ses identifiants et sa nomenclature complète. La sélection de nouveaux modèles et leurs règles de compatibilité seront ajoutées après validation de cette base et réception de leurs composants. Aucun tarif de mouvement, d'emboîtage, de stock réel, de paiement ou de connexion PrestaShop n'est ajouté ici.
+## Essai manuel
+
+1. Ouvrir la page de validation et choisir plusieurs couleurs ainsi que les deux familles d'aiguilles.
+2. Changer séparément cadran, bracelet, aiguilles et carrure : les autres éléments doivent rester fixes.
+3. Ajouter des compositions au panier, modifier une quantité, actualiser, supprimer une ligne.
+4. Vérifier un prix unitaire de 490 CHF et le total correspondant aux quantités.
+
+Localement : `npm start`, puis <http://127.0.0.1:5173/>. La publication de validation ajoute uniquement les fichiers sous `validation/`, sans remplacer le site historique. Un push Git ne garantit pas la fin immédiate du déploiement Pages.

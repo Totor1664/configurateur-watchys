@@ -1,5 +1,5 @@
-import { configurationId, nomenclature } from './selection.js?v=five-dials-1';
-import { price } from './pricing.js?v=five-dials-1';
+import { configurationId, nomenclature } from './selection.js?v=classic-7750-1';
+import { price } from './pricing.js?v=classic-7750-1';
 export const CART_KEY='watchys.cart.v1';
 export function add(cart, selection) { const id=configurationId(selection); const found=cart.find(i=>i.id===id); return found ? cart.map(i=>i.id===id?{...i,quantity:i.quantity+1}:i) : [...cart,{id,selection:{...selection},quantity:1}]; }
 export function quantity(cart,id,value) { if(!Number.isInteger(value)||value<1||value>999) throw new Error('Quantité entre 1 et 999'); return cart.map(i=>i.id===id?{...i,quantity:value}:i); }
