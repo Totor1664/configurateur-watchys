@@ -2,18 +2,19 @@ import {groups,defaultSelection,money} from './catalog.js?v=five-dials-1';
 import {components,nomenclature,configurationId} from './selection.js?v=five-dials-1';
 import {price} from './pricing.js?v=five-dials-1';
 import * as basket from './cart.js?v=five-dials-1';
-import {simulationElement,componentElement} from './simulation.js?v=white-index-black-hands-1';
+import {simulationElement,componentElement,previewAvailability} from './validation-renderer.js?v=config-validation-1';
 const $=s=>document.querySelector(s);
+const CART_STORAGE_KEY='watchys.validation.cart.v1';
 let selection={...defaultSelection}, cart=[];
-try {cart=basket.restore(localStorage.getItem(basket.CART_KEY));}catch {$('#storage-status').textContent='Stockage indisponible : le panier reste disponible pendant cette session.';}
-function persist(){try{localStorage.setItem(basket.CART_KEY,JSON.stringify(cart));}catch{$('#storage-status').textContent='Impossible de sauvegarder le panier dans ce navigateur.';}}
-$('#options').innerHTML=groups.map((g,index)=>`<fieldset><legend><span>0${index+1}</span> ${g.label}</legend><div class="choices">${g.options.map(o=>`<button type="button" class="choice" data-group="${g.id}" data-option="${o.id}" aria-pressed="false"><i style="background:${o.color}"></i><span>${o.label}<small>${o.price?'+ '+money(o.price):'Inclus'}</small></span><b aria-hidden="true">✓</b></button>`).join('')}</div></fieldset>`).join('');
+try {cart=basket.restore(localStorage.getItem(CART_STORAGE_KEY));}catch {$('#storage-status').textContent='Stockage indisponible : le panier reste disponible pendant cette session.';}
+function persist(){try{localStorage.setItem(CART_STORAGE_KEY,JSON.stringify(cart));}catch{$('#storage-status').textContent='Impossible de sauvegarder le panier dans ce navigateur.';}}
+$('#options').innerHTML=groups.map((g,index)=>`<fieldset><legend><span>0${index+1}</span> ${g.label}</legend><div class="choices">${g.options.map(o=>`<button type="button" class="choice" data-group="${g.id}" data-option="${o.id}" aria-pressed="false"><i style="background:${o.color}"></i><span>${o.label}<small>${g.id==='dial'&&!['dial-blue','dial-black'].includes(o.id)?'Visuel à fournir':'Même prix'}</small></span><b aria-hidden="true">✓</b></button>`).join('')}</div></fieldset>`).join('');
 function render(){
  document.querySelectorAll('.choice').forEach(b=>b.setAttribute('aria-pressed',String(selection[b.dataset.group]===b.dataset.option)));
  $('#summary').innerHTML=components(selection).map(c=>`<div><dt>${c.category}</dt><dd>${c.label}</dd></div>`).join('');$('#price').textContent=money(price(selection));
  $('#image-area').replaceChildren(simulationElement(selection));
- $('#visual-status').textContent='SIMULATION VISUELLE';
- $('#preview-note').textContent='Cadran : photographie du composant réel. Assemblage, aiguilles, bracelet et carrure simulés, à valider.';
+ $('#visual-status').textContent=previewAvailability(selection).available?'VERSION DE VALIDATION':'VISUEL À FOURNIR';
+ $('#preview-note').textContent=previewAvailability(selection).available?'Composants générés sur géométrie fixe. Bracelet précédent rétabli ; le noir est une simulation de couleur du même cuir.':'Les nouveaux rendus vert, anthracite et gris clair seront ajoutés après validation. Aucun visuel de remplacement n’est inventé.';
 }
 function renderCart(){
  $('#count').textContent=cart.reduce((n,i)=>n+i.quantity,0);$('#total').textContent=money(basket.total(cart));

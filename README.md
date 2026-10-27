@@ -85,3 +85,7 @@ Pour le jeu noir, seules les heures/minutes conservent leur intérieur blanc. Un
 ## Première proposition avec les nouveaux composants générés
 
 Sur la branche `watchys/generated-preview`, voir [REVIEW.md](REVIEW.md) et la page locale `/public/review/index.html`. Une seule composition bleu/bleu/chromé/poli est assemblée depuis les PNG indépendants du ZIP `7750.zip`, pour validation avant déclinaison. L'ancien configurateur et le site publié ne sont pas remplacés. Le module de composition et ses styles sont séparés dans `src/generated-pilot.js`, `src/review-page.js` et `src/review.css`.
+
+## Configurateur interactif de validation
+
+Voir [VALIDATION.md](VALIDATION.md). La racine de cette branche est désormais le configurateur de test : 40 choix, 16 rendus générés bleu/noir disponibles, 24 rendus en attente, panier de test indépendant. Le bracelet antérieur à la superposition sur les cornes est rétabli. La version en ligne est ajoutée sous `/validation/`, sans remplacer la page historique.
