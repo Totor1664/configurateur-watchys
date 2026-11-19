@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "currency": "CHF",
+  "minorUnitsPerCurrency": 100,
+  "priceBasis": "tax-excluded",
+  "deploymentStatus": "specification-not-installed",
+  "models": [
+    {
+      "id": "watchys-7750-41mm",
+      "label": "Chronographe Watchys 7750 — titane 41 mm",
+      "dimensions": {
+        "caseDiameterMm": 41,
+        "strapWidthMm": 20,
+        "hands": "short"
+      },
+      "kitPriceExclTaxMinor": 19000,
+      "movement": {
+        "id": "movement-eta-valjoux-7750",
+        "label": "ETA/Valjoux 7750 Base",
+        "component": {
+          "productId": 7736,
+          "combinationId": 0,
+          "units": 1
+        },
+        "supplementExclTaxMinor": 32000
+      },
+      "assemblySupplementExclTaxMinor": 10000,
+      "options": {
+        "dial": {
+          "dial-black": {
+            "component": {
+              "productId": 8188,
+              "combinationId": 0,
+              "units": 1
+            }
+          },
+          "dial-anthracite": {
+            "component": {
+              "productId": 8189,
+              "combinationId": 0,
+              "units": 1
+            }
+          },
+          "dial-blue": {
+            "component": {
+              "productId": 8190,
+              "combinationId": 0,
+              "units": 1
+            }
+          },
+          "dial-green": {
+            "component": {
+              "productId": 8191,
+              "combinationId": 0,
+              "units": 1
+            }
+          },
+          "dial-grey": {
+            "component": {
+              "productId": 8192,
+              "combinationId": 0,
+              "units": 1
+            }
+          }
+        },
+        "strap": {
+          "strap-black": {
+            "component": {
+              "productId": 8193,
+              "combinationId": 0,
+              "units": 1
+            }
+          },
+          "strap-blue": {
+            "component": {
+              "productId": 8194,
+              "combinationId": 0,
+              "units": 1
+            }
+          }
+        },
+        "hands": {
+          "hands-black": {
+            "component": {
+              "productId": 8199,
+              "combinationId": 0,
+              "units": 1
+            }
+          },
+          "hands-chrome": {
+            "component": {
+              "productId": 8200,
+              "combinationId": 0,
+              "units": 1
+            }
+          }
+        },
+        "case": {
+          "case-polished": {
+            "component": {
+              "productId": 8197,
+              "combinationId": 0,
+              "units": 1
+            },
+            "supplementExclTaxMinor": 0
+          },
+          "case-sandblasted": {
+            "component": {
+              "productId": 8198,
+              "combinationId": 0,
+              "units": 1
+            },
+            "supplementExclTaxMinor": 0
+          }
+        }
+      },
+      "offers": {
+        "kit-without-movement": {
+          "label": "Kit à monter soi-même sans mouvement",
+          "includeMovement": false,
+          "workshopAssembly": false
+        },
+        "kit-with-movement": {
+          "label": "Kit à monter soi-même avec mouvement",
+          "includeMovement": true,
+          "workshopAssembly": false
+        },
+        "workshop-assembled": {
+          "label": "Montre avec mouvement, emboîtée par notre atelier",
+          "includeMovement": true,
+          "workshopAssembly": true
+        }
+      }
+    }
+  ]
+}
