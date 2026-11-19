@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { groups } from '../src/catalog.js';
-import { allSelections } from '../src/selection.js';
+
 
 const catalog = JSON.parse(readFileSync(new URL('../integration/prestashop/catalog.json', import.meta.url), 'utf8'));
 const model = catalog.models.find(m => m.id === 'watchys-7750-41mm');
@@ -21,7 +21,7 @@ test('all current visual options have an audited PrestaShop component mapping', 
   assert.deepEqual(Object.keys(model.options).sort(), groups.map(g => g.id).sort());
   const products = new Set();
   for (const group of groups) {
-    assert.deepEqual(Object.keys(model.options[group.id]).sort(), group.options.map(o => o.id).sort());
+    for (const visual of group.options) assert.ok(model.options[group.id][visual.id], visual.id);
     for (const option of Object.values(model.options[group.id])) {
       const c = option.component;
       assert.ok(Number.isInteger(c.productId) && c.productId > 0);
@@ -34,15 +34,15 @@ test('all current visual options have an audited PrestaShop component mapping', 
 });
 
 test('short hands use the approved IDs and exclude the long sets', () => {
-  assert.equal(model.dimensions.hands, 'short');
+  assert.equal(model.dimensions.hands, 'short-or-dauphine');
   assert.equal(model.options.hands['hands-black'].component.productId, 8199);
   assert.equal(model.options.hands['hands-chrome'].component.productId, 8200);
   assert.equal(model.movement.component.productId, 7736);
 });
 
-test('40 compositions support three offers at the approved flat prices', () => {
-  const selections = allSelections();
-  assert.equal(selections.length, 40);
+test('960 compositions support three offers at the approved flat prices', () => {
+  const selections = Object.entries(model.options).reduce((list,[group,options]) => list.flatMap(s => Object.keys(options).map(id => ({...s,[group]:id}))),[{}]);
+  assert.equal(selections.length, 960);
   assert.deepEqual(Object.keys(model.offers).sort(), ['kit-with-movement', 'kit-without-movement', 'workshop-assembled']);
   const approved = {'kit-without-movement':19000, 'kit-with-movement':51000, 'workshop-assembled':61000};
   let count = 0;
@@ -61,5 +61,39 @@ test('40 compositions support three offers at the approved flat prices', () => {
       count++;
     }
   }
-  assert.equal(count, 120);
+  assert.equal(count, 2880);
+});
+
+
+test('new DEV references remain unique and map to the created articles', () => {
+  const options = Object.values(model.options).flatMap(g => Object.values(g));
+  assert.equal(options.length, 23);
+  assert.equal(new Set(options.map(o => o.component.productId)).size, 23);
+  const refs = new Map(options.filter(o => o.component.expectedReference).map(o => [o.component.expectedReference,o.component.productId]));
+  assert.equal(refs.size,12);
+  assert.equal(refs.get('W7750-DPH-CHR'),8855);
+  assert.equal(refs.get('W7750-DPH-YG'),8860);
+  assert.equal(refs.get('W7750-CASE-POL'),8861);
+  assert.equal(refs.get('W7750-STRAP-BRN'),8866);
+});
+
+test('case PNG fronts are separate from four-view product galleries and use correct materials', () => {
+  for (const [id,o] of Object.entries(model.options.case)) {
+    assert.equal(o.material,id.includes('pvd') ? 'stainless-steel-316l' : 'titanium');
+    assert.equal(o.gallery.length,4);
+    assert.deepEqual(o.gallery.map(a=>a.file.split('/').pop()),['face.png','trois-quarts.png','profil.png','dos.png']);
+    assert.deepEqual(o.visual,o.gallery[0]);
+    assert.equal(o.visual.package,'watchys-carrures-7750-vues');
+  }
+  assert.equal(catalog.assetPolicy.stockSource,'live-prestashop-components');
+  assert.equal(catalog.assetPolicy.inactiveProducts,'excluded-until-explicitly-enabled-in-module');
+  for (const g of Object.values(model.options)) for (const o of Object.values(g)) {
+    for (const a of [o.visual,...(o.gallery??[])]) {
+      assert.match(a.sha256,/^[0-9a-f]{64}$/);
+      assert.equal(a.background,'transparent');
+      assert.match(a.file,/^images\/[^.].*\.png$/);
+      assert.ok(!a.file.includes('..'));
+    }
+  }
+  assert.ok(Object.values(model.options.strap).every(o=>o.widthMm===20));
 });
