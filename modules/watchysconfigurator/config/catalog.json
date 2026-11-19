@@ -1,0 +1,662 @@
+{
+  "schemaVersion": 1,
+  "currency": "CHF",
+  "minorUnitsPerCurrency": 100,
+  "priceBasis": "tax-excluded",
+  "deploymentStatus": "specification-not-installed",
+  "models": [
+    {
+      "id": "watchys-7750-41mm",
+      "label": "Chronographe Watchys 7750 — 41 mm",
+      "dimensions": {
+        "caseDiameterMm": 41,
+        "strapWidthMm": 20,
+        "hands": "short-or-dauphine"
+      },
+      "kitPriceExclTaxMinor": 19000,
+      "movement": {
+        "id": "movement-eta-valjoux-7750",
+        "label": "ETA/Valjoux 7750 Base",
+        "component": {
+          "productId": 7736,
+          "combinationId": 0,
+          "units": 1
+        },
+        "supplementExclTaxMinor": 32000
+      },
+      "assemblySupplementExclTaxMinor": 10000,
+      "options": {
+        "dial": {
+          "dial-black": {
+            "component": {
+              "productId": 8188,
+              "combinationId": 0,
+              "units": 1
+            },
+            "label": "Noir",
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/cadran-noir-valjoux-7750-isole.png",
+              "sha256": "839fcdc9ba89151657501e5e8523025a943b91f257b6b3a0d8dc0b8d61e13655",
+              "format": "png",
+              "background": "transparent"
+            }
+          },
+          "dial-anthracite": {
+            "component": {
+              "productId": 8189,
+              "combinationId": 0,
+              "units": 1
+            },
+            "label": "Anthracite",
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/cadran-anthracite-a-index-blancs.png",
+              "sha256": "92ef09a4572a4fa24ae2704de6c2b046322676b9a815fac66ee49b4344a25015",
+              "format": "png",
+              "background": "transparent"
+            }
+          },
+          "dial-blue": {
+            "component": {
+              "productId": 8190,
+              "combinationId": 0,
+              "units": 1
+            },
+            "label": "Bleu",
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/cadran-bleu-valjoux-7750-isole.png",
+              "sha256": "514c22c7b3bd90a562fb4708314fdb947ccf9046bd43ab59c7516fd1e3075659",
+              "format": "png",
+              "background": "transparent"
+            }
+          },
+          "dial-green": {
+            "component": {
+              "productId": 8191,
+              "combinationId": 0,
+              "units": 1
+            },
+            "label": "Vert",
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/cadran-vert-foret,-vue-de-face.png",
+              "sha256": "49cb6003e9684a16f81196605eefe9cdb907fa32b076fe49cfa468c5e4fc8a42",
+              "format": "png",
+              "background": "transparent"
+            }
+          },
+          "dial-grey": {
+            "component": {
+              "productId": 8192,
+              "combinationId": 0,
+              "units": 1
+            },
+            "label": "Gris clair",
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/cadran-argente-rayonnant,-details-noirs-et-ouvertures.png",
+              "sha256": "a77861b73afa587fa49c6720ed0ab9f8b4b01c573c027d6050f32dbff542548e",
+              "format": "png",
+              "background": "transparent"
+            }
+          }
+        },
+        "strap": {
+          "strap-black": {
+            "component": {
+              "productId": 8193,
+              "combinationId": 0,
+              "units": 1
+            },
+            "label": "Noir",
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/bracelet-de-montre-noir-20-22-mm.png",
+              "sha256": "c278348f2905f2b80a7ab6846a167b36277d6f17898c872e36a77bc70b4868ed",
+              "format": "png",
+              "background": "transparent"
+            },
+            "widthMm": 20,
+            "gallery": [
+              {
+                "package": "watchys-7750-variantes",
+                "file": "images/bracelet-de-montre-noir-20-22-mm.png",
+                "sha256": "c278348f2905f2b80a7ab6846a167b36277d6f17898c872e36a77bc70b4868ed",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-7750-variantes",
+                "file": "images/bracelet-de-montre-noir-20-22-mm-ferme.png",
+                "sha256": "f85f4ea013bd1018d015aef0638a77b14eac69637f08e7c14a85095bebaac68c",
+                "format": "png",
+                "background": "transparent"
+              }
+            ]
+          },
+          "strap-blue": {
+            "component": {
+              "productId": 8194,
+              "combinationId": 0,
+              "units": 1
+            },
+            "label": "Bleu",
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/bracelet-de-montre-bleu-20-22-mm.png",
+              "sha256": "e73dd971932a6eb6ba151b31021fe420eead4e43f61dbf8e7b1eacbf8eefa94e",
+              "format": "png",
+              "background": "transparent"
+            },
+            "widthMm": 20,
+            "gallery": [
+              {
+                "package": "watchys-7750-variantes",
+                "file": "images/bracelet-de-montre-bleu-20-22-mm.png",
+                "sha256": "e73dd971932a6eb6ba151b31021fe420eead4e43f61dbf8e7b1eacbf8eefa94e",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-7750-variantes",
+                "file": "images/bracelet-de-montre-bleu-20-22-mm-ferme.png",
+                "sha256": "8a9f595e07d3503a06b8b267945adbb78d655c065c5b38292792a45d934a38ab",
+                "format": "png",
+                "background": "transparent"
+              }
+            ]
+          },
+          "strap-red": {
+            "label": "Rouge",
+            "component": {
+              "productId": 8863,
+              "combinationId": 0,
+              "units": 1,
+              "expectedReference": "W7750-STRAP-RED"
+            },
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/bracelet-de-montre-rouge-20-22-mm.png",
+              "sha256": "1c26655b9719fdadac76e8d20a10a4cf6d90eca66910f651b287db2544668d2a",
+              "format": "png",
+              "background": "transparent"
+            },
+            "widthMm": 20,
+            "gallery": [
+              {
+                "package": "watchys-7750-variantes",
+                "file": "images/bracelet-de-montre-rouge-20-22-mm.png",
+                "sha256": "1c26655b9719fdadac76e8d20a10a4cf6d90eca66910f651b287db2544668d2a",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-7750-variantes",
+                "file": "images/bracelet-de-montre-rouge-20-22-mm-ferme.png",
+                "sha256": "cee021392397934c11a084ba07e099bd9105b7a07389b53c14afe506e8cc9609",
+                "format": "png",
+                "background": "transparent"
+              }
+            ]
+          },
+          "strap-orange": {
+            "label": "Orange",
+            "component": {
+              "productId": 8864,
+              "combinationId": 0,
+              "units": 1,
+              "expectedReference": "W7750-STRAP-ORG"
+            },
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/bracelet-de-montre-orange-20-22-mm.png",
+              "sha256": "87e9e7c8f8f76da233a8a2f1b84adc20faf74149c952bb28df4fefed43ce454d",
+              "format": "png",
+              "background": "transparent"
+            },
+            "widthMm": 20,
+            "gallery": [
+              {
+                "package": "watchys-7750-variantes",
+                "file": "images/bracelet-de-montre-orange-20-22-mm.png",
+                "sha256": "87e9e7c8f8f76da233a8a2f1b84adc20faf74149c952bb28df4fefed43ce454d",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-7750-variantes",
+                "file": "images/bracelet-de-montre-orange-20-22-mm-ferme.png",
+                "sha256": "665fed657c3d74ecdf396182bcd79b8ba15a3141e7b31b81a8ff65229e82301f",
+                "format": "png",
+                "background": "transparent"
+              }
+            ]
+          },
+          "strap-green": {
+            "label": "Vert",
+            "component": {
+              "productId": 8865,
+              "combinationId": 0,
+              "units": 1,
+              "expectedReference": "W7750-STRAP-GRN"
+            },
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/bracelet-de-montre-vert-20-22-mm.png",
+              "sha256": "daa3a585777e14539b625f606a17033448f5959630e2c404127113765bd3e5af",
+              "format": "png",
+              "background": "transparent"
+            },
+            "widthMm": 20,
+            "gallery": [
+              {
+                "package": "watchys-7750-variantes",
+                "file": "images/bracelet-de-montre-vert-20-22-mm.png",
+                "sha256": "daa3a585777e14539b625f606a17033448f5959630e2c404127113765bd3e5af",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-7750-variantes",
+                "file": "images/bracelet-de-montre-vert-20-22-mm-ferme.png",
+                "sha256": "c1808a418cc16688ce5360e62de14d7b4572cdd63467618716fa2b06060c18b2",
+                "format": "png",
+                "background": "transparent"
+              }
+            ]
+          },
+          "strap-brown": {
+            "label": "Brun",
+            "component": {
+              "productId": 8866,
+              "combinationId": 0,
+              "units": 1,
+              "expectedReference": "W7750-STRAP-BRN"
+            },
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/bracelet-de-montre-brun-20-22-mm.png",
+              "sha256": "e717d07d515dc519bea3f78420d7c8199784daafb261540067fa35f3202dd067",
+              "format": "png",
+              "background": "transparent"
+            },
+            "widthMm": 20,
+            "gallery": [
+              {
+                "package": "watchys-7750-variantes",
+                "file": "images/bracelet-de-montre-brun-20-22-mm.png",
+                "sha256": "e717d07d515dc519bea3f78420d7c8199784daafb261540067fa35f3202dd067",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-7750-variantes",
+                "file": "images/bracelet-de-montre-brun-20-22-mm-ferme.png",
+                "sha256": "ee55e037b43b77cd75728fcd4ab03f684d1e15d3671572c75423b3f8aa6884fa",
+                "format": "png",
+                "background": "transparent"
+              }
+            ]
+          }
+        },
+        "hands": {
+          "hands-black": {
+            "component": {
+              "productId": 8199,
+              "combinationId": 0,
+              "units": 1
+            },
+            "label": "Courtes noires Luminova",
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/aiguilles-noires-luminova.png",
+              "sha256": "8ba6344989caea526db1d6d797789b359773c5c84e490c92a7e85c0e12a4501d",
+              "format": "png",
+              "background": "transparent"
+            },
+            "style": "short-luminova"
+          },
+          "hands-chrome": {
+            "component": {
+              "productId": 8200,
+              "combinationId": 0,
+              "units": 1
+            },
+            "label": "Courtes chromées Luminova",
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/aiguilles-chromees-luminova.png",
+              "sha256": "795ded59549491756ac102d2ad1cc5843917d3105732ab0bb6b0cb9ba0fc3dd1",
+              "format": "png",
+              "background": "transparent"
+            },
+            "style": "short-luminova"
+          },
+          "hands-dauphine-chrome": {
+            "label": "Dauphine chromées",
+            "component": {
+              "productId": 8855,
+              "combinationId": 0,
+              "units": 1,
+              "expectedReference": "W7750-DPH-CHR"
+            },
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/aiguilles-de-montre-chromees.png",
+              "sha256": "76fe6b44e8aef829ee0718f6b7d76f13b6a830d3e29ede646a27668781109274",
+              "format": "png",
+              "background": "transparent"
+            },
+            "style": "dauphine"
+          },
+          "hands-dauphine-black": {
+            "label": "Dauphine noires",
+            "component": {
+              "productId": 8856,
+              "combinationId": 0,
+              "units": 1,
+              "expectedReference": "W7750-DPH-BLK"
+            },
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/aiguilles-dauphine-noires.png",
+              "sha256": "a47197734117f30df8a8d15a936d23536a16966f2f3d8af3a4c8ff6b7cbcc84d",
+              "format": "png",
+              "background": "transparent"
+            },
+            "style": "dauphine"
+          },
+          "hands-dauphine-blue": {
+            "label": "Dauphine bleues",
+            "component": {
+              "productId": 8857,
+              "combinationId": 0,
+              "units": 1,
+              "expectedReference": "W7750-DPH-BLU"
+            },
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/aiguilles-dauphine-bleu-royal.png",
+              "sha256": "9292eaca4b0dfa771dc34b98d2c0475a64535f0300b7ca00dcc9bb89b2cd3e21",
+              "format": "png",
+              "background": "transparent"
+            },
+            "style": "dauphine"
+          },
+          "hands-dauphine-red": {
+            "label": "Dauphine rouges",
+            "component": {
+              "productId": 8858,
+              "combinationId": 0,
+              "units": 1,
+              "expectedReference": "W7750-DPH-RED"
+            },
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/aiguilles-dauphine-rouges.png",
+              "sha256": "2a296772c652eb3ab6e2c7c5b1bb9d357996ad809723bc63423392b10f0f1439",
+              "format": "png",
+              "background": "transparent"
+            },
+            "style": "dauphine"
+          },
+          "hands-dauphine-rose-gold": {
+            "label": "Dauphine or rose",
+            "component": {
+              "productId": 8859,
+              "combinationId": 0,
+              "units": 1,
+              "expectedReference": "W7750-DPH-RG"
+            },
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/aiguilles-dauphine-en-or-rose.png",
+              "sha256": "a11949f0e16edaa303a4044b9982b8ee61bf5d7681c25b54aca413f1d93d3b0c",
+              "format": "png",
+              "background": "transparent"
+            },
+            "style": "dauphine"
+          },
+          "hands-dauphine-yellow-gold": {
+            "label": "Dauphine or jaune",
+            "component": {
+              "productId": 8860,
+              "combinationId": 0,
+              "units": 1,
+              "expectedReference": "W7750-DPH-YG"
+            },
+            "visual": {
+              "package": "watchys-7750-variantes",
+              "file": "images/aiguilles-dauphine-en-or.png",
+              "sha256": "70a96532d2c67542039cd16c18103d1e989f2cabc2301f96ac06c06401d3c860",
+              "format": "png",
+              "background": "transparent"
+            },
+            "style": "dauphine"
+          }
+        },
+        "case": {
+          "case-polished": {
+            "label": "Titane poli",
+            "component": {
+              "productId": 8197,
+              "combinationId": 0,
+              "units": 1
+            },
+            "material": "titanium",
+            "finish": "polished",
+            "supplementExclTaxMinor": 0,
+            "visual": {
+              "package": "watchys-carrures-7750-vues",
+              "file": "images/8197-titane-poli/face.png",
+              "sha256": "822e3cbe8c206310fee51203c26b51e9dbaf819a171d91c709724bd9ed6dfbeb",
+              "format": "png",
+              "background": "transparent"
+            },
+            "gallery": [
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8197-titane-poli/face.png",
+                "sha256": "822e3cbe8c206310fee51203c26b51e9dbaf819a171d91c709724bd9ed6dfbeb",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8197-titane-poli/trois-quarts.png",
+                "sha256": "9d164674cb63eda8fa1719446d49f7db6da45f88ffb6673da269fd901f74f810",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8197-titane-poli/profil.png",
+                "sha256": "8d71872eb5bd514209f2ddc7d1330b68103c95ff782a0f5ad2f1fcff2cbdbebb",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8197-titane-poli/dos.png",
+                "sha256": "0d98461ad75e1ec82812ccb2436f1146f73079f9f0336ca5ab151f1d5f396426",
+                "format": "png",
+                "background": "transparent"
+              }
+            ]
+          },
+          "case-sandblasted": {
+            "label": "Titane sablé",
+            "component": {
+              "productId": 8198,
+              "combinationId": 0,
+              "units": 1
+            },
+            "material": "titanium",
+            "finish": "sandblasted",
+            "supplementExclTaxMinor": 0,
+            "visual": {
+              "package": "watchys-carrures-7750-vues",
+              "file": "images/8198-titane-sable/face.png",
+              "sha256": "82c01c042b3958971271956f5ca4f919e9dc6523dca592ab87c9c0ffae20626b",
+              "format": "png",
+              "background": "transparent"
+            },
+            "gallery": [
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8198-titane-sable/face.png",
+                "sha256": "82c01c042b3958971271956f5ca4f919e9dc6523dca592ab87c9c0ffae20626b",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8198-titane-sable/trois-quarts.png",
+                "sha256": "02251ada4c2d81651d3d2f2d55a2a80cfe8159364a6a43d4304573e0a91d76c4",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8198-titane-sable/profil.png",
+                "sha256": "5f153956287f0f4fc767a3be3dff65da412ebe28ff7e27bdbc44e4abcf173f45",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8198-titane-sable/dos.png",
+                "sha256": "d7766399fc2c8c0e87f096fb7a5a115a6a1a52351a7eecc6054b3414120415c2",
+                "format": "png",
+                "background": "transparent"
+              }
+            ]
+          },
+          "case-pvd-polished": {
+            "label": "Noir PVD poli",
+            "component": {
+              "productId": 8861,
+              "combinationId": 0,
+              "units": 1,
+              "expectedReference": "W7750-CASE-POL"
+            },
+            "material": "stainless-steel-316l",
+            "finish": "pvd-black-polished",
+            "supplementExclTaxMinor": 0,
+            "visual": {
+              "package": "watchys-carrures-7750-vues",
+              "file": "images/8861-pvd-noir-poli/face.png",
+              "sha256": "65e00ee7957ad735ed4385226021b61906d0db6100634f76dc7b073826e566f6",
+              "format": "png",
+              "background": "transparent"
+            },
+            "gallery": [
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8861-pvd-noir-poli/face.png",
+                "sha256": "65e00ee7957ad735ed4385226021b61906d0db6100634f76dc7b073826e566f6",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8861-pvd-noir-poli/trois-quarts.png",
+                "sha256": "a70bf66873b8773a37d1db0f4b676b3cd7be618ad89e2f9462a33ccc9d0e0564",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8861-pvd-noir-poli/profil.png",
+                "sha256": "8c5336538ddbb25c449431743a69ccc658fb91a6b6cef33981ff36fe20216837",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8861-pvd-noir-poli/dos.png",
+                "sha256": "3ffff061a9011f644f7f2696b1c743b08fe8a3c75413c12d58a8c7b50fbe8321",
+                "format": "png",
+                "background": "transparent"
+              }
+            ]
+          },
+          "case-pvd-brushed": {
+            "label": "Noir PVD brossé",
+            "component": {
+              "productId": 8862,
+              "combinationId": 0,
+              "units": 1,
+              "expectedReference": "W7750-CASE-BRU"
+            },
+            "material": "stainless-steel-316l",
+            "finish": "pvd-black-brushed",
+            "supplementExclTaxMinor": 0,
+            "visual": {
+              "package": "watchys-carrures-7750-vues",
+              "file": "images/8862-pvd-noir-brosse/face.png",
+              "sha256": "f2aa8ce31b0661830de5374598e0d2b11a1a20c7c79714170a0b048045b58187",
+              "format": "png",
+              "background": "transparent"
+            },
+            "gallery": [
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8862-pvd-noir-brosse/face.png",
+                "sha256": "f2aa8ce31b0661830de5374598e0d2b11a1a20c7c79714170a0b048045b58187",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8862-pvd-noir-brosse/trois-quarts.png",
+                "sha256": "e4fd0ba60e5edc04aac8e41b96725ae3ff3a2310ed0ef8f80d3e60dce931a765",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8862-pvd-noir-brosse/profil.png",
+                "sha256": "dd3b0d3de1e76a3a1e59adec2e143b9079dfb91c6e251c5f9a2718a6b59ad102",
+                "format": "png",
+                "background": "transparent"
+              },
+              {
+                "package": "watchys-carrures-7750-vues",
+                "file": "images/8862-pvd-noir-brosse/dos.png",
+                "sha256": "1b626ee71ba6ce7187fe60237f466a748a2b49105124075e2e0e59e28511ea1e",
+                "format": "png",
+                "background": "transparent"
+              }
+            ]
+          }
+        }
+      },
+      "offers": {
+        "kit-without-movement": {
+          "label": "Kit à monter soi-même sans mouvement",
+          "includeMovement": false,
+          "workshopAssembly": false
+        },
+        "kit-with-movement": {
+          "label": "Kit à monter soi-même avec mouvement",
+          "includeMovement": true,
+          "workshopAssembly": false
+        },
+        "workshop-assembled": {
+          "label": "Montre avec mouvement, emboîtée par notre atelier",
+          "includeMovement": true,
+          "workshopAssembly": true
+        }
+      }
+    }
+  ],
+  "assetPolicy": {
+    "productGallery": "white-background-jpeg-generated-by-prestashop-import",
+    "configurator": "original-transparent-png",
+    "stockSource": "live-prestashop-components",
+    "inactiveProducts": "excluded-until-explicitly-enabled-in-module"
+  }
+}

@@ -84,3 +84,10 @@ Les correspondances sont basées sur les créations et contrôles DEV du 19 nove
 `npm test` vérifie notamment la couverture des options existantes, le choix des aiguilles courtes et les trois montants approuvés pour les 960 compositions. Ces contrôles ne constituent pas un test d'installation, de paiement ou de stocks PrestaShop.
 
 Prochaine étape : développer puis installer le module sur DEV et valider un parcours réel d'ajout au panier, en conservant la PROD inchangée.
+
+
+## Module DEV préparé — version 0.1.0
+
+Le code de la première version est dans `modules/watchysconfigurator`. Le construire avec `python3 integration/prestashop/build-dev-module.py`. Le ZIP produit réutilise les PNG privés présents sur le serveur au lieu de les inclure dans le dépôt.
+
+Cette version affiche les variantes, leur disponibilité et les prix CHF HT calculés côté serveur. Elle est strictement réservée à dev.watchys.ch et ne comporte aucune écriture au panier ou au stock. L'installation native PrestaShop et l'affichage dans Alysum restent à vérifier sur le serveur après validation OUI. Le prototype public n'est pas modifié.
