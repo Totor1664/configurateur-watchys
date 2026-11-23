@@ -1,5 +1,42 @@
 # Reprise actuelle — Configurateur Watchys — 23 novembre 2026
 
+## Dernier état confirmé — fin de séance du 23 novembre 2026
+
+**Cette section prévaut sur les étapes historiques ci-dessous. Reprise prévue le 24 novembre.**
+
+- Le paquet 0.2.2 a été appliqué sur DEV avec succès ; produit technique 8867, référence WCFG-7750-41-CARTDEV, personnalisations et cinq accroches relus. Ne pas réinstaller les anciens paquets.
+- Le vrai ajout au panier fonctionne. Watchys confirme : « ça fonctionne correctement pour chaque version et variante en stock ». La capture montre la formule sans mouvement à 190 CHF HT et les six choix enregistrés. Les formules restent 190 / 510 / 610 CHF HT.
+- Le rendu SVG et les proportions sont validés. Conserver les 29 PNG, le moteur de référence, le catalogue et les tarifs approuvés.
+- La vignette du produit technique est cassée dans le panier : une image générique reste à préparer et associer, puis éventuellement un aperçu fidèle à chaque configuration.
+- Aucun composant n'est décrémenté à l'ajout. Commande et paiement Watchys restent volontairement bloqués. Le cycle de stock réel n'est pas développé ni validé. Les tests locaux avec doubles ne remplacent pas les essais natifs, notamment concurrence, fusion de panier à la connexion, annulations et retours.
+- Les tentatives antérieures ont pu laisser des écritures natives malgré une erreur et une restauration du code. Toujours relire l'état réel, sans présumer un retour arrière complet.
+
+### Priorité décidée pour la prochaine séance : articles et stock DEV
+
+L'utilisateur souhaite d'abord disposer de chaque pièce du configurateur et d'un stock de **10 unités par pièce**, avant de reprendre le développement du cycle de stock. Aucune de ces nouvelles opérations n'a été exécutée aujourd'hui.
+
+1. Lire le catalogue réellement installé et les correspondances PrestaShop sur DEV. Vérifier existence, référence, nom, quantité disponible, statut actif/commandable et images de chaque composant.
+2. Réutiliser les articles existants ; créer uniquement les composants réellement absents, sans doublons. Les articles 8855 à 8866 ont déjà été créés auparavant avec stock 10, initialement désactivés : vérifier leur état actuel avant toute action.
+3. Préparer un plan précis pour fixer la quantité disponible de chaque composant concerné à 10 (pas ajouter 10 à la quantité existante). Le produit technique de panier n'est pas un composant à stocker. Préserver les réservations DEV et la cohérence du stock physique.
+4. Afficher les articles concernés, les quantités avant/après et les créations nécessaires. Sauvegarde et journal avant/après, balises DÉBUT/FIN et confirmation exacte OUI avant écriture. Ne pas activer implicitement tous les articles ; présenter séparément les changements de statut nécessaires aux essais.
+5. Relire les écritures et vérifier les variantes dans le configurateur. Puis traiter la vignette et reprendre le cycle de stock/commande lors d'une étape distincte.
+
+Périmètre : DEV uniquement, aucun accès PROD, aucun changement de prix ni du rendu validé. Aucune sauvegarde supplémentaire de la base serveur n'a été lancée pendant cette clôture ; seul ce point de reprise est enregistré dans GitHub.
+
+### Correspondances déjà connues à contrôler sur DEV
+
+| Famille | Articles |
+| --- | --- |
+| Mouvement inclus selon formule | 7736 (MVT26) |
+| Cadrans | 8188 noir, 8189 anthracite, 8190 bleu, 8191 vert, 8192 gris |
+| Bracelets 20 mm | 8193 noir, 8194 bleu, 8863 rouge, 8864 orange, 8865 vert, 8866 brun |
+| Aiguilles courtes Luminova | 8199 noires, 8200 chrome |
+| Aiguilles dauphine | 8855 chrome, 8856 noires, 8857 bleues, 8858 rouges, 8859 or rose, 8860 or jaune |
+| Carrures 41 mm | 8197 titane poli, 8198 titane sablé, 8861 noir PVD poli, 8862 noir brossé |
+| Support technique hors stock composants | 8867 |
+
+---
+
 Ce point complète les documents historiques de préparation. Ne pas déduire l’état actuel des anciennes mentions « module non installé » ou « aperçu provisoire ».
 
 ## État confirmé par Watchys
