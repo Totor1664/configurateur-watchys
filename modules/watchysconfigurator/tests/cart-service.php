@@ -18,13 +18,15 @@ class Db{
     }
     public function insert($table,$row){$this->tables[$table][]=$row;return true;}
     public function Insert_ID(){return $this->last;}
-    public function executeS($sql){
+    public function executeS($sql,$array=true,$cache=true){
+        if($cache!==false){throw new RuntimeException('Lecture panier en cache refusée.');}
         if(str_contains($sql,'SELECT id_product FROM `test_watchys_model_support`')){return [['id_product'=>9000]];}
         if(str_contains($sql,'cart` WHERE id_cart=')){return [['id_cart'=>10]];}
         if(str_contains($sql,'GROUP BY')){preg_match('/WHERE id_cart=(\d+)/',$sql,$m);return array_values(array_filter($this->tables['cart_product']??[],fn($r)=>(int)$r['id_cart']===(int)$m[1]));}
         throw new RuntimeException('SELECT inattendu : '.$sql);
     }
-    public function getRow($sql){
+    public function getRow($sql,$cache=true){
+        if($cache!==false){throw new RuntimeException('Lecture panier en cache refusée.');}
         if(str_contains($sql,'watchys_model_support')){return ['id_product'=>9000,'reference'=>'WCFG-7750-41-CARTDEV','fields_json'=>json_encode(['model'=>1,'dial'=>2,'strap'=>3,'hands'=>4,'case'=>5,'offer'=>6])];}
         if(str_contains($sql,'watchys_cart_request')){preg_match("/id_cart=(\d+) AND request_key='([a-f0-9]+)'/",$sql,$m);foreach($this->tables['watchys_cart_request']??[] as $r){if($r['id_cart']==$m[1]&&$r['request_key']===$m[2]){return $r;}}return false;}
         if(str_contains($sql,'JOIN `test_customization`')){
@@ -35,7 +37,8 @@ class Db{
         if(str_contains($sql,'SELECT quantity FROM')){preg_match('/id_customization=(\d+)/',$sql,$m);foreach($this->tables['cart_product']??[] as $r){if($r['id_customization']==$m[1]){return $r;}}return false;}
         throw new RuntimeException('getRow inattendu : '.$sql);
     }
-    public function getValue($sql){
+    public function getValue($sql,$cache=true){
+        if($cache!==false){throw new RuntimeException('Lecture panier en cache refusée.');}
         if(str_contains($sql,'SELECT weight')){return '0.02';}
         if(str_contains($sql,'SUM(price)')){preg_match('/id_customization=(\d+)/',$sql,$m);return array_sum(array_column(array_filter($this->tables['customized_data']??[],fn($r)=>$r['id_customization']==$m[1]),'price'));}
         throw new RuntimeException('getValue inattendu : '.$sql);

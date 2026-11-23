@@ -39,3 +39,15 @@ Faire exécuter `installer.php --verifier` sur DEV, sans bootstrap PrestaShop ni
 Après validation de ce premier panier, concevoir et tester le cycle réel de stock avant paiement : concurrence, pièces communes, ventes à l’unité, annulations et retours sans double décrément. Les regroupements de panier à la connexion et thèmes de paiement alternatifs nécessitent aussi des essais sur le vrai DEV.
 
 Ne pas toucher à la PROD, ne pas modifier le rendu validé et ne pas activer automatiquement les nouvelles variantes.
+
+## Reprise 0.2.1 après la tentative panier
+
+Watchys a exécuté la vérification du paquet 0.2.0 avec succès, puis confirmé l'application. La préparation native a échoué sur MySQL 1064 près de LIMIT 1. Le script a indiqué avoir rétabli le code antérieur. L'installation du panier ne doit pas être considérée réussie.
+
+Cause identifiée dans le code officiel PrestaShop 8.2.7 : Db::getRow() ajoute automatiquement LIMIT 1 ; l'appel du verrou sur watchys_model_support formait FOR UPDATE LIMIT 1. Ce verrou est désormais lu avec executeS(...,true,false), sans limite implicite ni cache. Les lectures métier du panier et les vérifications de migration sont également sans cache SQL.
+
+Le paquet 0.2.1 contrôle en lecture seule les trois tables éventuelles, leurs volumes, la référence technique et le drapeau de préparation. Il refuse de reprendre automatiquement un état natif partiel non vide avec un module encore 0.1.1. Les tables vides déjà créées peuvent être réutilisées ; aucune suppression de table ou de fiche n'est prévue.
+
+Un nouveau test reproduit le LIMIT implicite du cœur, couvre la création, la reprise sans doublon et le retour arrière. Il est exécuté avec les autres tests isolés dans le contrôle serveur. 32 fichiers PHP sont désormais vérifiés syntaxiquement.
+
+Prochaine action : utiliser uniquement watchys-panier-dev-0.2.1.zip et son installer.php --verifier, puis attendre le bilan avant OUI. Ne pas relancer le paquet 0.2.0. Aucun vrai panier ni cycle de stock n'est encore confirmé sur DEV.

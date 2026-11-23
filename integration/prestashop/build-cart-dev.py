@@ -2,7 +2,7 @@
 """Build the private update for an installed, visually validated DEV module."""
 import argparse,hashlib,json,tempfile,zipfile,shutil
 from pathlib import Path
-VERSION='0.2.0'
+VERSION='0.2.1'
 repo=Path(__file__).resolve().parents[2]
 def build(output):
     source=repo/'modules/watchysconfigurator';setup=repo/'integration/prestashop/dev-cart'

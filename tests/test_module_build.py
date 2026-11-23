@@ -7,7 +7,7 @@ class BuildTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as tmp:
    root=Path(tmp);a,count=build.build(root/'a.zip');b,_=build.build(root/'b.zip');self.assertEqual(count,9);self.assertEqual(a.read_bytes(),b.read_bytes())
    with zipfile.ZipFile(a) as z:
-    prefix='watchys-panier-dev-0.2.0/';manifest=json.loads(z.read(prefix+'manifest.json'));baseline=json.loads(z.read(prefix+'baseline.json'))
+    prefix='watchys-panier-dev-0.2.1/';manifest=json.loads(z.read(prefix+'manifest.json'));baseline=json.loads(z.read(prefix+'baseline.json'))
     self.assertFalse(manifest['checkoutEnabled']);self.assertEqual(len(baseline['assets']),29)
     self.assertNotIn('config/catalog.json',manifest['files']);self.assertNotIn('views/js/preview-reference-v013.js',manifest['files']);self.assertFalse(any(x.endswith('.png') for x in manifest['files']))
     for name,sha in manifest['files'].items():self.assertEqual(hashlib.sha256(z.read(prefix+'module/'+name)).hexdigest(),sha)

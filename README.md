@@ -1,4 +1,4 @@
-> État du 23 novembre 2026 : rendu DEV validé par Watchys ; panier 0.2.0 préparé, migration serveur non exécutée. Lire [le point de reprise actuel](docs/REPRISE_CODEX_WATCHYS_2026-11-23.md).
+> État du 23 novembre 2026 : rendu DEV validé par Watchys ; panier 0.2.0 arrêté sur une erreur SQL et code rétabli ; correctif 0.2.1 préparé, reprise non exécutée. Lire [le point de reprise actuel](docs/REPRISE_CODEX_WATCHYS_2026-11-23.md).
 
 # Watchys — configurateur de montre
 

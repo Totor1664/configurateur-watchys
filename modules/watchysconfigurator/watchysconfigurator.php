@@ -5,7 +5,7 @@ class Watchysconfigurator extends Module
 {
     public function __construct()
     {
-        $this->name='watchysconfigurator'; $this->tab='front_office_features'; $this->version='0.2.0';
+        $this->name='watchysconfigurator'; $this->tab='front_office_features'; $this->version='0.2.1';
         $this->author='Watchys'; $this->need_instance=0; $this->bootstrap=true;
         $this->ps_versions_compliancy=['min'=>'8.2.0','max'=>'8.99.99'];
         parent::__construct();

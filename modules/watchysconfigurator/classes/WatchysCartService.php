@@ -6,26 +6,26 @@ class WatchysCartService
     private $db;
     public function __construct($module){$this->module=$module;$this->db=Db::getInstance();}
     private function sql($sql){if(!$this->db->execute($sql)){throw new RuntimeException('Écriture panier non confirmée.');}}
-    private function rows($sql){$r=$this->db->executeS($sql);if(!is_array($r)){throw new RuntimeException('Lecture panier indisponible.');}return $r;}
+    private function rows($sql){$r=$this->db->executeS($sql,true,false);if(!is_array($r)){throw new RuntimeException('Lecture panier indisponible.');}return $r;}
     public function support($modelId)
     {
-        $r=$this->db->getRow('SELECT * FROM `'._DB_PREFIX_."watchys_model_support` WHERE model_id='".pSQL($modelId)."'");
+        $r=$this->db->getRow('SELECT * FROM `'._DB_PREFIX_."watchys_model_support` WHERE model_id='".pSQL($modelId)."'",false);
         if(!$r){throw new RuntimeException('Produit technique du modèle non préparé.');}return $r;
     }
     public function containsSupport($cartId)
     {
-        return $cartId>0&&(bool)$this->db->getValue('SELECT 1 FROM `'._DB_PREFIX_.'cart_product` cp JOIN `'._DB_PREFIX_.'watchys_model_support` s ON s.id_product=cp.id_product WHERE cp.id_cart='.(int)$cartId);
+        return $cartId>0&&(bool)$this->db->getValue('SELECT 1 FROM `'._DB_PREFIX_.'cart_product` cp JOIN `'._DB_PREFIX_.'watchys_model_support` s ON s.id_product=cp.id_product WHERE cp.id_cart='.(int)$cartId,false);
     }
     private function snapshot($row,$cartId)
     {
         $id=(int)$row['id_customization'];
-        $r=$this->db->getRow('SELECT wc.*,c.id_product AS native_product FROM `'._DB_PREFIX_.'watchys_configuration` wc JOIN `'._DB_PREFIX_.'customization` c ON c.id_customization=wc.id_customization WHERE wc.id_customization='.$id.' AND c.id_cart='.(int)$cartId);
+        $r=$this->db->getRow('SELECT wc.*,c.id_product AS native_product FROM `'._DB_PREFIX_.'watchys_configuration` wc JOIN `'._DB_PREFIX_.'customization` c ON c.id_customization=wc.id_customization WHERE wc.id_customization='.$id.' AND c.id_cart='.(int)$cartId,false);
         if(!$r||(int)$r['native_product']!==(int)$row['id_product']||(int)$r['id_product']!==(int)$row['id_product']){throw new InvalidArgumentException('Configuration du panier non reconnue. Supprimez cette ligne puis recommencez depuis le configurateur.');}
         $snapshot=json_decode($r['snapshot'],true,32,JSON_THROW_ON_ERROR);
         $support=$this->support($snapshot['quote']['modelId']);$product=new Product((int)$support['id_product'],false,null,1);
         if((int)$support['id_product']!==(int)$row['id_product']||!Validate::isLoadedObject($product)||$product->reference!==$support['reference']||(float)$product->price!==0.0||!$product->active||!$product->available_for_order){throw new InvalidArgumentException('Support de configuration modifié. Recréez la configuration après vérification.');}
         if((int)$snapshot['nativeCurrencyId']!==(int)Configuration::get('PS_CURRENCY_DEFAULT')){throw new InvalidArgumentException('Devise de base modifiée. Recréez la configuration.');}
-        $nativePrice=$this->db->getValue('SELECT SUM(price) FROM `'._DB_PREFIX_.'customized_data` WHERE id_customization='.$id);
+        $nativePrice=$this->db->getValue('SELECT SUM(price) FROM `'._DB_PREFIX_.'customized_data` WHERE id_customization='.$id,false);
         if(abs((float)$nativePrice-(float)$snapshot['nativeUnitPrice'])>0.000001){throw new InvalidArgumentException('Prix de personnalisation modifié. Recréez la configuration.');}
         return $snapshot;
     }
@@ -82,7 +82,7 @@ class WatchysCartService
             // Serialise retries and additions to the same cart on the native connection.
             $locked=$this->rows('SELECT id_cart FROM `'._DB_PREFIX_.'cart` WHERE id_cart='.$cartId.' FOR UPDATE');if(count($locked)!==1){throw new RuntimeException('Panier absent.');}
             if($cart->OrderExists()){throw new InvalidArgumentException('Ce panier est déjà commandé.');}
-            $prior=$this->db->getRow('SELECT * FROM `'._DB_PREFIX_."watchys_cart_request` WHERE id_cart=".$cartId." AND request_key='".pSQL($request['requestKey'])."'");
+            $prior=$this->db->getRow('SELECT * FROM `'._DB_PREFIX_."watchys_cart_request` WHERE id_cart=".$cartId." AND request_key='".pSQL($request['requestKey'])."'",false);
             if($prior){
                 if(!hash_equals($prior['request_digest'],$request['digest'])){throw new InvalidArgumentException('Identifiant de requête déjà utilisé pour un autre choix.');}
                 $this->sql('COMMIT');return ['customizationId'=>(int)$prior['id_customization'],'replayed'=>true];
@@ -91,7 +91,7 @@ class WatchysCartService
             $baseCurrency=new Currency((int)Configuration::get('PS_CURRENCY_DEFAULT'));
             $native=Tools::convertPriceFull($q['unitPriceExclTaxMinor']/100,$context->currency,$baseCurrency);
             $nativePrice=number_format($native,6,'.','');$weight=0.0;
-            foreach($q['components'] as $piece){$weight+=(float)$this->db->getValue('SELECT weight FROM `'._DB_PREFIX_.'product` WHERE id_product='.(int)$piece['component']['productId'])*(int)$piece['component']['units'];}
+            foreach($q['components'] as $piece){$weight+=(float)$this->db->getValue('SELECT weight FROM `'._DB_PREFIX_.'product` WHERE id_product='.(int)$piece['component']['productId'],false)*(int)$piece['component']['units'];}
             $custom=new Customization();$custom->id_cart=$cartId;$custom->id_product=(int)$support['id_product'];$custom->id_product_attribute=0;$custom->id_address_delivery=(int)$cart->id_address_delivery;$custom->quantity=0;$custom->quantity_refunded=0;$custom->quantity_returned=0;$custom->in_cart=0;
             if(!$custom->add()){throw new RuntimeException('Personnalisation native non créée.');}
             $fields=json_decode($support['fields_json'],true,32,JSON_THROW_ON_ERROR);
@@ -105,7 +105,7 @@ class WatchysCartService
             $change=['productId'=>(int)$support['id_product'],'combinationId'=>0,'customizationId'=>(int)$custom->id,'quantity'=>$q['quantity'],'operator'=>'up'];
             $this->assertCart($cartId,$change);
             if($cart->updateQty($q['quantity'],(int)$support['id_product'],0,(int)$custom->id,'up',(int)$cart->id_address_delivery,$context->shop,false)!==true){throw new RuntimeException('Ajout natif au panier non confirmé.');}
-            $line=$this->db->getRow('SELECT quantity FROM `'._DB_PREFIX_.'cart_product` WHERE id_cart='.$cartId.' AND id_product='.(int)$support['id_product'].' AND id_customization='.(int)$custom->id);
+            $line=$this->db->getRow('SELECT quantity FROM `'._DB_PREFIX_.'cart_product` WHERE id_cart='.$cartId.' AND id_product='.(int)$support['id_product'].' AND id_customization='.(int)$custom->id,false);
             if(!$line||(int)$line['quantity']!==$q['quantity']){throw new RuntimeException('Ligne panier non relue.');}
             $this->insert('watchys_cart_request',['id_cart'=>$cartId,'request_key'=>$request['requestKey'],'request_digest'=>$request['digest'],'id_customization'=>(int)$custom->id,'date_add'=>date('Y-m-d H:i:s')]);
             $this->sql('COMMIT');return ['customizationId'=>(int)$custom->id,'replayed'=>false];

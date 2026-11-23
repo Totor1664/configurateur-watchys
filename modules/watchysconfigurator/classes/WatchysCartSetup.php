@@ -22,15 +22,17 @@ class WatchysCartSetup
             'watchys_configuration'=>['id_customization','id_cart','id_product','snapshot','date_add'],
             'watchys_cart_request'=>['id_cart','request_key','request_digest','id_customization','date_add'],
         ];
-        foreach($expected as $table=>$cols){$actual=$db->executeS('SHOW COLUMNS FROM `'._DB_PREFIX_.$table.'`');if(!is_array($actual)||array_column($actual,'Field')!==$cols){throw new RuntimeException('Structure module inattendue : '.$table);}}
+        foreach($expected as $table=>$cols){$actual=$db->executeS('SHOW COLUMNS FROM `'._DB_PREFIX_.$table.'`',true,false);if(!is_array($actual)||array_column($actual,'Field')!==$cols){throw new RuntimeException('Structure module inattendue : '.$table);}}
         // No previously existing article is used as the commercial support.
         $source=new Product(7753,false,null,1);if(!Validate::isLoadedObject($source)){throw new RuntimeException('Réglages fiscaux du kit de référence absents.');}
         self::execute('START TRANSACTION');
         try{
             $models=$module->catalog()->models();if(count($models)!==1||$models[0]['id']!=='watchys-7750-41mm'){throw new RuntimeException('Préparation attendue pour le modèle 7750 seulement.');}
-            $model=$models[0];$existing=$db->getRow('SELECT * FROM `'._DB_PREFIX_."watchys_model_support` WHERE model_id='watchys-7750-41mm' FOR UPDATE");
+            $model=$models[0];$locked=$db->executeS('SELECT * FROM `'._DB_PREFIX_."watchys_model_support` WHERE model_id='watchys-7750-41mm' FOR UPDATE",true,false);
+            if(!is_array($locked)||count($locked)>1){throw new RuntimeException('Lecture verrouillée du support non confirmée.');}
+            $existing=$locked[0]??false;
             if(!$existing){
-                if($db->getValue('SELECT id_product FROM `'._DB_PREFIX_."product` WHERE reference='WCFG-7750-41-CARTDEV'")){throw new RuntimeException('Référence technique déjà présente sans correspondance : contrôle nécessaire.');}
+                if($db->getValue('SELECT id_product FROM `'._DB_PREFIX_."product` WHERE reference='WCFG-7750-41-CARTDEV'",false)){throw new RuntimeException('Référence technique déjà présente sans correspondance : contrôle nécessaire.');}
                 $p=new Product();$p->id_shop_default=1;$p->reference='WCFG-7750-41-CARTDEV';$p->price=0;$p->active=1;$p->visibility='none';$p->indexed=0;$p->available_for_order=1;$p->show_price=1;$p->online_only=1;$p->is_virtual=0;$p->minimal_quantity=1;$p->condition='new';$p->customizable=1;$p->text_fields=6;$p->uploadable_files=0;$p->weight=0;
                 $p->id_tax_rules_group=(int)$source->id_tax_rules_group;$p->id_category_default=(int)$source->id_category_default;
                 foreach(Language::getLanguages(false,1) as $lang){$id=(int)$lang['id_lang'];$p->name[$id]='Chronographe Watchys 7750 — configuration personnalisée';$p->link_rewrite[$id]='chronographe-watchys-7750-configuration';$p->description_short[$id]='<p>Produit technique du configurateur DEV. Les composants et la formule sont détaillés dans chaque personnalisation. Commande bloquée pendant les tests de stock.</p>';}
@@ -53,13 +55,13 @@ class WatchysCartSetup
             foreach(self::HOOKS as $hook){if(!$module->registerHook($hook,[1])){throw new RuntimeException('Point d’accroche non enregistré : '.$hook);}}
             if(!Configuration::updateGlobalValue('PS_CUSTOMIZATION_FEATURE_ACTIVE','1')||!Configuration::updateValue('PS_CUSTOMIZATION_FEATURE_ACTIVE','1',false,null,1)||!Configuration::updateValue('WATCHYS_CART_DEV_READY','1',false,null,1)){throw new RuntimeException('Activation DEV non confirmée.');}
             if(!Customization::isFeatureActive()){throw new RuntimeException('Personnalisations natives non actives dans cette boutique.');}
-            if(!$db->update('module',['version'=>'0.2.0'],'id_module='.(int)$module->id)){throw new RuntimeException('Version native non actualisée.');}
-            $fields=$db->executeS('SELECT id_customization_field FROM `'._DB_PREFIX_.'customization_field` WHERE id_product='.$productId.' AND is_module=1 AND is_deleted=0');
+            if(!$db->update('module',['version'=>'0.2.1'],'id_module='.(int)$module->id)){throw new RuntimeException('Version native non actualisée.');}
+            $fields=$db->executeS('SELECT id_customization_field FROM `'._DB_PREFIX_.'customization_field` WHERE id_product='.$productId.' AND is_module=1 AND is_deleted=0',true,false);
             if(count($fields)!==6){throw new RuntimeException('Six champs de personnalisation attendus.');}
             foreach(self::HOOKS as $hook){if(!$module->isRegisteredInHook($hook)){throw new RuntimeException('Accroche non relue : '.$hook);}}
-            $native=$db->getRow('SELECT p.reference,ps.price,ps.active,ps.visibility,ps.customizable FROM `'._DB_PREFIX_.'product` p JOIN `'._DB_PREFIX_.'product_shop` ps ON ps.id_product=p.id_product AND ps.id_shop=1 WHERE p.id_product='.$productId);
+            $native=$db->getRow('SELECT p.reference,ps.price,ps.active,ps.visibility,ps.customizable FROM `'._DB_PREFIX_.'product` p JOIN `'._DB_PREFIX_.'product_shop` ps ON ps.id_product=p.id_product AND ps.id_shop=1 WHERE p.id_product='.$productId,false);
             if(!$native||$native['reference']!=='WCFG-7750-41-CARTDEV'||(float)$native['price']!==0.0||(int)$native['active']!==1||$native['visibility']!=='none'||!(int)$native['customizable']){throw new RuntimeException('Fiche technique non confirmée après écriture.');}
-            if($db->getValue('SELECT version FROM `'._DB_PREFIX_.'module` WHERE id_module='.(int)$module->id)!=='0.2.0'){throw new RuntimeException('Version native non relue.');}
+            if($db->getValue('SELECT version FROM `'._DB_PREFIX_.'module` WHERE id_module='.(int)$module->id,false)!=='0.2.1'){throw new RuntimeException('Version native non relue.');}
             self::execute('COMMIT');return ['productId'=>$productId,'reference'=>'WCFG-7750-41-CARTDEV','hooks'=>self::HOOKS,'checkoutEnabled'=>false];
         }catch(Throwable $e){$db->execute('ROLLBACK');throw $e;}
     }
