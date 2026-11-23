@@ -40,6 +40,31 @@
               "sha256": "839fcdc9ba89151657501e5e8523025a943b91f257b6b3a0d8dc0b8d61e13655",
               "format": "png",
               "background": "transparent"
+            },
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                627.5,
+                626.5
+              ],
+              "diameter": 1117.0,
+              "subdials": [
+                [
+                  628,
+                  360
+                ],
+                [
+                  353,
+                  626
+                ],
+                [
+                  628,
+                  891
+                ]
+              ]
             }
           },
           "dial-anthracite": {
@@ -55,6 +80,31 @@
               "sha256": "92ef09a4572a4fa24ae2704de6c2b046322676b9a815fac66ee49b4344a25015",
               "format": "png",
               "background": "transparent"
+            },
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                627.5,
+                626.5
+              ],
+              "diameter": 1119.5,
+              "subdials": [
+                [
+                  628,
+                  360
+                ],
+                [
+                  353,
+                  626
+                ],
+                [
+                  628,
+                  891
+                ]
+              ]
             }
           },
           "dial-blue": {
@@ -70,6 +120,31 @@
               "sha256": "514c22c7b3bd90a562fb4708314fdb947ccf9046bd43ab59c7516fd1e3075659",
               "format": "png",
               "background": "transparent"
+            },
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                627.5,
+                626.5
+              ],
+              "diameter": 1109.0,
+              "subdials": [
+                [
+                  628,
+                  360
+                ],
+                [
+                  353,
+                  626
+                ],
+                [
+                  628,
+                  891
+                ]
+              ]
             }
           },
           "dial-green": {
@@ -85,6 +160,31 @@
               "sha256": "49cb6003e9684a16f81196605eefe9cdb907fa32b076fe49cfa468c5e4fc8a42",
               "format": "png",
               "background": "transparent"
+            },
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                627.5,
+                626.5
+              ],
+              "diameter": 1115.0,
+              "subdials": [
+                [
+                  628,
+                  360
+                ],
+                [
+                  353,
+                  626
+                ],
+                [
+                  628,
+                  891
+                ]
+              ]
             }
           },
           "dial-grey": {
@@ -100,6 +200,31 @@
               "sha256": "a77861b73afa587fa49c6720ed0ab9f8b4b01c573c027d6050f32dbff542548e",
               "format": "png",
               "background": "transparent"
+            },
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                627.5,
+                627.5
+              ],
+              "diameter": 1141.0,
+              "subdials": [
+                [
+                  627,
+                  350
+                ],
+                [
+                  345,
+                  627
+                ],
+                [
+                  627,
+                  909
+                ]
+              ]
             }
           }
         },
@@ -134,7 +259,27 @@
                 "format": "png",
                 "background": "transparent"
               }
-            ]
+            ],
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "parts": [
+                [
+                  360,
+                  169,
+                  235,
+                  945
+                ],
+                [
+                  680,
+                  43,
+                  212,
+                  1184
+                ]
+              ]
+            }
           },
           "strap-blue": {
             "component": {
@@ -166,7 +311,27 @@
                 "format": "png",
                 "background": "transparent"
               }
-            ]
+            ],
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "parts": [
+                [
+                  360,
+                  167,
+                  236,
+                  947
+                ],
+                [
+                  682,
+                  41,
+                  209,
+                  1187
+                ]
+              ]
+            }
           },
           "strap-red": {
             "label": "Rouge",
@@ -199,7 +364,27 @@
                 "format": "png",
                 "background": "transparent"
               }
-            ]
+            ],
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "parts": [
+                [
+                  361,
+                  167,
+                  235,
+                  948
+                ],
+                [
+                  683,
+                  42,
+                  210,
+                  1185
+                ]
+              ]
+            }
           },
           "strap-orange": {
             "label": "Orange",
@@ -232,7 +417,27 @@
                 "format": "png",
                 "background": "transparent"
               }
-            ]
+            ],
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "parts": [
+                [
+                  360,
+                  168,
+                  235,
+                  947
+                ],
+                [
+                  678,
+                  43,
+                  216,
+                  1188
+                ]
+              ]
+            }
           },
           "strap-green": {
             "label": "Vert",
@@ -265,7 +470,27 @@
                 "format": "png",
                 "background": "transparent"
               }
-            ]
+            ],
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "parts": [
+                [
+                  361,
+                  168,
+                  235,
+                  947
+                ],
+                [
+                  680,
+                  44,
+                  209,
+                  1180
+                ]
+              ]
+            }
           },
           "strap-brown": {
             "label": "Brun",
@@ -298,7 +523,27 @@
                 "format": "png",
                 "background": "transparent"
               }
-            ]
+            ],
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "parts": [
+                [
+                  360,
+                  168,
+                  238,
+                  948
+                ],
+                [
+                  679,
+                  45,
+                  213,
+                  1181
+                ]
+              ]
+            }
           }
         },
         "hands": {
@@ -316,7 +561,56 @@
               "format": "png",
               "background": "transparent"
             },
-            "style": "short-luminova"
+            "style": "short-luminova",
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                639,
+                669
+              ],
+              "scaleToDial": 0.82,
+              "parts": [
+                {
+                  "box": [
+                    598,
+                    204,
+                    61,
+                    235
+                  ],
+                  "anchor": [
+                    628.5,
+                    368
+                  ]
+                },
+                {
+                  "box": [
+                    320,
+                    541,
+                    61,
+                    219
+                  ],
+                  "anchor": [
+                    350.5,
+                    687.5
+                  ]
+                },
+                {
+                  "box": [
+                    598,
+                    802,
+                    61,
+                    219
+                  ],
+                  "anchor": [
+                    629,
+                    949.5
+                  ]
+                }
+              ]
+            }
           },
           "hands-chrome": {
             "component": {
@@ -332,7 +626,56 @@
               "format": "png",
               "background": "transparent"
             },
-            "style": "short-luminova"
+            "style": "short-luminova",
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                639,
+                669
+              ],
+              "scaleToDial": 0.82,
+              "parts": [
+                {
+                  "box": [
+                    601,
+                    201,
+                    60,
+                    242
+                  ],
+                  "anchor": [
+                    631,
+                    368
+                  ]
+                },
+                {
+                  "box": [
+                    320,
+                    539,
+                    61,
+                    223
+                  ],
+                  "anchor": [
+                    351,
+                    688
+                  ]
+                },
+                {
+                  "box": [
+                    601,
+                    797,
+                    60,
+                    225
+                  ],
+                  "anchor": [
+                    631,
+                    950
+                  ]
+                }
+              ]
+            }
           },
           "hands-dauphine-chrome": {
             "label": "Dauphine chromées",
@@ -349,7 +692,56 @@
               "format": "png",
               "background": "transparent"
             },
-            "style": "dauphine"
+            "style": "dauphine",
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                636.5,
+                682
+              ],
+              "scaleToDial": 0.74,
+              "parts": [
+                {
+                  "box": [
+                    590,
+                    155,
+                    80,
+                    281
+                  ],
+                  "anchor": [
+                    630,
+                    351
+                  ]
+                },
+                {
+                  "box": [
+                    255,
+                    545,
+                    80,
+                    246
+                  ],
+                  "anchor": [
+                    294.5,
+                    706
+                  ]
+                },
+                {
+                  "box": [
+                    589,
+                    853,
+                    79,
+                    243
+                  ],
+                  "anchor": [
+                    628.5,
+                    1013
+                  ]
+                }
+              ]
+            }
           },
           "hands-dauphine-black": {
             "label": "Dauphine noires",
@@ -366,7 +758,56 @@
               "format": "png",
               "background": "transparent"
             },
-            "style": "dauphine"
+            "style": "dauphine",
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                636.5,
+                682
+              ],
+              "scaleToDial": 0.74,
+              "parts": [
+                {
+                  "box": [
+                    590,
+                    157,
+                    81,
+                    277
+                  ],
+                  "anchor": [
+                    630,
+                    351
+                  ]
+                },
+                {
+                  "box": [
+                    254,
+                    545,
+                    81,
+                    245
+                  ],
+                  "anchor": [
+                    294.5,
+                    706
+                  ]
+                },
+                {
+                  "box": [
+                    589,
+                    854,
+                    80,
+                    242
+                  ],
+                  "anchor": [
+                    628.5,
+                    1013
+                  ]
+                }
+              ]
+            }
           },
           "hands-dauphine-blue": {
             "label": "Dauphine bleues",
@@ -383,7 +824,56 @@
               "format": "png",
               "background": "transparent"
             },
-            "style": "dauphine"
+            "style": "dauphine",
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                636.5,
+                682
+              ],
+              "scaleToDial": 0.74,
+              "parts": [
+                {
+                  "box": [
+                    591,
+                    156,
+                    80,
+                    279
+                  ],
+                  "anchor": [
+                    630,
+                    351
+                  ]
+                },
+                {
+                  "box": [
+                    254,
+                    547,
+                    81,
+                    244
+                  ],
+                  "anchor": [
+                    294.5,
+                    706
+                  ]
+                },
+                {
+                  "box": [
+                    589,
+                    857,
+                    80,
+                    239
+                  ],
+                  "anchor": [
+                    628.5,
+                    1013
+                  ]
+                }
+              ]
+            }
           },
           "hands-dauphine-red": {
             "label": "Dauphine rouges",
@@ -400,7 +890,56 @@
               "format": "png",
               "background": "transparent"
             },
-            "style": "dauphine"
+            "style": "dauphine",
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                636.5,
+                682
+              ],
+              "scaleToDial": 0.74,
+              "parts": [
+                {
+                  "box": [
+                    591,
+                    155,
+                    79,
+                    279
+                  ],
+                  "anchor": [
+                    630,
+                    351
+                  ]
+                },
+                {
+                  "box": [
+                    255,
+                    546,
+                    79,
+                    244
+                  ],
+                  "anchor": [
+                    294.5,
+                    706
+                  ]
+                },
+                {
+                  "box": [
+                    590,
+                    854,
+                    77,
+                    242
+                  ],
+                  "anchor": [
+                    628.5,
+                    1013
+                  ]
+                }
+              ]
+            }
           },
           "hands-dauphine-rose-gold": {
             "label": "Dauphine or rose",
@@ -417,7 +956,56 @@
               "format": "png",
               "background": "transparent"
             },
-            "style": "dauphine"
+            "style": "dauphine",
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                636.5,
+                682
+              ],
+              "scaleToDial": 0.74,
+              "parts": [
+                {
+                  "box": [
+                    590,
+                    154,
+                    81,
+                    282
+                  ],
+                  "anchor": [
+                    630,
+                    351
+                  ]
+                },
+                {
+                  "box": [
+                    254,
+                    544,
+                    81,
+                    247
+                  ],
+                  "anchor": [
+                    294.5,
+                    706
+                  ]
+                },
+                {
+                  "box": [
+                    589,
+                    853,
+                    80,
+                    244
+                  ],
+                  "anchor": [
+                    628.5,
+                    1013
+                  ]
+                }
+              ]
+            }
           },
           "hands-dauphine-yellow-gold": {
             "label": "Dauphine or jaune",
@@ -434,7 +1022,56 @@
               "format": "png",
               "background": "transparent"
             },
-            "style": "dauphine"
+            "style": "dauphine",
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                636.5,
+                682
+              ],
+              "scaleToDial": 0.74,
+              "parts": [
+                {
+                  "box": [
+                    590,
+                    153,
+                    81,
+                    282
+                  ],
+                  "anchor": [
+                    630,
+                    351
+                  ]
+                },
+                {
+                  "box": [
+                    254,
+                    545,
+                    81,
+                    246
+                  ],
+                  "anchor": [
+                    294.5,
+                    706
+                  ]
+                },
+                {
+                  "box": [
+                    589,
+                    853,
+                    79,
+                    244
+                  ],
+                  "anchor": [
+                    628.5,
+                    1013
+                  ]
+                }
+              ]
+            }
           }
         },
         "case": {
@@ -484,7 +1121,18 @@
                 "format": "png",
                 "background": "transparent"
               }
-            ]
+            ],
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                598.0,
+                641.5
+              ],
+              "openingDiameter": 579.5
+            }
           },
           "case-sandblasted": {
             "label": "Titane sablé",
@@ -532,7 +1180,18 @@
                 "format": "png",
                 "background": "transparent"
               }
-            ]
+            ],
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                589.0,
+                625.0
+              ],
+              "openingDiameter": 583.0
+            }
           },
           "case-pvd-polished": {
             "label": "Noir PVD poli",
@@ -581,7 +1240,18 @@
                 "format": "png",
                 "background": "transparent"
               }
-            ]
+            ],
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                611.0,
+                625.5
+              ],
+              "openingDiameter": 562.5
+            }
           },
           "case-pvd-brushed": {
             "label": "Noir PVD brossé",
@@ -630,7 +1300,18 @@
                 "format": "png",
                 "background": "transparent"
               }
-            ]
+            ],
+            "preview": {
+              "sourceSize": [
+                1254,
+                1254
+              ],
+              "anchor": [
+                614.5,
+                641.5
+              ],
+              "openingDiameter": 549.0
+            }
           }
         }
       },
@@ -650,6 +1331,17 @@
           "includeMovement": true,
           "workshopAssembly": true
         }
+      },
+      "preview": {
+        "width": 1000,
+        "height": 1400,
+        "center": [
+          500,
+          700
+        ],
+        "openingDiameter": 410,
+        "strapWidth": 215,
+        "dialDiameter": 590
       }
     }
   ],

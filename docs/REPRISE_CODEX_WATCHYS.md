@@ -187,3 +187,10 @@ php "$HOME/watchys-module-dev-0.1.0/installer.php" --verifier
 ```
 
 L'installation normale est ensuite `php "$HOME/watchys-module-dev-0.1.0/installer.php"`, avec plan et OUI. Ce document ne demande pas de la lancer automatiquement. Vérifier l'état et améliorer le code d'abord, selon la demande de reprise de l'utilisateur.
+
+
+## Complément du 23 novembre 2026 — version de validation 0.1.1
+
+Après l'audit `docs/AUDIT_REPRISE_2026-11-23.md`, une version 0.1.1 a été préparée : montage proportionnel Canvas, métadonnées d'ancrage, catalogue source unique, validation renforcée, traitement des erreurs JSON et installation avec sauvegarde et reprise connue. Lire `modules/watchysconfigurator/README.md` pour les instructions actuelles ; les commandes 0.1.0 ci-dessus sont historiques.
+
+La version 0.1.1 n'a pas été installée sur DEV pendant sa préparation. Les fiches, images, tarifs, statuts et stocks ne sont pas modifiés sur le serveur. Le panier et le cycle de stock restent à développer après validation de l'aperçu et des devis sur DEV.

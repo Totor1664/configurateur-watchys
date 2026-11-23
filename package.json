@@ -1,1 +1,17 @@
-{"name":"watchys-configurateur","version":"1.0.0","private":true,"type":"module","scripts":{"dev":"node server.mjs","start":"node server.mjs","test":"node --test"},"engines":{"node":">=20"}}
+{
+  "name": "watchys-configurateur",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "test": "node --test",
+    "test:php": "node tests/php-tests.mjs",
+    "test:all": "npm test && npm run test:php && npm run test:build",
+    "test:build": "python3 -m unittest discover -s tests -p 'test_module_build.py'"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

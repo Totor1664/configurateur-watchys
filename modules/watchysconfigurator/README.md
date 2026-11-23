@@ -1,49 +1,51 @@
-# Configurateur Watchys — DEV 0.1.0
+# Configurateur Watchys — DEV 0.1.1
 
-Première installation de validation pour PrestaShop 8.2.x, exclusivement sur `dev.watchys.ch`, boutique 1.
+Module de validation pour PrestaShop 8.2.x, exclusivement sur `dev.watchys.ch`, boutique 1. Aucun panier, commande, réservation ou décrément de stock n'est activé dans cette version.
 
-## Fonctions livrées
+## Changements de la version 0.1.1
 
-- Page intégrée dans le thème PrestaShop, accessible par lien direct ou par le bouton Configurer du module.
-- 5 cadrans, 6 bracelets 20 mm, 8 jeux d'aiguilles et 4 carrures. PNG transparents conservés ; les JPEG des fiches articles ne sont pas modifiés.
-- Modèles définis dans un catalogue séparé pour permettre l'ajout futur d'autres modèles.
-- Lecture du stock disponible des articles PrestaShop, de leur statut et des références des nouvelles variantes.
-- Calcul serveur en CHF HT : 190 sans mouvement, 510 avec mouvement, 610 avec mouvement et atelier.
-- Vérification des quantités et des options autorisées. Un prix envoyé par le navigateur est ignoré.
-- Articles désactivés visibles pour la revue des images, signalés « À valider », jamais déclarés disponibles.
+- Aperçu Canvas proportionnel, sans étirement des PNG : parties du bracelet séparées, axes du cadran et des aiguilles, masquage de l'intérieur du boîtier lors de la composition. Les PNG approuvés ne sont pas modifiés.
+- Un catalogue source : `integration/prestashop/catalog.json`. La copie `config/catalog.json` est générée uniquement dans le paquet distribué.
+- Validation des montants, unités, modèles, formules, sources et géométries.
+- JSON invalide → HTTP 400, méthode refusée → HTTP 405 ; erreurs internes masquées avec référence de journal. Prix et quantités restent vérifiés côté serveur.
+- Rafraîchissement du statut des composants sélectionnés lors du devis et rejet des réponses asynchrones dépassées.
+- Installation neuve, reprise d'une installation partielle connue, ou mise à jour 0.1.0 → 0.1.1. Dossier antérieur conservé avant publication ; modifications inconnues et liens symboliques refusés.
 
-Cette version ne comporte pas d'ajout au panier, de commande, de réservation ni de décrément de stock. Elle ne remplace pas Product Composer PRO et n'ajoute aucun lien au menu ou à la page d'accueil.
+## Fonctions de validation
 
-## Préparation et installation
+5 cadrans × 6 bracelets 20 mm × 8 jeux d'aiguilles × 4 carrures. Prix forfaitaires CHF HT : 190 sans mouvement, 510 avec mouvement, 610 avec mouvement et atelier. Les 12 fiches créées désactivées restent visibles en aperçu et signalées « À valider » ; aucune fiche n'est activée automatiquement.
 
-L'archive `watchys-module-dev-0.1.0.zip` contient le module, le catalogue, les contrôles et l'installateur. Les 23 PNG sont copiés depuis les paquets déjà présents dans le dossier personnel SSH : `watchys-7750-variantes` et `watchys-carrures-7750-vues`. Les originaux restent inchangés.
+La disponibilité est lue dans les articles PrestaShop, pas dans un stock fictif du kit. Cette lecture n'est pas une réservation et ne sécurise pas deux achats concurrents : le cycle de stock sera développé avec le panier.
+
+## Installation sur DEV
+
+Le ZIP léger `watchys-module-dev-0.1.1.zip` copie les 23 PNG depuis les dossiers privés déjà présents dans le dossier personnel SSH : `watchys-7750-variantes` et `watchys-carrures-7750-vues`. Leurs empreintes sont vérifiées ; les originaux et les JPEG des fiches restent inchangés.
 
 1. Envoyer le ZIP dans le dossier personnel SSH, hors `web` et `sites`.
-2. Extraire : `unzip -n "$HOME/watchys-module-dev-0.1.0.zip" -d "$HOME"`.
-3. Contrôler l'installateur : `php -l "$HOME/watchys-module-dev-0.1.0/installer.php"`.
-4. Vérifier sans installer : `php "$HOME/watchys-module-dev-0.1.0/installer.php" --verifier`.
-5. Installer : `php "$HOME/watchys-module-dev-0.1.0/installer.php"`, puis lire le plan et taper OUI.
+2. Extraire : `unzip -n "$HOME/watchys-module-dev-0.1.1.zip" -d "$HOME"`.
+3. Contrôler : `php -l "$HOME/watchys-module-dev-0.1.1/installer.php"`.
+4. Diagnostic sans installation : `php "$HOME/watchys-module-dev-0.1.1/installer.php" --verifier`.
+5. Après contrôle du bilan, lancer `php "$HOME/watchys-module-dev-0.1.1/installer.php"` ; lire le plan et taper OUI pour l'appliquer.
 
-L'installateur vérifie la boutique, les références des articles, les empreintes des fichiers et la syntaxe PHP avant de demander OUI. Après confirmation, il copie le module sans écraser de dossier existant et utilise l'installation native PrestaShop. Il écrit un journal privé. Aucun article ni stock n'est modifié. En cas d'arrêt après copie, conserver le bilan pour diagnostic ; une installation partielle n'est pas automatiquement supprimée.
+Le diagnostic vérifie fichiers, syntaxe PHP, tests métier, sources PNG, boutique DEV, version de base, références et état du module existant. Il n'écrit ni dans le site, ni dans les journaux privés, ni dans MySQL. Les tests peuvent utiliser des fichiers temporaires du système.
+
+L'installation écrit un journal dans `watchys-sauvegardes-privees`, conserve l'état natif du module, prépare un dossier neuf et conserve l'ancien dossier avant remplacement. Si la publication de fichiers échoue, elle tente de remettre l'ancien dossier en place. Si l'installation native échoue après publication, les nouveaux fichiers restent présents et le journal est marqué en échec ; une reprise est possible après diagnostic et nouvelle confirmation OUI. Cela ne constitue pas un rollback universel des effets des hooks natifs PrestaShop.
+
+Les fichiers existants doivent correspondre aux versions reconnues 0.1.0/0.1.1 ou aux PNG vérifiés. `config.xml` généré par PrestaShop est conservé dans la sauvegarde. Un fichier modifié non reconnu entraîne un arrêt ; ne pas le supprimer pour forcer l'installation.
+
+Aucun article, prix, stock, commande, thème ou ancien module n'est modifié par l'installateur. Seul le module Watchys est installé/activé/mis à jour. Ne pas utiliser ce paquet sur PROD.
 
 Ouvrir après succès :
 https://dev.watchys.ch/index.php?fc=module&module=watchysconfigurator&controller=configure
 
-## Validation attendue dans DEV
+## Contrôles de développement
 
-- Ouverture de la page dans Alysum, chargement des 23 images et du récapitulatif de prix.
-- Vérification du cadrage des composants et de l'aperçu de composition sur ordinateur et mobile. Les nouvelles vues n'ont pas encore été calibrées visuellement dans le thème réel ; le montage reste à valider.
-- Vérification des trois formules, d'une quantité supérieure à 1 et d'une sélection comprenant un article désactivé.
-- Aucun changement des fiches, stocks ni ancien configurateur.
+- `npm test` : prototype, correspondances et géométrie des 960 compositions.
+- `npm run test:php` : PHP 8.2+ requis ; catalogue, disponibilité avec doubles, erreurs API, schéma et opérations de fichiers de l'installateur.
+- `npm run test:build` : génération depuis la source canonique, déduplication entre modèles, empreintes et reproductibilité du ZIP.
+- `npm run test:all` : les trois ensembles. `WATCHYS_PHP_BIN` permet d'indiquer un exécutable PHP alternatif.
+- `python3 integration/prestashop/build-dev-module.py --output /chemin/watchys-module-dev-0.1.1.zip` : génération sans supprimer un ancien dossier de travail.
 
-Le prix est une base CHF HT ; l'affichage TTC, les devises, remises et frais de livraison seront raccordés avec le panier. Aucune estimation ne doit être présentée comme une commande possible dans cette version.
+Les tests PHP locaux ont été exécutés avec PHP 8.2.35 via WebAssembly. Des rendus Canvas des variantes argentée et noire ont été examinés. L'installation native PrestaShop, l'API HTTP réelle et le rendu dans Alysum n'ont pas encore été validés sur DEV.
 
-## Contrôles automatisés
-
-- `php modules/watchysconfigurator/tests/catalog.php` : 2 880 calculs, formules, mouvement optionnel, rejet des sélections et quantités invalides.
-- `php modules/watchysconfigurator/tests/service.php` : doubles de test pour stocks, références, articles désactivés, prix serveur et exclusion de la PROD.
-- `npm test` : tests du prototype et du catalogue d'intégration.
-
-Tests locaux PHP 8.2 via WebAssembly ; pas d'installation PrestaShop distante testée. Le contrôle de syntaxe sera répété avec le PHP du serveur DEV avant installation.
-
-Documentation PrestaShop : https://devdocs.prestashop-project.org/8/modules/concepts/controllers/front-controllers/
+La compatibilité mécanique, la disponibilité commerciale des nouvelles fiches, l'affichage TTC, les devises, remises, livraison, panier et cycle complet de stock restent des étapes distinctes.

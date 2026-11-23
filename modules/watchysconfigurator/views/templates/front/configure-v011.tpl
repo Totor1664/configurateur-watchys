@@ -5,8 +5,8 @@
   <script id="watchys-data" type="application/json">{$watchys_payload nofilter}</script>
   <div class="wy-heading"><p class="wy-eyebrow">VOTRE MONTRE, VOS CHOIX</p><h2>Composez votre chronographe</h2><p>Choisissez les composants et la formule qui vous correspondent.</p></div>
   <div class="wy-layout"><div class="wy-preview">
-    <div class="wy-watch" role="img" aria-label="Aperçu de votre configuration"><div class="wy-strap wy-strap-top"><img alt="" data-layer="strap-top"></div><div class="wy-strap wy-strap-bottom"><img alt="" data-layer="strap-bottom"></div><div class="wy-dial"><img alt="" data-layer="dial"></div><div class="wy-hands"><img alt="" data-layer="hands"></div><img class="wy-case" alt="" data-layer="case"></div>
-    <p class="wy-caption">Aperçu de composition à valider sur cette version DEV.</p>
+    <div class="wy-watch"><canvas id="wy-canvas" width="1000" height="1400" role="img" aria-label="Aperçu de votre configuration"></canvas></div>
+    <p class="wy-caption">Aperçu de votre sélection — les composants détaillés figurent ci-dessous.</p>
     <div class="wy-detail-images" aria-label="Composants sélectionnés"></div>
   </div><div class="wy-controls">
     <label class="wy-model-label" for="wy-model">Modèle</label><select id="wy-model"></select>

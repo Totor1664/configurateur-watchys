@@ -5,7 +5,7 @@ class Watchysconfigurator extends Module
 {
     public function __construct()
     {
-        $this->name='watchysconfigurator'; $this->tab='front_office_features'; $this->version='0.1.0';
+        $this->name='watchysconfigurator'; $this->tab='front_office_features'; $this->version='0.1.1';
         $this->author='Watchys'; $this->need_instance=0; $this->bootstrap=true;
         $this->ps_versions_compliancy=['min'=>'8.2.0','max'=>'8.99.99'];
         parent::__construct();
@@ -17,7 +17,8 @@ class Watchysconfigurator extends Module
         return $this->context->shop->domain==='dev.watchys.ch' && $this->context->shop->domain_ssl==='dev.watchys.ch' && (int)$this->context->shop->id===1;
     }
     public function install() { return $this->isDev() && parent::install(); }
-    public function catalog() { return new WatchysCatalog(__DIR__.'/config/catalog.json'); }
+    protected function catalogFile() { return __DIR__.'/config/catalog.json'; }
+    public function catalog() { return new WatchysCatalog($this->catalogFile()); }
     public function getContent()
     {
         if (!$this->isDev()) { return $this->displayError('Cette version est réservée au DEV.'); }
@@ -46,11 +47,11 @@ class Watchysconfigurator extends Module
             foreach($model['options'] as $group=>$options) {
                 $items=[];
                 foreach($options as $id=>$option) {
-                    $items[]=['id'=>$id,'label'=>$option['label'],'productId'=>$option['component']['productId'],'image'=>$this->imageUrl($option['component']),'status'=>$this->componentStatus($option['component'])];
+                    $items[]=['id'=>$id,'label'=>$option['label'],'productId'=>$option['component']['productId'],'image'=>$this->imageUrl($option['component']),'preview'=>$option['preview'],'status'=>$this->componentStatus($option['component'])];
                 }
                 $groups[]=['id'=>$group,'label'=>['dial'=>'Cadran','strap'=>'Bracelet cuir 20 mm','hands'=>'Aiguilles','case'=>'Carrure'][$group] ?? $group,'options'=>$items];
             }
-            $models[]=['id'=>$model['id'],'label'=>$model['label'],'groups'=>$groups,'offers'=>$model['offers'],'movementStatus'=>$this->componentStatus($model['movement']['component'])];
+            $models[]=['id'=>$model['id'],'label'=>$model['label'],'groups'=>$groups,'preview'=>$model['preview'],'offers'=>$model['offers'],'movementStatus'=>$this->componentStatus($model['movement']['component'])];
         }
         return ['models'=>$models,'currency'=>'CHF','checkoutEnabled'=>false];
     }
@@ -68,6 +69,7 @@ class Watchysconfigurator extends Module
         $available=true;
         foreach($quote['components'] as &$piece) {
             $key=$piece['component']['productId'].':'.$piece['component']['combinationId'];
+            $piece['status']['requiredQuantity']=$requirements[$key];
             $piece['status']['available']=$piece['status']['available'] && $piece['status']['quantity'] >= $requirements[$key];
             $available=$available && $piece['status']['available'];
         }

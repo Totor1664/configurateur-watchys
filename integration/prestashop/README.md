@@ -86,8 +86,8 @@ Les correspondances sont basées sur les créations et contrôles DEV du 19 nove
 Prochaine étape : développer puis installer le module sur DEV et valider un parcours réel d'ajout au panier, en conservant la PROD inchangée.
 
 
-## Module DEV préparé — version 0.1.0
+## Module DEV préparé — version 0.1.1
 
-Le code de la première version est dans `modules/watchysconfigurator`. Le construire avec `python3 integration/prestashop/build-dev-module.py`. Le ZIP produit réutilise les PNG privés présents sur le serveur au lieu de les inclure dans le dépôt.
+Le code est dans `modules/watchysconfigurator`. Le catalogue de ce dossier d'intégration est la source unique ; sa copie de distribution est générée au build. Les PNG restent dans les paquets privés du serveur et ne sont pas modifiés.
 
-Cette version affiche les variantes, leur disponibilité et les prix CHF HT calculés côté serveur. Elle est strictement réservée à dev.watchys.ch et ne comporte aucune écriture au panier ou au stock. L'installation native PrestaShop et l'affichage dans Alysum restent à vérifier sur le serveur après validation OUI. Le prototype public n'est pas modifié.
+Voir `modules/watchysconfigurator/README.md` pour la génération, les contrôles et les modes première installation/reprise/mise à jour 0.1.0. Aucun déploiement ni contrôle serveur n'est confirmé à la préparation du paquet 0.1.1. La démonstration publique et ses 40 configurations restent distinctes du module.

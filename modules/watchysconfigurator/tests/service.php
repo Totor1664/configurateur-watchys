@@ -7,7 +7,8 @@ class Db {public static $rows=[];public static function getInstance(){return new
 class StockAvailable {public static $quantities=[];public static function getQuantityAvailableByProduct($id,$attribute,$shop){return self::$quantities[$id]??0;}}
 require_once dirname(__DIR__).'/watchysconfigurator.php';
 function check($condition,$message){if(!$condition){throw new RuntimeException($message);}}
-$module=new Watchysconfigurator();$model=$module->catalog()->models()[0];$selection=[];
+class TestableWatchysconfigurator extends Watchysconfigurator {protected function catalogFile(){return is_file(dirname(__DIR__).'/config/catalog.json') ? dirname(__DIR__).'/config/catalog.json' : dirname(__DIR__,3).'/integration/prestashop/catalog.json';}}
+$module=new TestableWatchysconfigurator();$model=$module->catalog()->models()[0];$selection=[];
 foreach($model['options'] as $group=>$options){$selection[$group]=array_key_first($options);foreach($options as $o){$c=$o['component'];Db::$rows[$c['productId']]=['reference'=>$c['expectedReference']??'','active'=>1,'available_for_order'=>1];StockAvailable::$quantities[$c['productId']]=10;}}
 Db::$rows[7736]=['reference'=>'MVT26','active'=>1,'available_for_order'=>1];StockAvailable::$quantities[7736]=2;
 $input=['modelId'=>$model['id'],'offerId'=>'workshop-assembled','selection'=>$selection,'quantity'=>2,'price'=>1,'productId'=>1];
