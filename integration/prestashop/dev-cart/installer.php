@@ -1,7 +1,7 @@
 <?php
 if(PHP_SAPI!=='cli'){http_response_code(403);exit;}
 ini_set('display_errors','0');set_time_limit(0);
-echo "========== DÉBUT — PANIER WATCHYS DEV 0.2.1 ==========\n";
+echo "========== DÉBUT — PANIER WATCHYS DEV 0.2.2 ==========\n";
 register_shutdown_function(function(){echo "========== FIN — PANIER WATCHYS DEV ==========\n";});
 $db=null;$published=[];$journal=null;$save=null;$nativeApplied=false;$lock=null;$phase='contrôle';
 function copyPrivate($src,$dst){$in=fopen($src,'rb');$out=fopen($dst,'xb');if(!$in||!$out){throw new RuntimeException('Copie exclusive impossible.');}$n=stream_copy_to_stream($in,$out);fclose($in);fflush($out);fclose($out);if($n!==filesize($src)||hash_file('sha256',$src)!==hash_file('sha256',$dst)){throw new RuntimeException('Copie non conforme.');}}
@@ -11,7 +11,7 @@ try{
     $verify=($argv[1]??'')==='--verifier';$home=realpath(getenv('HOME'));$site=realpath($home.'/sites/dev.watchys.ch');
     if(!$site||$site===realpath($home.'/web')||is_link($home.'/sites/dev.watchys.ch')){throw new RuntimeException('DEV non confirmé.');}
     $target=$site.'/modules/watchysconfigurator';$manifest=json_decode(file_get_contents(__DIR__.'/manifest.json'),true,512,JSON_THROW_ON_ERROR);$baseline=json_decode(file_get_contents(__DIR__.'/baseline.json'),true,512,JSON_THROW_ON_ERROR);
-    if($manifest['version']!=='0.2.1'||$baseline['version']!=='0.2.1'){throw new RuntimeException('Version du paquet invalide.');}
+    if($manifest['version']!=='0.2.2'||$baseline['version']!=='0.2.2'){throw new RuntimeException('Version du paquet invalide.');}
     foreach($manifest['checks'] as $file=>$hash){if(!preg_match('~^[A-Za-z0-9_./-]+$~',$file)||str_contains($file,'..')||is_link(__DIR__.'/'.$file)||!is_file(__DIR__.'/'.$file)||hash_file('sha256',__DIR__.'/'.$file)!==$hash){throw new RuntimeException('Paquet modifié : '.$file);}}
     if(!function_exists('proc_open')){throw new RuntimeException('Sous-processus PHP nécessaire pour isoler les contrôles avant le bootstrap natif.');}
     foreach(['catalog.php','cart-policy.php','cart-setup.php','cart-service.php','service.php','request.php'] as $test){
@@ -43,7 +43,7 @@ try{
     if(!$urls||(int)$db->query('SELECT COUNT(*) FROM `'.$prefix.'shop`')->fetchColumn()!==1){throw new RuntimeException('Boutique unique non confirmée.');}
     foreach($urls as $u){if((int)$u['id_shop']!==1||$u['domain']!=='dev.watchys.ch'||$u['domain_ssl']!=='dev.watchys.ch'){throw new RuntimeException('Base DEV non confirmée.');}}
     $state=$rows('SELECT id_module,version,active FROM `'.$prefix."module` WHERE name='watchysconfigurator'");
-    if(count($state)!==1||!in_array($state[0]['version'],['0.1.1','0.2.0','0.2.1'],true)||(int)$state[0]['active']!==1){throw new RuntimeException('Module DEV actif 0.1.1 ou 0.2.1 attendu.');}
+    if(count($state)!==1||!in_array($state[0]['version'],['0.1.1','0.2.0','0.2.1','0.2.2'],true)||(int)$state[0]['active']!==1){throw new RuntimeException('Module DEV actif 0.1.1 ou 0.2.2 attendu.');}
     $flagsBefore=$rows('SELECT * FROM `'.$prefix."configuration` WHERE name IN ('WATCHYS_CART_DEV_READY','PS_CUSTOMIZATION_FEATURE_ACTIVE')");
     $hooksBefore=$rows('SELECT * FROM `'.$prefix.'hook_module` WHERE id_module='.(int)$state[0]['id_module']);
     $support=$rows('SELECT p.id_product,p.reference,ps.id_tax_rules_group,ps.id_category_default FROM `'.$prefix.'product` p JOIN `'.$prefix.'product_shop` ps ON ps.id_product=p.id_product AND ps.id_shop=1 WHERE p.id_product=7753');if(count($support)!==1){throw new RuntimeException('Kit de référence pour les règles fiscales absent.');}
@@ -63,6 +63,14 @@ try{
     echo 'ÉTAT DE REPRISE — module '.$state[0]['version']."\n";
     foreach($recovery as $table=>$count){echo $table.' : '.(is_int($count)?$count.' lignes':$count)."\n";}
     echo 'Fiche technique : '.(count($technical)?implode(',',array_column($technical,'id_product')):'absente')."\n";
+    $hookRegistryBefore=[];
+    foreach(['displayCustomization','actionCartUpdateQuantityBefore','actionObjectOrderAddBefore','actionFrontControllerInitBefore','displayShoppingCartFooter'] as $name){
+        $entries=$rows('SELECT h.id_hook,h.name,h.active,hm.id_module,hm.id_shop FROM `'.$prefix.'hook` h LEFT JOIN `'.$prefix.'hook_module` hm ON hm.id_hook=h.id_hook AND hm.id_module=? AND hm.id_shop=1 WHERE LOWER(h.name)=LOWER(?)',[(int)$state[0]['id_module'],$name]);
+        $hookRegistryBefore[$name]=$entries;
+        if(count($entries)>1){throw new RuntimeException('Nom d’accroche non unique : '.$name);}
+        if($entries&&(int)$entries[0]['active']!==1){throw new RuntimeException('Accroche globale inactive : '.$name.' ; contrôle séparé nécessaire.');}
+        echo 'Accroche '.$name.' : '.(!$entries?'à créer':($entries[0]['id_module']===null?'présente, module non lié':'présente et liée au module'))."\n";
+    }
     if($state[0]['version']==='0.1.1'){
         if($technical||array_filter($recovery,fn($v)=>is_int($v)&&$v!==0)){throw new RuntimeException('Préparation native partielle non vide : contrôle séparé nécessaire avant reprise.');}
         foreach($flagsBefore as $flag){if($flag['name']==='WATCHYS_CART_DEV_READY'&&(int)$flag['value']===1){throw new RuntimeException('Drapeau panier actif avec module 0.1.1 : contrôle séparé nécessaire.');}}
@@ -73,14 +81,14 @@ try{
     echo count($changes)." fichiers de module à publier ; trois tables Watchys ; une fiche technique masquée par modèle (7750 actuellement).\n";
     echo "Six champs natifs détailleront chaque configuration. Prix serveur : 190 / 510 / 610 CHF HT selon formule.\n";
     echo 'Règles fiscales et catégorie reprises en lecture de la fiche 7753 : taxe '.$support[0]['id_tax_rules_group'].', catégorie '.$support[0]['id_category_default'].". La fiche 7753 reste inchangée.\n";
-    echo "Accroches : affichage de personnalisation, contrôle de quantité, blocage commande et paiement pour les paniers Watchys.\n";
+    echo "Accroches : affichage de personnalisation, contrôle de quantité, blocage commande et paiement pour les paniers Watchys. Registre rafraîchi et cinq associations relues directement en SQL sans cache.\n";
     echo "Anciennes fiches, stocks des composants, statuts des variantes, tarifs, refonte et ancien module conservés. Aucun accès PROD.\n";
     if($verify){echo "CONTRÔLE TERMINÉ — Aucune écriture, aucun bootstrap PrestaShop.\n";exit;}
     echo 'Tape OUI pour préparer le vrai panier sur DEV : ';if(trim((string)fgets(STDIN))!=='OUI'){echo "ANNULÉ — Aucune modification.\n";exit;}
     $private=$home.'/watchys-sauvegardes-privees';if(!is_dir($private)||is_link($private)||realpath($private)!==$private||is_link($private.'/module-watchys.lock')){throw new RuntimeException('Dossier privé ou verrou non autorisé.');}
     $lock=fopen($private.'/module-watchys.lock','c');if(!$lock||!flock($lock,LOCK_EX|LOCK_NB)){throw new RuntimeException('Autre migration Watchys en cours.');}
     umask(0077);$backup=$private.'/panier-watchys-'.gmdate('Ymd-His').'-'.bin2hex(random_bytes(4));if(!mkdir($backup,0700)){throw new RuntimeException('Dossier de sauvegarde non créé.');}
-    $journal=$backup.'/journal.json';$log=['status'=>'preparation','nativeBefore'=>$state,'recoveryBefore'=>$recovery,'technicalBefore'=>$technical,'flagsBefore'=>$flagsBefore,'hooksBefore'=>$hooksBefore,'taxSource'=>$support,'files'=>[]];
+    $journal=$backup.'/journal.json';$log=['status'=>'preparation','nativeBefore'=>$state,'recoveryBefore'=>$recovery,'technicalBefore'=>$technical,'flagsBefore'=>$flagsBefore,'hooksBefore'=>$hooksBefore,'hookRegistryBefore'=>$hookRegistryBefore,'taxSource'=>$support,'files'=>[]];
     $save=function()use(&$log,$journal){$bytes=json_encode($log,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);if(file_put_contents($journal,$bytes,LOCK_EX)!==strlen($bytes)){throw new RuntimeException('Journal non enregistré.');}};$save();echo 'Journal : '.$journal."\n";
     foreach($changes as $i=>&$change){safePath($change['target'],$site);if((is_file($change['target'])?hash_file('sha256',$change['target']):null)!==$change['beforeSha256']){throw new RuntimeException('Code changé depuis le plan.');}
         $change['backup']=null;if($change['beforeSha256']!==null){$change['backup']=$backup.'/'.$i.'.before';copyPrivate($change['target'],$change['backup']);}

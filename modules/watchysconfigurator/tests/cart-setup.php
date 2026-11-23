@@ -23,9 +23,12 @@ class Configuration{
     public static function updateValue($key,$value,...$unused){return self::updateGlobalValue($key,$value);}
 }
 class Customization{public static function isFeatureActive(){return (bool)(Db::getInstance()->state['flags']['PS_CUSTOMIZATION_FEATURE_ACTIVE']??0);}}
+class Cache{public static $cleaned=[];public static function clean($key){self::$cleaned[]=$key;}}
+class Hook{const MODULE_LIST_BY_HOOK_KEY='hook_module_exec_list_';}
 class Db{
-    public static $instance;public $state=['products'=>[],'watchys_model_support'=>[],'customization_field'=>[],'customization_field_lang'=>[],'flags'=>[],'version'=>'0.1.1','out_of_stock'=>[]],$backup,$last=10,$locked=[];
+    public static $instance;public $state=['products'=>[],'watchys_model_support'=>[],'customization_field'=>[],'customization_field_lang'=>[],'flags'=>[],'registered_hooks'=>[],'version'=>'0.1.1','out_of_stock'=>[]],$backup,$last=10,$locked=[];
     public static function getInstance(){return self::$instance??=new self();}
+    public function disableCache(){}
     public function execute($sql){
         if(str_starts_with($sql,'CREATE TABLE'))return true;
         if($sql==='START TRANSACTION'){$this->backup=$this->state;return true;}
@@ -39,6 +42,10 @@ class Db{
         if(str_contains($sql,'FOR UPDATE')){if($cache!==false){throw new RuntimeException('Lecture verrouillée mise en cache.');}$this->locked[]=$sql;}
         if(str_starts_with($sql,'SHOW COLUMNS')){
             foreach(['watchys_model_support'=>['model_id','id_product','reference','fields_json'],'watchys_configuration'=>['id_customization','id_cart','id_product','snapshot','date_add'],'watchys_cart_request'=>['id_cart','request_key','request_digest','id_customization','date_add']] as $table=>$columns){if(str_contains($sql,$table)){return array_map(fn($c)=>['Field'=>$c],$columns);}}
+        }
+        if(str_contains($sql,'SELECT h.id_hook')){
+            if($cache!==false){throw new RuntimeException('Relecture des accroches en cache.');}
+            preg_match("/LOWER\('([^']+)'\)/",$sql,$match);$hook=$match[1];return isset($this->state['registered_hooks'][$hook])?[$this->state['registered_hooks'][$hook]]:[];
         }
         if(str_contains($sql,'SELECT * FROM `test_watchys_model_support`')){return $this->state['watchys_model_support'];}
         if(str_contains($sql,'SELECT id_product FROM `test_product`')){return $this->state['products']?[['id_product'=>9001]]:[];}
@@ -56,18 +63,20 @@ class Db{
 }
 require dirname(__DIR__).'/classes/WatchysCartSetup.php';
 class TestSetupModule{
-    public $id=145,$hooks=[],$fail=false;
+    public $id=145,$hooks=[],$fail=false,$omit=null;
     public function isDev(){return true;}
     public function catalog(){return new class{public function models(){return [['id'=>'watchys-7750-41mm']];}};}
-    public function registerHook($hook,$shops){if($this->fail){return false;}$this->hooks[]=$hook;return true;}
-    public function isRegisteredInHook($hook){return in_array($hook,$this->hooks,true);}
+    public function registerHook($hook,$shops){if($this->fail){return false;}$this->hooks[]=$hook;if($this->omit!==$hook){Db::getInstance()->state['registered_hooks'][$hook]=['id_hook'=>100+count($this->hooks),'name'=>$hook,'active'=>1,'id_shop'=>1,'id_module'=>145];}return true;}
+    public function isRegisteredInHook($hook){return false; /* Simulate the stale native with-aliases cache. */}
 }
 function check($ok,$why){if(!$ok){throw new RuntimeException($why);}}
 $db=Db::getInstance();$detected=false;
 try{$db->getRow('SELECT * FROM `test_watchys_model_support` FOR UPDATE',false);}catch(RuntimeException $e){$detected=str_contains($e->getMessage(),'1064');}
 check($detected,'Double natif ne reproduisant pas le LIMIT implicite.');
-$module=new TestSetupModule();$r=WatchysCartSetup::apply($module);check($r['productId']===9001,'Support non créé.');check(count($db->state['products'])===1,'Plusieurs articles créés.');check(count($db->state['customization_field'])===6,'Champs absents.');check(count($db->locked)===1,'Support non verrouillé.');check($db->state['version']==='0.2.1','Version native non mise à jour.');
+$module=new TestSetupModule();$r=WatchysCartSetup::apply($module);check($r['productId']===9001,'Support non créé.');check(count($db->state['products'])===1,'Plusieurs articles créés.');check(count($db->state['customization_field'])===6,'Champs absents.');check(count($db->locked)===1,'Support non verrouillé.');check($db->state['version']==='0.2.2','Version native non mise à jour.');
 WatchysCartSetup::apply($module);check(count($db->state['products'])===1,'Reprise créant un doublon.');check(count($db->state['customization_field'])===6,'Reprise doublant les champs.');
+check(count($r['hookState'])===5,'Accroches SQL non relues.');check(in_array('hook_idsbyname*',Cache::$cleaned,true),'Cache des alias non invalidé.');
+$module->omit='displayCustomization';unset($db->state['registered_hooks']['displayCustomization']);$beforeMissing=$db->state;$missingRejected=false;try{WatchysCartSetup::apply($module);}catch(RuntimeException $e){$missingRejected=str_contains($e->getMessage(),'Accroche absente');}check($missingRejected&&$db->state===$beforeMissing,'Accroche réellement absente acceptée.');$module->omit=null;
 $before=$db->state;$module->fail=true;$failed=false;try{WatchysCartSetup::apply($module);}catch(RuntimeException $e){$failed=true;}
 check($failed&&$db->state===$before,'Erreur native non annulée.');
-echo "SUCCÈS — préparation native avec LIMIT implicite reproduit : lecture verrouillée non cachée, création et reprise sans doublon, retour arrière après échec.\n";
+echo "SUCCÈS — préparation native avec LIMIT implicite reproduit : lecture verrouillée non cachée, création et reprise sans doublon, relecture SQL avec cache natif périmé, refus d’accroche réellement absente, retour arrière après échec.\n";

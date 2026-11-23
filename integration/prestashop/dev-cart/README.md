@@ -1,4 +1,4 @@
-# Panier Watchys DEV 0.2.1 — première étape commerciale
+# Panier Watchys DEV 0.2.2 — première étape commerciale
 
 Cette version ajoute le bouton au configurateur et enregistre une configuration dans le vrai panier PrestaShop. Elle conserve le gabarit visuel validé de GitHub et les 29 PNG installés (23 composants et six bracelets fermés pour l'aperçu).
 
@@ -24,15 +24,15 @@ Prérequis : module actif 0.1.1 après les correctifs faces, rendu et gabarit Gi
 2. Extraire et contrôler :
 
 ```bash
-unzip -n "$HOME/watchys-panier-dev-0.2.1.zip" -d "$HOME"
-php -l "$HOME/watchys-panier-dev-0.2.1/installer.php"
-php "$HOME/watchys-panier-dev-0.2.1/installer.php" --verifier
+unzip -n "$HOME/watchys-panier-dev-0.2.2.zip" -d "$HOME"
+php -l "$HOME/watchys-panier-dev-0.2.2/installer.php"
+php "$HOME/watchys-panier-dev-0.2.2/installer.php" --verifier
 ```
 
 3. Après un contrôle réussi :
 
 ```bash
-php "$HOME/watchys-panier-dev-0.2.1/installer.php"
+php "$HOME/watchys-panier-dev-0.2.2/installer.php"
 ```
 
 Le script présente le plan, demande OUI et affiche DÉBUT/FIN. Avant OUI : PDO en lecture seule, sans bootstrap PrestaShop ni cache écrit. Après OUI : journal et sauvegarde privée de chaque fichier remplacé, publication de neuf fichiers de module, bootstrap natif complet avec AppKernel, création des tables et préparation transactionnelle du support et des accroches. Les fichiers images et le catalogue installé ne sont jamais remplacés.
@@ -61,6 +61,10 @@ Tests de 2 880 choix/formules pour le calcul et les besoins de composants ; doub
 
 Les doubles ne remplacent pas des tests HTTP/MySQL/PrestaShop réels. La migration et l'affichage du panier sur Alysum restent à confirmer après exécution par Watchys.
 
-## Correction 0.2.1
+## Correction 0.2.2
 
 La première tentative 0.2.0 a échoué : getRow() ajoutait LIMIT 1 après FOR UPDATE. Le verrou utilise maintenant executeS sans cache ; les autres lectures métier critiques sont également sans cache. Le contrôle préalable affiche les tables et la référence technique éventuelles et refuse de reprendre automatiquement un état partiel non vide avec un module 0.1.1. Les éventuelles tables vides restent conservées et réutilisées. Un test reproduisant le comportement SQL implicite du cœur couvre désormais cette préparation. Ne pas relancer le paquet 0.2.0.
+
+## Correction du contrôle d'accroches
+
+La tentative 0.2.1 a été arrêtée par une relecture native de displayCustomization non confirmée. La version 0.2.2 rafraîchit le registre et ses alias, conserve l'enregistrement natif, puis vérifie les cinq associations exactes en SQL non caché. Elle ne transforme pas un contrôle négatif en succès : absence réelle, désactivation ou doublon bloquent toujours la migration. Les lectures de contrôle contournent le cache SQL ; les écritures gardent l’invalidation native des caches, sans changer la configuration de cache de la boutique. Les cinq lignes confirmées sont ajoutées au journal. Le contrôle préalable affiche aussi leur état avant la reprise.

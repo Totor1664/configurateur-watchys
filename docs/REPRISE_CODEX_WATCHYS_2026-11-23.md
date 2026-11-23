@@ -51,3 +51,13 @@ Le paquet 0.2.1 contrôle en lecture seule les trois tables éventuelles, leurs 
 Un nouveau test reproduit le LIMIT implicite du cœur, couvre la création, la reprise sans doublon et le retour arrière. Il est exécuté avec les autres tests isolés dans le contrôle serveur. 32 fichiers PHP sont désormais vérifiés syntaxiquement.
 
 Prochaine action : utiliser uniquement watchys-panier-dev-0.2.1.zip et son installer.php --verifier, puis attendre le bilan avant OUI. Ne pas relancer le paquet 0.2.0. Aucun vrai panier ni cycle de stock n'est encore confirmé sur DEV.
+
+## Reprise 0.2.2 — vérification du registre d'accroches
+
+Le contrôle 0.2.1 a confirmé les trois tables vides, la fiche technique absente et le module encore 0.1.1. Après OUI, la préparation a été arrêtée à « Accroche non relue : displayCustomization ». Le script a indiqué avoir restauré le code antérieur. Ne pas considérer le panier installé.
+
+La méthode native isRegisteredInHook() utilise la résolution des noms et alias en cache. Le code officiel 8.2.7 construit notamment une clé concaténée pour les identifiants avec alias ; les invalidations de création ciblent d'autres noms de clés. Une relecture périmée est donc une cause possible, à distinguer d'une association réellement absente.
+
+La version 0.2.2 conserve registerHook() natif, rafraîchit les clés du registre avant et après chaque enregistrement, conserve l’invalidation native des caches sur les écritures et contrôle directement en SQL non caché les cinq associations exactes nom/module/boutique et leur activation. Elle journalise les lignes relues et refuse une association réellement manquante ou non unique. La vérification préalable affiche également l'état des cinq accroches et s'arrête si une accroche globale est inactive.
+
+Le test de préparation simule désormais une relecture native périmée et prouve qu'une association réellement absente reste bloquante. Les autres contrôles et les protections de commande restent conservés. Prochaine action : uniquement le paquet 0.2.2 et son --verifier, puis attendre le bilan avant toute nouvelle application.

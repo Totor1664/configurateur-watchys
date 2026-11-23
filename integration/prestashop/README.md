@@ -1,4 +1,4 @@
-> Mise à jour 0.2.1 : le document ci-dessous conserve les décisions initiales. Le rendu est désormais validé sur DEV ; le vrai panier est développé mais la première tentative a été arrêtée et la reprise corrigée reste à confirmer. Voir [la procédure actuelle](dev-cart/README.md).
+> Mise à jour 0.2.2 : le document ci-dessous conserve les décisions initiales. Le rendu est désormais validé sur DEV ; le vrai panier est développé mais la première tentative a été arrêtée et la reprise corrigée reste à confirmer. Voir [la procédure actuelle](dev-cart/README.md).
 
 # Base de configuration du futur module Watchys
 

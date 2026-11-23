@@ -13,10 +13,18 @@ class WatchysCartSetup
         ];
     }
     private static function execute($sql){if(!Db::getInstance()->execute($sql)){throw new RuntimeException('Migration SQL non confirmée.');}}
+    private static function refreshHookRegistry()
+    {
+        // Also matches the concatenated with-aliases key used by PrestaShop 8.2.7.
+        Cache::clean('hook_idsbyname*');
+        Cache::clean('active_hooks');
+        Cache::clean(Hook::MODULE_LIST_BY_HOOK_KEY.'*');
+    }
     public static function apply($module)
     {
-        if(!$module->isDev()||!(int)$module->id){throw new RuntimeException('Module DEV installé attendu.');}
-        $db=Db::getInstance();foreach(self::schema(_DB_PREFIX_) as $sql){self::execute($sql);}
+        if(PHP_SAPI!=='cli'||!$module->isDev()||!(int)$module->id){throw new RuntimeException('Module DEV installé et exécution CLI attendus.');}
+        $db=Db::getInstance(); // Preserve native cache invalidation on writes; verification reads bypass the SQL cache.
+        foreach(self::schema(_DB_PREFIX_) as $sql){self::execute($sql);}
         $expected=[
             'watchys_model_support'=>['model_id','id_product','reference','fields_json'],
             'watchys_configuration'=>['id_customization','id_cart','id_product','snapshot','date_add'],
@@ -52,17 +60,26 @@ class WatchysCartSetup
                 $p=new Product((int)$existing['id_product'],false,null,1);$productId=(int)$p->id;
                 if(!Validate::isLoadedObject($p)||$p->reference!==$existing['reference']||(float)$p->price!==0.0||!$p->active||!$p->customizable){throw new RuntimeException('Support existant différent du plan.');}
             }
-            foreach(self::HOOKS as $hook){if(!$module->registerHook($hook,[1])){throw new RuntimeException('Point d’accroche non enregistré : '.$hook);}}
+            foreach(self::HOOKS as $hook){
+                self::refreshHookRegistry();
+                if(!$module->registerHook($hook,[1])){throw new RuntimeException('Point d’accroche non enregistré : '.$hook);}
+                self::refreshHookRegistry();
+            }
             if(!Configuration::updateGlobalValue('PS_CUSTOMIZATION_FEATURE_ACTIVE','1')||!Configuration::updateValue('PS_CUSTOMIZATION_FEATURE_ACTIVE','1',false,null,1)||!Configuration::updateValue('WATCHYS_CART_DEV_READY','1',false,null,1)){throw new RuntimeException('Activation DEV non confirmée.');}
             if(!Customization::isFeatureActive()){throw new RuntimeException('Personnalisations natives non actives dans cette boutique.');}
-            if(!$db->update('module',['version'=>'0.2.1'],'id_module='.(int)$module->id)){throw new RuntimeException('Version native non actualisée.');}
+            if(!$db->update('module',['version'=>'0.2.2'],'id_module='.(int)$module->id)){throw new RuntimeException('Version native non actualisée.');}
             $fields=$db->executeS('SELECT id_customization_field FROM `'._DB_PREFIX_.'customization_field` WHERE id_product='.$productId.' AND is_module=1 AND is_deleted=0',true,false);
             if(count($fields)!==6){throw new RuntimeException('Six champs de personnalisation attendus.');}
-            foreach(self::HOOKS as $hook){if(!$module->isRegisteredInHook($hook)){throw new RuntimeException('Accroche non relue : '.$hook);}}
+            $hookState=[];
+            foreach(self::HOOKS as $hook){
+                $actual=$db->executeS('SELECT h.id_hook,h.name,h.active,hm.id_shop,hm.id_module FROM `'._DB_PREFIX_.'hook` h JOIN `'._DB_PREFIX_.'hook_module` hm ON hm.id_hook=h.id_hook WHERE LOWER(h.name)=LOWER(\''.pSQL($hook).'\') AND hm.id_module='.(int)$module->id.' AND hm.id_shop=1',true,false);
+                if(!is_array($actual)||count($actual)!==1||(int)$actual[0]['active']!==1){throw new RuntimeException('Accroche absente, inactive ou non unique en base : '.$hook);}
+                $hookState[$hook]=$actual[0];
+            }
             $native=$db->getRow('SELECT p.reference,ps.price,ps.active,ps.visibility,ps.customizable FROM `'._DB_PREFIX_.'product` p JOIN `'._DB_PREFIX_.'product_shop` ps ON ps.id_product=p.id_product AND ps.id_shop=1 WHERE p.id_product='.$productId,false);
             if(!$native||$native['reference']!=='WCFG-7750-41-CARTDEV'||(float)$native['price']!==0.0||(int)$native['active']!==1||$native['visibility']!=='none'||!(int)$native['customizable']){throw new RuntimeException('Fiche technique non confirmée après écriture.');}
-            if($db->getValue('SELECT version FROM `'._DB_PREFIX_.'module` WHERE id_module='.(int)$module->id,false)!=='0.2.1'){throw new RuntimeException('Version native non relue.');}
-            self::execute('COMMIT');return ['productId'=>$productId,'reference'=>'WCFG-7750-41-CARTDEV','hooks'=>self::HOOKS,'checkoutEnabled'=>false];
-        }catch(Throwable $e){$db->execute('ROLLBACK');throw $e;}
+            if($db->getValue('SELECT version FROM `'._DB_PREFIX_.'module` WHERE id_module='.(int)$module->id,false)!=='0.2.2'){throw new RuntimeException('Version native non relue.');}
+            self::execute('COMMIT');return ['productId'=>$productId,'reference'=>'WCFG-7750-41-CARTDEV','hooks'=>self::HOOKS,'hookState'=>$hookState,'checkoutEnabled'=>false];
+        }catch(Throwable $e){$db->execute('ROLLBACK');self::refreshHookRegistry();throw $e;}
     }
 }
