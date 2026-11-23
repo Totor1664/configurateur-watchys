@@ -6,6 +6,7 @@ VERSION='0.1.1'
 repo=Path(__file__).resolve().parents[2]
 
 def build(output):
+    raise RuntimeError('Constructeur 0.1.1 historique : utiliser build-cart-dev.py pour le module 0.2.0.')
     module=repo/'modules/watchysconfigurator'
     catalog=json.loads((repo/'integration/prestashop/catalog.json').read_text())
     assets={}

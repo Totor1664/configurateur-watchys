@@ -5,12 +5,12 @@ class Watchysconfigurator extends Module
 {
     public function __construct()
     {
-        $this->name='watchysconfigurator'; $this->tab='front_office_features'; $this->version='0.1.1';
+        $this->name='watchysconfigurator'; $this->tab='front_office_features'; $this->version='0.2.0';
         $this->author='Watchys'; $this->need_instance=0; $this->bootstrap=true;
         $this->ps_versions_compliancy=['min'=>'8.2.0','max'=>'8.99.99'];
         parent::__construct();
         $this->displayName='Configurateur Watchys';
-        $this->description='Validation du configurateur 7750 sur DEV : variantes, images, stock et prix. Sans commande dans cette version.';
+        $this->description='Configurateur DEV : aperçu validé, devis et vrai panier. Commande bloquée pendant les tests de stock.';
     }
     public function isDev()
     {
@@ -23,7 +23,7 @@ class Watchysconfigurator extends Module
     {
         if (!$this->isDev()) { return $this->displayError('Cette version est réservée au DEV.'); }
         $url=$this->context->link->getModuleLink($this->name,'configure',[],true);
-        return '<div class="panel"><h3>Configurateur Watchys — validation DEV</h3><p>23 variantes, stock des composants et tarifs CHF HT. Le panier sera raccordé après validation de cette étape.</p><a class="btn btn-primary" target="_blank" rel="noopener" href="'.htmlspecialchars($url,ENT_QUOTES,'UTF-8').'">Ouvrir le configurateur</a></div>';
+        return '<div class="panel"><h3>Configurateur Watchys — validation DEV</h3><p>23 variantes, stock des composants et tarifs CHF HT. Le vrai panier DEV conserve chaque configuration. La commande et le paiement restent bloqués pendant les tests de stock.</p><a class="btn btn-primary" target="_blank" rel="noopener" href="'.htmlspecialchars($url,ENT_QUOTES,'UTF-8').'">Ouvrir le configurateur</a></div>';
     }
     public function componentStatus($component)
     {
@@ -37,7 +37,9 @@ class Watchysconfigurator extends Module
     }
     public function imageUrl($component, $view='front')
     {
-        return $this->_path.'views/img/'.(int)$component['productId'].'-'.$view.'.png';
+        $relative='views/img/'.(int)$component['productId'].'-'.$view.'.png';
+        $file=__DIR__.'/'.$relative;
+        return $this->_path.$relative.(is_file($file)?'?v='.substr(hash_file('sha256',$file),0,16):'');
     }
     public function presentation()
     {
@@ -53,7 +55,7 @@ class Watchysconfigurator extends Module
             }
             $models[]=['id'=>$model['id'],'label'=>$model['label'],'groups'=>$groups,'preview'=>$model['preview'],'offers'=>$model['offers'],'movementStatus'=>$this->componentStatus($model['movement']['component'])];
         }
-        return ['models'=>$models,'currency'=>'CHF','checkoutEnabled'=>false];
+        return ['models'=>$models,'currency'=>'CHF','cartEnabled'=>$this->cartReady(),'checkoutEnabled'=>false];
     }
     public function quoteSelection($input)
     {
@@ -74,7 +76,50 @@ class Watchysconfigurator extends Module
             $available=$available && $piece['status']['available'];
         }
         unset($piece);
-        $quote['componentsAvailable']=$available; $quote['checkoutEnabled']=false;
+        $quote['componentsAvailable']=$available; $quote['checkoutEnabled']=false; $quote['cartEnabled']=$this->cartReady();
         return $quote;
+    }
+    public function cartReady()
+    {
+        return $this->isDev()&&(bool)Configuration::get('WATCHYS_CART_DEV_READY');
+    }
+    public function cartService()
+    {
+        require_once __DIR__.'/classes/WatchysCartService.php';
+        if(!$this->cartReady()){throw new RuntimeException('Le panier du configurateur n’est pas encore préparé.');}
+        return new WatchysCartService($this);
+    }
+    public function hookDisplayCustomization($params)
+    {
+        return htmlspecialchars((string)($params['customization']['value']??''),ENT_QUOTES,'UTF-8');
+    }
+    public function hookActionCartUpdateQuantityBefore($params)
+    {
+        if(!$this->cartReady()||(int)($params['quantity']??0)<=0||($params['operator']??'')==='down'){return;}
+        $cart=$params['cart'];$pid=(int)$params['product']->id;$service=$this->cartService();
+        $support=(bool)Db::getInstance()->getValue('SELECT 1 FROM `'._DB_PREFIX_.'watchys_model_support` WHERE id_product='.$pid);
+        if(!$support&&!$service->containsSupport((int)$cart->id)){return;}
+        $service->assertCart((int)$cart->id,['productId'=>$pid,'combinationId'=>(int)($params['id_product_attribute']??0),'customizationId'=>(int)($params['id_customization']??0),'quantity'=>(int)$params['quantity'],'operator'=>(string)$params['operator']]);
+    }
+    public function hookActionObjectOrderAddBefore($params)
+    {
+        if(!$this->cartReady()){return;}
+        if($this->cartService()->containsSupport((int)($params['object']->id_cart??0))){throw new PrestaShopException('DEV Watchys : configuration au panier uniquement. La validation de commande attend les tests du cycle de stock.');}
+    }
+    public function hookActionFrontControllerInitBefore($params)
+    {
+        if(!$this->cartReady()){return;}
+        $controller=$params['controller']??null;
+        $checkout=in_array($controller->php_self??'',['order','order-opc'],true)||(($controller->module??null) instanceof PaymentModule);
+        if(!$checkout){return;}
+        $cartId=!empty($this->context->cart->id)?(int)$this->context->cart->id:(int)($this->context->cookie->id_cart??0);
+        if($this->cartService()->containsSupport($cartId)){
+            Tools::redirect($this->context->link->getPageLink('cart',true,null,['action'=>'show','watchys_test'=>1]));
+        }
+    }
+    public function hookDisplayShoppingCartFooter($params)
+    {
+        if(!$this->cartReady()||!$this->cartService()->containsSupport((int)($this->context->cart->id??0))){return '';}
+        return '<div class="alert alert-info">Test DEV Watchys : votre configuration est enregistrée dans ce panier. La commande et le paiement sont bloqués pendant la validation du cycle de stock.</div>';
     }
 }

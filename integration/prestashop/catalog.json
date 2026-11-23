@@ -1088,7 +1088,7 @@
             "visual": {
               "package": "watchys-carrures-7750-vues",
               "file": "images/8197-titane-poli/face.png",
-              "sha256": "822e3cbe8c206310fee51203c26b51e9dbaf819a171d91c709724bd9ed6dfbeb",
+              "sha256": "cf1da01ee09ab9231152e281b0c5590cc01a17898e3cd1adaff60e07a8ce4e54",
               "format": "png",
               "background": "transparent"
             },
@@ -1096,7 +1096,7 @@
               {
                 "package": "watchys-carrures-7750-vues",
                 "file": "images/8197-titane-poli/face.png",
-                "sha256": "822e3cbe8c206310fee51203c26b51e9dbaf819a171d91c709724bd9ed6dfbeb",
+                "sha256": "cf1da01ee09ab9231152e281b0c5590cc01a17898e3cd1adaff60e07a8ce4e54",
                 "format": "png",
                 "background": "transparent"
               },
@@ -1128,10 +1128,10 @@
                 1254
               ],
               "anchor": [
-                598.0,
-                641.5
+                623.02,
+                628.98
               ],
-              "openingDiameter": 579.5
+              "openingDiameter": 601.81
             }
           },
           "case-sandblasted": {
@@ -1147,7 +1147,7 @@
             "visual": {
               "package": "watchys-carrures-7750-vues",
               "file": "images/8198-titane-sable/face.png",
-              "sha256": "82c01c042b3958971271956f5ca4f919e9dc6523dca592ab87c9c0ffae20626b",
+              "sha256": "d0d7c3920c6f7a3d4ba69b16cdd5c14ab53df2fe0fa9954ab09af89189f2e9ce",
               "format": "png",
               "background": "transparent"
             },
@@ -1155,7 +1155,7 @@
               {
                 "package": "watchys-carrures-7750-vues",
                 "file": "images/8198-titane-sable/face.png",
-                "sha256": "82c01c042b3958971271956f5ca4f919e9dc6523dca592ab87c9c0ffae20626b",
+                "sha256": "d0d7c3920c6f7a3d4ba69b16cdd5c14ab53df2fe0fa9954ab09af89189f2e9ce",
                 "format": "png",
                 "background": "transparent"
               },
@@ -1187,10 +1187,10 @@
                 1254
               ],
               "anchor": [
-                589.0,
-                625.0
+                624.15,
+                633.69
               ],
-              "openingDiameter": 583.0
+              "openingDiameter": 560.49
             }
           },
           "case-pvd-polished": {
@@ -1207,7 +1207,7 @@
             "visual": {
               "package": "watchys-carrures-7750-vues",
               "file": "images/8861-pvd-noir-poli/face.png",
-              "sha256": "65e00ee7957ad735ed4385226021b61906d0db6100634f76dc7b073826e566f6",
+              "sha256": "b382fd038ce12109d622d7dbea0c699643a7799b4aec51b990e728a96894d478",
               "format": "png",
               "background": "transparent"
             },
@@ -1215,7 +1215,7 @@
               {
                 "package": "watchys-carrures-7750-vues",
                 "file": "images/8861-pvd-noir-poli/face.png",
-                "sha256": "65e00ee7957ad735ed4385226021b61906d0db6100634f76dc7b073826e566f6",
+                "sha256": "b382fd038ce12109d622d7dbea0c699643a7799b4aec51b990e728a96894d478",
                 "format": "png",
                 "background": "transparent"
               },
@@ -1247,10 +1247,10 @@
                 1254
               ],
               "anchor": [
-                611.0,
-                625.5
+                622.97,
+                629.05
               ],
-              "openingDiameter": 562.5
+              "openingDiameter": 601.26
             }
           },
           "case-pvd-brushed": {
@@ -1267,7 +1267,7 @@
             "visual": {
               "package": "watchys-carrures-7750-vues",
               "file": "images/8862-pvd-noir-brosse/face.png",
-              "sha256": "f2aa8ce31b0661830de5374598e0d2b11a1a20c7c79714170a0b048045b58187",
+              "sha256": "7b145cf19f0e705657c195ee4536990234f61182ee1099c9aaf631427110b09a",
               "format": "png",
               "background": "transparent"
             },
@@ -1275,7 +1275,7 @@
               {
                 "package": "watchys-carrures-7750-vues",
                 "file": "images/8862-pvd-noir-brosse/face.png",
-                "sha256": "f2aa8ce31b0661830de5374598e0d2b11a1a20c7c79714170a0b048045b58187",
+                "sha256": "7b145cf19f0e705657c195ee4536990234f61182ee1099c9aaf631427110b09a",
                 "format": "png",
                 "background": "transparent"
               },
@@ -1307,10 +1307,10 @@
                 1254
               ],
               "anchor": [
-                614.5,
-                641.5
+                623.35,
+                628.56
               ],
-              "openingDiameter": 549.0
+              "openingDiameter": 600.19
             }
           }
         }

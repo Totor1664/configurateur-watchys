@@ -1,3 +1,5 @@
+> État du 23 novembre 2026 : rendu DEV validé par Watchys ; panier 0.2.0 préparé, migration serveur non exécutée. Lire [le point de reprise actuel](docs/REPRISE_CODEX_WATCHYS_2026-11-23.md).
+
 # Watchys — configurateur de montre
 
 Prototype interactif en français : **40 compositions à 490 CHF chacune**, panier local persistant. Aucun supplément pour le cadran, le bracelet, les aiguilles ou la carrure. Sans PrestaShop, paiement, stock réel, TVA ou livraison. Prix de démonstration ; la tarification du mouvement et de l'emboîtage atelier sera ajoutée dans une évolution ultérieure.

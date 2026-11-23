@@ -1,3 +1,5 @@
+> Mise à jour 0.2.0 : le document ci-dessous conserve les décisions initiales. Le rendu est désormais validé sur DEV ; le vrai panier est développé mais sa migration reste à confirmer. Voir [la procédure actuelle](dev-cart/README.md).
+
 # Base de configuration du futur module Watchys
 
 État : préparation de l'intégration, **aucun module installé et aucune liaison au panier réel à ce stade**. Cette configuration n'est pas encore chargée par l'interface de démonstration. Le prototype reste à son prix de démonstration tant que son raccordement n'est pas réalisé.
