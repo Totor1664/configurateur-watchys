@@ -4,7 +4,7 @@
 
 Le rendu, les prix des trois formules, le panier natif et ses miniatures personnalisées sont validés sur DEV. Les 24 composants existent et Watchys confirme leur stock de 10 et l'activation manuelle des variantes. L'ordre Carrure / Cadran / Aiguilles / Bracelet et le survol gris ont été publiés avec succès ; le titre « Composez votre montre » a ensuite été demandé et accepté.
 
-Le cycle réel de stock **n'est pas développé ni déployé**. Les gardes de commande et de paiement restent actives. Aucun article, stock, commande, module de paiement ou réglage PROD n'est modifié par cette phase.
+Le raccordement du cycle réel de stock **n'est pas encore développé ni déployé**. Les gardes de commande et de paiement restent actives. Aucun article, stock, commande, module de paiement ou réglage PROD n'est modifié par cette phase.
 
 ## Règles métier proposées
 
@@ -63,3 +63,20 @@ Le rapport distingue ces constats des choix d'implémentation encore à arrêter
 4. Tester commandes simultanées sur la dernière pièce, composants vendus à l'unité, plusieurs montres d'un panier, quantité >1, notifications répétées, échec en cours de traitement, trois formules, erreur/annulation/réactivation, expédition et retour partiel. Vérifier disponible/réservé/physique et absence de double mouvement.
 5. Pour les essais natifs de commande, préparer un mode de paiement de test adapté au DEV et contrôler les e-mails/notifications avant de lancer un scénario. Le diagnostic n'a ni lu de secrets de passerelle ni confirmé leur mode test.
 6. Examiner aussi la fusion du panier à la connexion avant de considérer le parcours achetable complet. La PROD reste hors périmètre ; son déploiement nécessite une étape distincte.
+
+
+## Résultat du contrôle DEV reçu et première brique codée
+
+Le bilan confirme PrestaShop 8.2.7, gestion de stock active, gestion avancée inactive, refus global des ventes hors stock. Les 12 anciens composants héritent de ce refus (out_of_stock=2) et les 12 nouveaux le fixent explicitement à 0. Tous les composants sont actifs et commandables, avec disponible/physique=10 et réservé=0. Les tables nécessaires sont InnoDB et les colonnes de personnalisation des lignes de commande existent. Aucune commande Watchys n'existe encore. Les deux tables de suivi ne sont pas présentes.
+
+Paiements actifs candidats : PayPal 6.4.5, PostFinance Checkout 1.2.51, virement natif 2.1.3. Aucun mode test/réel n'a été validé et aucun secret lu dans les configurations de paiement. PS_ENABLE_BACKORDER_STATUS ne figure pas dans les valeurs renvoyées : ne pas interpréter son absence comme une validation de son comportement effectif. Le support technique reste à zéro avec vente hors stock autorisée ; son risque de faux statut de rupture reste à traiter lors du raccordement.
+
+La politique isolée utilise les 27 statuts exacts. Annulation 6/erreur 8 libèrent le non-expédié. Expédié 4/livré 5 consomment le physique. Remboursements 7/18/21 ne restituent pas automatiquement (le statut 21 est logable mais demeure financier). Les autres statuts connus réservent, dont virement 10 et payé PostFinance 23. La réactivation après annulation exige un booléen serveur explicite. Aucun remboursement, même avant expédition, ne libère sans événement de cancellation explicite dans cette première politique.
+
+Les classes WatchysStockPolicy, WatchysStockSchema et WatchysStockJournal sont codées et testées, mais non reliées au module installé. Le journal nécessite une transaction du demandeur, lie sa nomenclature à une vraie identité future de ligne et retourne les deltas sans jamais modifier stock_available. Il garde référence d'événement, état avant/après, révisions, date et empreinte ; une reprise renvoie les compteurs courants et des deltas nuls, sans réappliquer l'ancien état.
+
+Les tests couvrent 2 880 configurations/formules et des transactions SQLite réelles en mémoire : paiement sans second retrait, annulation/réactivation, expédition, retours partiels/cumulatifs, notification ancienne, conflit d'événement, nomenclature modifiée et rollback. Cela ne prouve pas les verrous MySQL ni la cohérence des écrivains natifs.
+
+Le paquet `integration/prestashop/dev-stock-foundation/` prépare uniquement les deux tables dédiées et vides. Aucun code publié dans le site, hook ajouté, stock réel ni commande modifié. Après OUI, un test du journal sur les deux tables MySQL utilise des références fictives dans une transaction ensuite annulée ; les tables doivent rester vides. Les CREATE TABLE ne sont pas annulables : une création partielle doit être relue et jamais supprimée automatiquement. Ce socle est **préparé, pas encore confirmé installé**.
+
+La classe Db native 8.2.7 expose getLink(). Le futur adaptateur peut donc vérifier et utiliser le même PDO natif, plutôt qu'une connexion parallèle ; cela reste à intégrer et tester, pas une preuve de sécurité du checkout. Il faudra coordonner journal, débits, écrivains ordinaires et calcul des réservations avant de lever les gardes.

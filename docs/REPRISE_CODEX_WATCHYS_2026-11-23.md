@@ -1,5 +1,21 @@
 # Reprise actuelle — Configurateur Watchys — 23 novembre 2026
 
+## Dernier état — bilan du stock reçu, socle préparé
+
+Le bilan DEV confirme 27 statuts, les 24 composants actifs à 10 unités (réservé 0, physique 10), gestion de stock active et avancée inactive. Les tables sont InnoDB, les colonnes de personnalisation de commande présentes, aucune commande Watchys historique ; les deux tables de suivi sont absentes. PayPal, PostFinance et virement sont des candidats actifs, sans mode test/réel confirmé.
+
+Les classes WatchysStockPolicy, WatchysStockSchema et WatchysStockJournal sont codées et testées, **pas reliées à la commande ni installées dans le site**. Annulation/erreur 6/8 libèrent le non-expédié, expédié/livré 4/5 soldent les réservations, remboursements 7/18/21 restent financiers ; réactivation explicite et retours cumulatifs bornés. Un événement déjà traité renvoie des deltas nuls et l'état courant. Les mouvements ne s'appliquent jamais à stock_available dans cette brique.
+
+Tests passés : 2 880 configurations/formules, transactions SQLite en mémoire (reprises, conflits, nomenclature, rollback), suites complètes du configurateur et analyse syntaxique PHP. Ils ne prouvent pas la concurrence MySQL/native.
+
+Prochaine action : paquet `integration/prestashop/dev-stock-foundation/`, `preparer.php --verifier`. Ce contrôle est en lecture seule, sans bootstrap. Après bilan, application séparée avec OUI : création des deux seules tables absentes, puis test du journal MySQL sur des lignes fictives annulées par ROLLBACK et tables relues vides. Les CREATE TABLE ne sont pas annulables ; une création partielle reste à contrôler sans DROP. Aucun fichier site, hook, prix, stock réel ni commande n'est modifié.
+
+Le socle est préparé, **pas encore confirmé sur DEV**. La suite sera l'adaptateur d'allocation, le verrouillage commun aux ventes ordinaires et Watchys, la cohérence réservé/physique, le support technique à stock zéro et les essais natifs/retours/fusion de panier. Garder toutes les gardes de commande/paiement actives. Ne pas présenter ces deux tables comme un cycle de stock déjà opérationnel. Aucun accès PROD.
+
+Lire `docs/CYCLE_STOCK_WATCHYS_2026-11-24.md` et le README du socle pour les limites et contrats.
+
+---
+
 ## Dernier état du 24 novembre — préparation du cycle de stock
 
 Le correctif d'ordre/survol a été appliqué sur DEV avec succès. Le titre « Composez votre montre » a ensuite été demandé et accepté. Watchys a autorisé la phase suivante : définir et préparer le cycle de stock avant de débloquer commande/paiement.
