@@ -1,5 +1,19 @@
 # Reprise actuelle — Configurateur Watchys — 23 novembre 2026
 
+## Dernier état du 24 novembre — préparation du cycle de stock
+
+Le correctif d'ordre/survol a été appliqué sur DEV avec succès. Le titre « Composez votre montre » a ensuite été demandé et accepté. Watchys a autorisé la phase suivante : définir et préparer le cycle de stock avant de débloquer commande/paiement.
+
+Un audit du cœur 8.2.7 a identifié les retraits natifs à la création de commande, les transitions d'annulation/erreur, le fait qu'actionValidateOrder arrive après les premières écritures, le calcul natif des réservations basé sur les seules lignes OrderDetail et les problèmes de concurrence avec les ventes à l'unité. Le statut de rupture artificielle du support technique et les paniers divisés en plusieurs commandes doivent aussi être traités.
+
+Lire `docs/CYCLE_STOCK_WATCHYS_2026-11-24.md` : règles métier proposées, constats sourcés et limites de l'architecture encore à préciser. Le cycle réel n'est pas codé ni déployé ; aucune garde de checkout n'a été levée.
+
+Prochaine action concrète : exécuter le diagnostic privé `integration/prestashop/dev-stock-audit/controler-cycle-stock.php` sur DEV. Il affiche un plan, demande OUI, utilise une transaction PDO READ ONLY, ne charge aucun module et ne modifie rien. Attendre le bilan des statuts, réglages de stock, modules de paiement candidats, accroches, stocks/structures et signatures du cœur avant de fixer les correspondances et la migration. Aucun détail client ni secret de configuration de paiement n'est demandé ou affiché. La PROD reste exclue.
+
+Le nouveau livrable est un audit, pas une installation du cycle de stock. Après le bilan, coder/tester la politique et le journal, puis préparer une migration séparée avec plan/OUI, et des essais natifs contrôlés sur DEV. Les mouvements et le moment où la cohérence de réservé/physique est rétablie doivent être prouvés avec les écrivains natifs ; un simple appel tardif d'actionValidateOrder n'est pas considéré suffisant.
+
+---
+
 ## Dernier état du 24 novembre — interface des choix
 
 Watchys confirme que les miniatures personnalisées fonctionnent correctement dans le panier et le mini-panier. Le correctif précédent est donc installé et validé visuellement ; conserver son actionPresentCart, ses deux fichiers et ses 960 JPEG.
