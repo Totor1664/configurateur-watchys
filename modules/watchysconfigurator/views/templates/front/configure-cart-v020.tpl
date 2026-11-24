@@ -3,7 +3,7 @@
 {block name='page_content'}
 <section id="watchys-configurator" class="wy-config" aria-label="Configurateur de montre">
   <script id="watchys-data" type="application/json">{$watchys_payload nofilter}</script>
-  <div class="wy-heading"><p class="wy-eyebrow">VOTRE MONTRE, VOS CHOIX</p><h2>Composez votre chronographe</h2><p>Choisissez les composants et la formule qui vous correspondent.</p></div>
+  <div class="wy-heading"><p class="wy-eyebrow">VOTRE MONTRE, VOS CHOIX</p><h2>Composez votre montre</h2><p>Choisissez les composants et la formule qui vous correspondent.</p></div>
   <div class="wy-layout"><div class="wy-preview">
     <div class="wy-watch"><canvas id="wy-canvas" width="1000" height="1400" role="img" aria-label="Aperçu de votre configuration"></canvas></div>
     <p class="wy-caption">Aperçu de votre sélection — les composants détaillés figurent ci-dessous.</p>
