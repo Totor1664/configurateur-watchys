@@ -122,4 +122,28 @@ class Watchysconfigurator extends Module
         if(!$this->cartReady()||!$this->cartService()->containsSupport((int)($this->context->cart->id??0))){return '';}
         return '<div class="alert alert-info">Test DEV Watchys : votre configuration est enregistrée dans ce panier. La commande et le paiement sont bloqués pendant la validation du cycle de stock.</div>';
     }
+    public function hookActionPresentCart($params)
+    {
+        if (!$this->cartReady() || !isset($params['presentedCart'])) { return; }
+        $cartId=(int)($this->context->cart->id??0);
+        if ($cartId<1) { return; }
+        try {
+            require_once __DIR__.'/classes/WatchysCartThumbnails.php';
+            $cart=$params['presentedCart']; $products=$cart['products'];
+            if (!is_array($products) || !$products) { return; }
+            // Only configurations actually attached to this session's cart and native line.
+            $records=Db::getInstance()->executeS('SELECT DISTINCT wc.id_customization,wc.id_product,wc.snapshot FROM `'._DB_PREFIX_.'watchys_configuration` wc INNER JOIN `'._DB_PREFIX_.'customization` c ON c.id_customization=wc.id_customization AND c.id_product=wc.id_product AND c.id_cart=wc.id_cart INNER JOIN `'._DB_PREFIX_.'cart_product` cp ON cp.id_cart=wc.id_cart AND cp.id_product=wc.id_product AND cp.id_customization=wc.id_customization WHERE wc.id_cart='.$cartId.' AND cp.quantity>0',true,false);
+            if (!is_array($records) || !$records) { return; }
+            $byId=[]; foreach ($records as $record) { $byId[(int)$record['id_customization']]=$record; }
+            $relative='views/img/'.WatchysCartThumbnails::DIRECTORY.'/';
+            $decorated=WatchysCartThumbnails::decorate($products,$byId,$this->catalog(),
+                static function ($key) use ($relative) { return is_file(__DIR__.'/'.$relative.$key.'.jpg'); },
+                function ($key) use ($relative) { return $this->_path.$relative.$key.'.jpg'; });
+            if (is_array($cart)) { $params['presentedCart']['products']=$decorated; }
+            else { $cart['products']=$decorated; }
+        } catch (Throwable $e) {
+            // Presentation failure keeps the generic image; never blocks cart or bypasses checkout guards.
+            try { PrestaShopLogger::addLog('Watchys thumbnails: '.get_class($e),2); } catch (Throwable $ignored) {}
+        }
+    }
 }

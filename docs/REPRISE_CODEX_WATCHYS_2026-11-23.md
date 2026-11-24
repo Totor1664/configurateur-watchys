@@ -1,5 +1,21 @@
 # Reprise actuelle — Configurateur Watchys — 23 novembre 2026
 
+## État du 24 novembre 2026 — miniatures personnalisées préparées
+
+Cette section prévaut sur les étapes historiques suivantes. Les 24 composants existent : le contrôle DEV a trouvé 12 stocks déjà à 10 et 12 à ajuster, sans alerte. Watchys confirme l'application du passage à 10, l'activation manuelle des articles et l'ajout des variantes au panier.
+
+La vignette générique du support 8867 est installée avec succès : couverture 16190 et cinq miniatures, six JPEG relus. Elle doit rester en secours, sans remplacer les photos des composants.
+
+Le nouveau correctif `integration/prestashop/dev-cart-thumbnails/` est préparé, **pas encore confirmé installé**. Il génère automatiquement les 960 images visuelles depuis le moteur SVG approuvé, publie deux fichiers de module et 960 JPEG de catalogue, puis enregistre nativement actionPresentCart. Les choix proviennent des configurations effectivement liées au panier de la session. Chaque ligne personnalisée reçoit une image propre ; l'offre et la quantité ne changent pas le visuel. Aucun téléversement d'image client, aucun changement de prix/stock/personnalisation ni de moteur de rendu. La couverture générique est conservée.
+
+Les tests locaux passent : 960 clés uniques concordant entre PHP et JS, lignes distinctes d'un même produit, objets ArrayAccess, conservation des données commerciales, secours sur fichiers ou configurations invalides, suites du panier existant, intégrité/décodage des 960 JPEG et tests PHP du paquet extrait. Les essais locaux utilisent des doubles pour PrestaShop ; l'affichage réel Alysum reste à confirmer.
+
+Prochaine action : exécuter uniquement le nouveau `installer.php --verifier` et lire le bilan, puis application séparée avec plan et OUI. Aucune installation native complète du module. Après succès : vérifier deux montres très différentes dans le panier et le mini-panier. Si le mini-panier utilise une présentation propre au thème, examiner ses templates avant une adaptation ciblée. Les miniatures sont publiques et ne contiennent aucune donnée de client ou de panier.
+
+Ne pas réappliquer les anciens installateurs du module. Commande et paiement Watchys restent bloqués ; décrément des composants, concurrence entre commandes, annulations/retours et fusion de panier restent à développer et tester. DEV uniquement, aucun accès PROD.
+
+---
+
 ## Dernier état confirmé — fin de séance du 23 novembre 2026
 
 **Cette section prévaut sur les étapes historiques ci-dessous. Reprise prévue le 24 novembre.**
