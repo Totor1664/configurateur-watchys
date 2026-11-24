@@ -1,3 +1,17 @@
+# Point actuel — 24 novembre 2026 : concurrence isolée préparée
+
+L’allocation sur copies MySQL TEMPORARY a été **confirmée réussie sur DEV**. Les stocks réels et les deux tables de suivi sont restés inchangés. Commande et paiement restent bloqués.
+
+Nouvelle brique expérimentale non publiée dans le module : `WatchysNativeStockCoordinator`, frontière de transaction verrouillant avant le chargement du stock natif. Elle vérifie les deltas puis additionne les réservations ordinaires et Watchys, avec lectures courantes verrouillées des lignes natives. Le callback doit avoir fini ses écritures de commande/détails/statuts sur le même PDO, sans commit ni effet externe.
+
+Tests locaux : réservations cumulées, rupture avant callback, rollback après callback échoué ou débit périmé, expédition ordinaire conservant les réservations Watchys. Le fichier natif 8.2.7 épinglé a aussi été exécuté localement avec dépendances simulées et stockage SQLite. Cela n’est pas une preuve de concurrence MySQL.
+
+**Prochaine opération :** paquet privé `integration/prestashop/dev-stock-concurrency/`, `controler.php --verifier`, bilan puis exécution distincte avec OUI. Sept tables de fixtures InnoDB au préfixe aléatoire sont partagées entre deux connexions, puis supprimées. Aucune table préexistante supprimée ni stock réel écrit. Témoin périmé puis course sur dernière unité : vente native gagnante, configuration gagnante, deux configurations distinctes. Résultat de ce test **pas encore reçu**.
+
+Le vrai fichier Core StockManager du DEV est chargé sans bootstrap, avec produit, StockAvailable, services, hooks/cache simulés. Aucun véritable checkout, email, mouvement ou paiement. Les écrivains du site ne sont pas encore raccordés. Avant déploiement : concevoir leur adaptation (y compris BO et SQL direct), caches/chargements antérieurs, réservations, mouvements/alertes, commandes fractionnées et callbacks. Ne pas confondre le verrou testé par fixtures et une intégration complète.
+
+---
+
 # Point actuel — 24 novembre 2026 : allocation isolée préparée
 
 Le socle a été **confirmé installé sur DEV par Watchys** : les deux tables `watchys_order_component` et `watchys_stock_ledger` sont présentes et vides ; test MySQL du journal annulé avec succès. Aucun stock réel ou hook modifié. Module toujours 0.2.2, commande et paiement bloqués.
@@ -6,7 +20,7 @@ Nouvelle étape codée : `WatchysStockAllocator` (lot transactionnel avec savepo
 
 Les tests locaux prouvent le rollback SQLite après une écriture partielle injectée, la rupture sur pièces partagées, les reprises et les transitions. Les 2 880 nomenclatures sont contrôlées. Ils ne prouvent pas la concurrence MySQL ni la coordination des ventes natives.
 
-**Prochaine opération :** paquet privé `integration/prestashop/dev-stock-allocation/`, `controler.php --verifier`, bilan puis exécution distincte avec OUI. Il crée seulement trois tables TEMPORARY de connexion, copie les stocks, teste sur ces copies et annule les scénarios. Aucun stock réel écrit, aucune table persistante créée, aucun module publié. Résultat MySQL de ce nouveau test **non encore reçu**.
+**Prochaine opération :** paquet privé `integration/prestashop/dev-stock-allocation/`, `controler.php --verifier`, bilan puis exécution distincte avec OUI. Il crée seulement trois tables TEMPORARY de connexion, copie les stocks, teste sur ces copies et annule les scénarios. Aucun stock réel écrit, aucune table persistante créée, aucun module publié. Résultat MySQL **confirmé réussi par Watchys** : scénarios sur copies temporaires annulés, stocks et socle réels inchangés.
 
 Avant tout déblocage : coordonner les écrivains natifs (lecture puis mise à jour), réservations recalculées, mouvements/alertes/caches, création de commandes fractionnées et callbacks, puis essais concurrents réels. Ne pas considérer ce test isolé comme un checkout prêt.
 

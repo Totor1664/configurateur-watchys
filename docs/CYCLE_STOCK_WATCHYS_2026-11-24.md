@@ -90,6 +90,19 @@ La classe Db native 8.2.7 expose getLink(). Le futur adaptateur peut donc vérif
 
 Tests locaux : 2 880 nomenclatures, rupture d’une pièce partagée entre deux configurations, répétition, paiement, annulation/réactivation, expédition/retours, snapshot étranger/altéré, panne SQL au deuxième débit après modification du premier, rollback journal + stock préservant le travail extérieur. SQLite n’est pas une preuve de concurrence MySQL.
 
-Le paquet `dev-stock-allocation` teste le même allocateur sur MySQL TEMPORARY : copies privées à la connexion, aucun débit réel, rollback des scénarios, socle réel relu vide. Il ne publie aucun code dans le module. Sa vérification et son application ne sont pas encore confirmées sur DEV.
+Le paquet `dev-stock-allocation` teste le même allocateur sur MySQL TEMPORARY : copies privées à la connexion, aucun débit réel, rollback des scénarios, socle réel relu vide. Il ne publie aucun code dans le module. Sa vérification et son application sont désormais confirmées réussies sur DEV ; stocks réels et socle sont restés inchangés.
 
 Les écrivains natifs ordinaires peuvent lire une ancienne quantité avant un verrou et la réécrire ensuite : les verrous et mises à jour conditionnelles de cet allocateur ne suffisent pas à les coordonner. L’adaptateur commun reste à développer, ainsi que la cohérence des réservations natives, caches, mouvements, alertes et commandes/paiements. Gardes de checkout conservées.
+
+
+## Coordinateur et preuve concurrente isolée préparés
+
+La course native nécessite un verrou AVANT le chargement de StockAvailable. Le conteneur historique IoC de PrestaShop expose bind/make mais refuse de réassocier un service existant : aucune substitution par réflexion ou modification du cœur n’a été déployée. Les points d’adaptation de tous les écrivains restent à concevoir.
+
+`WatchysNativeStockCoordinator` encadre un callback SQL complet sous la transaction du demandeur. Il verrouille les SKU dans un ordre stable, refuse un disponible négatif avant callback, contrôle le débit annoncé et réconcilie réservé = commandes ordinaires non expédiées + réservations Watchys ; physique = disponible + réservé. Les lectures natives utilisent FOR UPDATE afin de ne pas dépendre d’un instantané REPEATABLE READ périmé. Les IDs annulation/erreur 6/8 proviennent du contrat DEV figé. Une panne ou un débit différent revient au savepoint.
+
+Contraintes : même PDO, aucune fermeture de transaction, écritures des lignes/statuts terminées avant retour et aucun effet externe dans le callback. Le garde-fou détecte un commit interdit mais ne peut pas annuler un commit déjà effectué. Les emails, alertes, caches, mouvements, objets précédemment chargés et écrivains non coopérants ne sont pas intégrés par cette classe. Aucune accroche ne l’installe. Les conflits et deadlocks doivent être traités dans l’adaptateur futur.
+
+Le paquet privé `dev-stock-concurrency` crée sept tables de fixtures partagées entre connexions, au préfixe aléatoire, puis supprime uniquement celles créées par son invocation. Le journal suit les noms en cas d’interruption. Pas de TRUNCATE ni de DROP sur les noms réels. Le vrai Core StockManager 8.2.7 est lu sur DEV après SHA256 ; ses dépendances sont des doubles, aucune classe ObjectModel native ou paiement n’est démarré. Le chargement du cœur conserve sa méthode de calcul et ses branches sans modifier le fichier du site.
+
+Le parent synchronise deux processus par pipes, reproduit le témoin de valeur périmée, puis exige un timeout de verrou de l’autre connexion pendant que le gagnant reste bloqué à la barrière. Après commit du gagnant, une nouvelle tentative du perdant doit être refusée pour rupture. Les deux sens et deux configurations distinctes sont couverts. Cette preuve MySQL est **préparée et non encore reçue**, et ne remplacera pas un test du vrai checkout après raccordement.

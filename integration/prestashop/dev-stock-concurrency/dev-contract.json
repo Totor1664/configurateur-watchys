@@ -1,0 +1,260 @@
+{
+  "states": [
+    {
+      "id_order_state": 1,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 2,
+      "paid": 1,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 1,
+      "invoice": 1,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 3,
+      "paid": 1,
+      "shipped": 0,
+      "delivery": 1,
+      "logable": 1,
+      "invoice": 1,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 4,
+      "paid": 1,
+      "shipped": 1,
+      "delivery": 1,
+      "logable": 1,
+      "invoice": 1,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 5,
+      "paid": 1,
+      "shipped": 1,
+      "delivery": 1,
+      "logable": 1,
+      "invoice": 1,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 6,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 7,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 1,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 8,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 9,
+      "paid": 1,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 1,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 10,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 11,
+      "paid": 1,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 1,
+      "invoice": 1,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 12,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 13,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 14,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 15,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 16,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 17,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 18,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 19,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 20,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 21,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 1,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 22,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 23,
+      "paid": 1,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 1,
+      "invoice": 1,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 24,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 1,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 25,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 1,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 26,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 1,
+      "invoice": 0,
+      "deleted": 0
+    },
+    {
+      "id_order_state": 27,
+      "paid": 0,
+      "shipped": 0,
+      "delivery": 0,
+      "logable": 0,
+      "invoice": 0,
+      "deleted": 0
+    }
+  ],
+  "configuration": {
+    "PS_ADVANCED_STOCK_MANAGEMENT": "0",
+    "PS_OS_CANCELED": "6",
+    "PS_OS_DELIVERED": "5",
+    "PS_OS_ERROR": "8",
+    "PS_OS_PAYMENT": "2",
+    "PS_OS_REFUND": "7",
+    "PS_OS_SHIPPING": "4",
+    "PS_OS_WS_PAYMENT": "11",
+    "PS_STOCK_MANAGEMENT": "1",
+    "PS_VERSION_DB": "8.2.7",
+    "WATCHYS_CART_DEV_READY": "1"
+  }
+}
