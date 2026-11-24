@@ -1,0 +1,9 @@
+services:
+  watchysconfigurator.stock_movement_repository:
+    class: WatchysNativeMovementRepository
+    file: '%kernel.project_dir%/modules/watchysconfigurator/classes/WatchysNativeMovementRepository.php'
+    decorates: prestashop.core.api.stock_movement.repository
+    decoration_priority: 100
+    arguments:
+      - '@watchysconfigurator.stock_movement_repository.inner'
+    public: true

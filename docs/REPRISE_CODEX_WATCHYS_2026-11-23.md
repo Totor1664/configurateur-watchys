@@ -119,3 +119,8 @@ La méthode native isRegisteredInHook() utilise la résolution des noms et alias
 La version 0.2.2 conserve registerHook() natif, rafraîchit les clés du registre avant et après chaque enregistrement, conserve l’invalidation native des caches sur les écritures et contrôle directement en SQL non caché les cinq associations exactes nom/module/boutique et leur activation. Elle journalise les lignes relues et refuse une association réellement manquante ou non unique. La vérification préalable affiche également l'état des cinq accroches et s'arrête si une accroche globale est inactive.
 
 Le test de préparation simule désormais une relecture native périmée et prouve qu'une association réellement absente reste bloquante. Les autres contrôles et les protections de commande restent conservés. Prochaine action : uniquement le paquet 0.2.2 et son --verifier, puis attendre le bilan avant toute nouvelle application.
+
+
+## Suite du 24 novembre — candidat natif passif
+
+Lire `docs/LOT_NATIF_WATCHYS_2026-11-24.md`. Les huit classes précédentes ont été confirmées installées après essai natif sur copies temporaires. Le nouveau lot complet 0.3.0 est préparé, ses essais locaux passent, mais son installation et ses parcours complets sur DEV restent non confirmés. Commande et paiement restent bloqués.

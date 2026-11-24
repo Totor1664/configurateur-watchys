@@ -6,11 +6,11 @@ require_once __DIR__.'/WatchysStockJournal.php';
  */
 class WatchysStockAllocator
 {
-    private $db; private $prefix; private $driver;
-    public function __construct(PDO $db,$prefix)
+    private $db; private $prefix; private $driver; private $gate;
+    public function __construct(PDO $db,$prefix,$gate=null)
     {
         if (!preg_match('/^[A-Za-z0-9_]+$/D',$prefix)) { throw new InvalidArgumentException('Préfixe invalide.'); }
-        $this->db=$db; $this->prefix=$prefix; $this->driver=$db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $this->db=$db; $this->prefix=$prefix; $this->gate=$gate; $this->driver=$db->getAttribute(PDO::ATTR_DRIVER_NAME);
         if (!in_array($this->driver,['mysql','sqlite'],true)) { throw new InvalidArgumentException('Pilote non pris en charge.'); }
     }
     private function rows($sql,$args=[])
@@ -74,7 +74,8 @@ class WatchysStockAllocator
             $update=$this->db->prepare('UPDATE '.$table.' SET quantity=quantity+?,reserved_quantity=reserved_quantity+?,physical_quantity=physical_quantity+? WHERE id_stock_available=? AND id_shop=1 AND id_shop_group=0 AND depends_on_stock=0 AND quantity=? AND reserved_quantity=? AND physical_quantity=?');
             foreach ($deltas as $sku=>$delta) {
                 if (!$delta['available']&&!$delta['reserved']&&!$delta['physical']) { continue; }
-                $row=$stocks[$sku];$update->execute([$delta['available'],$delta['reserved'],$delta['physical'],(int)$row['id_stock_available'],(int)$row['quantity'],(int)$row['reserved_quantity'],(int)$row['physical_quantity']]);
+                $row=$stocks[$sku];$write=static function()use($update,$delta,$row){$update->execute([$delta['available'],$delta['reserved'],$delta['physical'],(int)$row['id_stock_available'],(int)$row['quantity'],(int)$row['reserved_quantity'],(int)$row['physical_quantity']]);return true;};
+                if($this->gate){$this->gate->write((int)$row['id_stock_available'],['quantity'=>(int)$row['quantity']+$delta['available'],'reserved_quantity'=>(int)$row['reserved_quantity']+$delta['reserved'],'physical_quantity'=>(int)$row['physical_quantity']+$delta['physical']],$write);}else{$write();}
                 if ($update->rowCount()!==1) { throw new RuntimeException('Stock modifié simultanément : '.$sku); }
             }
             foreach ($keys as $sku=>$pair) {

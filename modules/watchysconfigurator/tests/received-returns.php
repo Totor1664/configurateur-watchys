@@ -1,0 +1,16 @@
+<?php
+require_once dirname(__DIR__).'/classes/WatchysNativeSchema.php';require_once dirname(__DIR__).'/classes/WatchysStockSchema.php';require_once dirname(__DIR__).'/classes/WatchysReceivedReturns.php';
+function receiptCheck($v,$m){if(!$v){throw new RuntimeException($m);}}
+function receiptDeny($f){$caught=false;try{$f();}catch(Throwable $e){$caught=true;}receiptCheck($caught,'Rejet attendu absent.');}
+$db=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);foreach(WatchysNativeSchema::definitions('r_','sqlite')+WatchysStockSchema::definitions('r_','sqlite') as $sql){$db->exec($sql);}
+$db->exec('CREATE TABLE r_stock_available(id_stock_available INT,id_product INT,id_product_attribute INT,id_shop INT,id_shop_group INT,quantity INT,reserved_quantity INT,physical_quantity INT,depends_on_stock INT)');$db->exec('INSERT INTO r_stock_available VALUES(1,7736,0,1,0,10,0,10,0)');
+$db->exec('CREATE TABLE r_order_detail(id_order_detail INT,id_order INT,id_customization INT,product_quantity INT)');$db->exec('INSERT INTO r_order_detail VALUES(10,1,50,2)');
+$db->exec('CREATE TABLE r_employee(id_employee INT,id_profile INT,active INT)');$db->exec('CREATE TABLE r_access(id_profile INT,id_authorization_role INT)');$db->exec('CREATE TABLE r_authorization_role(id_authorization_role INT,slug TEXT)');$db->exec("INSERT INTO r_employee VALUES(1,1,1),(2,2,1)");$db->exec('INSERT INTO r_access VALUES(1,1)');$db->exec("INSERT INTO r_authorization_role VALUES(1,'ROLE_MOD_MODULE_WATCHYSCONFIGURATOR_UPDATE')");
+$req=[['identity'=>['id_order_detail'=>10,'component_product_id'=>7736,'component_attribute_id'=>0,'id_order'=>1,'id_customization'=>50,'id_shop'=>1],'required_units'=>2,'nomenclature_hash'=>hash('sha256','receipt-fixture')]];$a=new WatchysStockAllocator($db,'r_');$r=new WatchysReceivedReturns($db,'r_');$db->beginTransaction();
+$a->apply($req,'reserve',['kind'=>'status','status_id'=>10]);receiptDeny(static function()use($r){$r->receive(1,10,1,1,str_repeat('a',32));});receiptCheck((int)$db->query('SELECT COUNT(*) FROM r_watchys_received_return')->fetchColumn()===0,'Réception avant expédition conservée.');
+$a->apply($req,'ship',['kind'=>'status','status_id'=>4]);$res=$r->receive(1,10,1,1,str_repeat('a',32));receiptCheck(!$res['replayed']&&(int)$db->query('SELECT quantity FROM r_stock_available')->fetchColumn()===9,'Retour partiel incorrect.');
+$res=$r->receive(1,10,1,1,str_repeat('a',32));receiptCheck($res['replayed']&&(int)$db->query('SELECT quantity FROM r_stock_available')->fetchColumn()===9,'Réception doublée.');
+$r->receive(1,10,2,1,str_repeat('b',32));receiptCheck((int)$db->query('SELECT quantity FROM r_stock_available')->fetchColumn()===10,'Cumul final incorrect.');
+receiptDeny(static function()use($r){$r->receive(1,10,1,2,str_repeat('c',32));});receiptDeny(static function()use($r){$r->receive(1,10,2,1,str_repeat('a',32));});receiptDeny(static function()use($r){$r->receive(1,10,3,1,str_repeat('d',32));});
+$db->rollBack();receiptCheck((int)$db->query('SELECT COUNT(*) FROM r_watchys_received_return')->fetchColumn()===0,'Rollback extérieur non respecté.');
+echo "SUCCÈS — Réceptions : employé autorisé, expédition obligatoire, retour partiel/cumulé, reprise sans doublon, limites et rollback. SQLite ; aucune route publique ni remboursement automatique.\n";

@@ -5,12 +5,12 @@
  */
 class WatchysStockObjectGuard
 {
-    private $db;private $prefix;private $object;private $baseline;private $lock;
-    public function __construct(PDO $db,$prefix,$object)
+    private $db;private $prefix;private $object;private $baseline;private $lock;private $gate;
+    public function __construct(PDO $db,$prefix,$object,$gate=null)
     {
         $driver=$db->getAttribute(PDO::ATTR_DRIVER_NAME);
         if(!preg_match('/^[A-Za-z0-9_]+$/D',$prefix)||!in_array($driver,['mysql','sqlite'],true)||!is_object($object)){throw new InvalidArgumentException('Objet stock non contrôlé.');}
-        $this->db=$db;$this->prefix=$prefix;$this->object=$object;$this->lock=$driver==='mysql'?' FOR UPDATE':'';$this->baseline=$this->capture();
+        $this->db=$db;$this->prefix=$prefix;$this->object=$object;$this->gate=$gate;$this->lock=$driver==='mysql'?' FOR UPDATE':'';$this->baseline=$this->capture();
         if($this->baseline['id_shop']!==1||$this->baseline['id_shop_group']!==0||$this->baseline['id_product']===8867){throw new InvalidArgumentException('Périmètre stock non autorisé.');}
     }
     public static function fromNative($module,$object,$prefix)
@@ -18,7 +18,7 @@ class WatchysStockObjectGuard
         if(!defined('_PS_VERSION_')||_PS_VERSION_!=='8.2.7'||!defined('_DB_PREFIX_')||($module->name??null)!=='watchysconfigurator'||!$module->isDev()||!$object instanceof StockAvailable){throw new RuntimeException('Objet natif DEV requis.');}
         $pdo=Db::getInstance()->getLink();$definition=ObjectModel::getDefinition($object);
         if(!$pdo instanceof PDO||$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)!=='mysql'||!$pdo->inTransaction()||_DB_PREFIX_.$definition['table']!==$prefix.'stock_available'||$definition['primary']!=='id_stock_available'){throw new RuntimeException('PDO natif partagé, transaction et table exacte requis.');}
-        return new self($pdo,$prefix,$object);
+        return new self($pdo,$prefix,$object,class_exists('WatchysNativeRuntime',false)&&WatchysNativeRuntime::isActive()?WatchysNativeRuntime::gate():null);
     }
     private function integer($v,$min=0)
     {
@@ -41,7 +41,8 @@ class WatchysStockObjectGuard
         $sp='watchys_object_'.bin2hex(random_bytes(6));$this->db->exec('SAVEPOINT '.$sp);
         try{
             if($this->read()!==$this->baseline){throw new RuntimeException('Objet stock périmé : recharger avant écriture.');}
-            $result=$nativeUpdate();
+            $gate=$this->gate;if(!$gate&&class_exists('WatchysNativeRuntime',false)&&WatchysNativeRuntime::isActive()){$gate=WatchysNativeRuntime::gate();}
+            $result=$gate?$gate->write($this->baseline['id_stock_available'],['quantity'=>$next['quantity']],$nativeUpdate):$nativeUpdate();
             if(!$this->db->inTransaction()){throw new RuntimeException('Le callback a fermé la transaction native.');}
             if($result===false||$this->read()!==$next){throw new RuntimeException('Écriture native non confirmée.');}
             $this->db->exec('RELEASE SAVEPOINT '.$sp);$this->baseline=$next;return $result;

@@ -77,7 +77,7 @@ class WatchysCartService
         $cart=$context->cart;$cartId=(int)$cart->id;
         if((int)($cart->id_customer??0)>0&&(int)$cart->id_customer!==(int)($context->customer->id??0)){throw new InvalidArgumentException('Le panier ne correspond pas à votre session. Rechargez la page.');}
         if((int)$cart->id_shop!==1||$cart->OrderExists()||(int)$cart->id_currency!==(int)$context->currency->id){throw new InvalidArgumentException('Panier non modifiable. Rechargez la page.');}
-        $this->sql('START TRANSACTION');
+        $outer=class_exists('WatchysNativeRuntime',false)&&WatchysNativeRuntime::trialActive()&&Db::getInstance()->getLink()->inTransaction();$savepoint=$outer?'watchys_cart_'.bin2hex(random_bytes(6)):null;$this->sql($outer?'SAVEPOINT '.$savepoint:'START TRANSACTION');
         try{
             // Serialise retries and additions to the same cart on the native connection.
             $locked=$this->rows('SELECT id_cart FROM `'._DB_PREFIX_.'cart` WHERE id_cart='.$cartId.' FOR UPDATE');if(count($locked)!==1){throw new RuntimeException('Panier absent.');}
@@ -85,7 +85,7 @@ class WatchysCartService
             $prior=$this->db->getRow('SELECT * FROM `'._DB_PREFIX_."watchys_cart_request` WHERE id_cart=".$cartId." AND request_key='".pSQL($request['requestKey'])."'",false);
             if($prior){
                 if(!hash_equals($prior['request_digest'],$request['digest'])){throw new InvalidArgumentException('Identifiant de requête déjà utilisé pour un autre choix.');}
-                $this->sql('COMMIT');return ['customizationId'=>(int)$prior['id_customization'],'replayed'=>true];
+                $this->sql($outer?'RELEASE SAVEPOINT '.$savepoint:'COMMIT');return ['customizationId'=>(int)$prior['id_customization'],'replayed'=>true];
             }
             $live=$this->module->quoteSelection($input);if(!$live['componentsAvailable']){throw new InvalidArgumentException('Certains composants sont indisponibles ou restent à valider.');}
             $baseCurrency=new Currency((int)Configuration::get('PS_CURRENCY_DEFAULT'));
@@ -108,7 +108,7 @@ class WatchysCartService
             $line=$this->db->getRow('SELECT quantity FROM `'._DB_PREFIX_.'cart_product` WHERE id_cart='.$cartId.' AND id_product='.(int)$support['id_product'].' AND id_customization='.(int)$custom->id,false);
             if(!$line||(int)$line['quantity']!==$q['quantity']){throw new RuntimeException('Ligne panier non relue.');}
             $this->insert('watchys_cart_request',['id_cart'=>$cartId,'request_key'=>$request['requestKey'],'request_digest'=>$request['digest'],'id_customization'=>(int)$custom->id,'date_add'=>date('Y-m-d H:i:s')]);
-            $this->sql('COMMIT');return ['customizationId'=>(int)$custom->id,'replayed'=>false];
+            $this->sql($outer?'RELEASE SAVEPOINT '.$savepoint:'COMMIT');return ['customizationId'=>(int)$custom->id,'replayed'=>false];
         }catch(Throwable $e){$this->db->execute('ROLLBACK');throw $e;}
     }
 }

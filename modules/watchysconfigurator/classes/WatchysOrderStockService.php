@@ -7,18 +7,18 @@ require_once __DIR__.'/WatchysStockAllocator.php';
  */
 class WatchysOrderStockService
 {
-    private $db;private $prefix;private $catalog;private $lock;
-    public function __construct(PDO $db,$prefix,$catalog)
+    private $db;private $prefix;private $catalog;private $lock;private $gate;
+    public function __construct(PDO $db,$prefix,$catalog,$gate=null)
     {
         if(!preg_match('/^[A-Za-z0-9_]+$/D',$prefix)||!in_array($db->getAttribute(PDO::ATTR_DRIVER_NAME),['mysql','sqlite'],true)){throw new InvalidArgumentException('Connexion de stock invalide.');}
-        $this->db=$db;$this->prefix=$prefix;$this->catalog=$catalog;$this->lock=$db->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
+        $this->db=$db;$this->prefix=$prefix;$this->catalog=$catalog;$this->gate=$gate;$this->lock=$db->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?' FOR UPDATE':'';
     }
     public static function fromNative($module)
     {
         if(!defined('_PS_VERSION_')||_PS_VERSION_!=='8.2.7'||!defined('_DB_PREFIX_')||($module->name??null)!=='watchysconfigurator'||!$module->isDev()){throw new RuntimeException('Adaptateur réservé au DEV PrestaShop contrôlé.');}
         $link=Db::getInstance()->getLink();
         if(!$link instanceof PDO||$link->getAttribute(PDO::ATTR_DRIVER_NAME)!=='mysql'||!$link->inTransaction()){throw new RuntimeException('Transaction PDO native requise ; aucune connexion parallèle créée.');}
-        return new self($link,_DB_PREFIX_,$module->catalog());
+        return new self($link,_DB_PREFIX_,$module->catalog(),class_exists('WatchysNativeRuntime',false)&&WatchysNativeRuntime::isActive()?WatchysNativeRuntime::gate():null);
     }
     private function rows($sql,$params=[]){$s=$this->db->prepare($sql);$s->execute($params);return $s->fetchAll(PDO::FETCH_ASSOC);}
     private function id($value){if(!is_int($value)||$value<1||$value>2147483647){throw new InvalidArgumentException('Identifiant natif invalide.');}return $value;}
@@ -67,7 +67,7 @@ class WatchysOrderStockService
             if(!$latest){throw new InvalidArgumentException('Dernier historique natif absent.');}
             if((int)$latest[0]['id_order_history']!==$historyId){$this->db->exec('RELEASE SAVEPOINT '.$sp);return ['ordinary'=>false,'ignoredStale'=>true,'results'=>[],'deltas'=>[]];}
             if((int)$history[0]['id_order_state']!==(int)$loaded['order']['current_state']){throw new InvalidArgumentException('Historique et état courant non concordants.');}
-            $result=(new WatchysStockAllocator($this->db,$this->prefix))->apply($requests,'history:'.$historyId,['kind'=>'status','status_id'=>(int)$history[0]['id_order_state'],'allow_reactivation'=>$allowReactivation]);
+            $result=(new WatchysStockAllocator($this->db,$this->prefix,$this->gate))->apply($requests,'history:'.$historyId,['kind'=>'status','status_id'=>(int)$history[0]['id_order_state'],'allow_reactivation'=>$allowReactivation]);
             $this->db->exec('RELEASE SAVEPOINT '.$sp);return ['ordinary'=>false,'ignoredStale'=>false]+$result;
         }catch(Throwable $e){try{$this->db->exec('ROLLBACK TO SAVEPOINT '.$sp);$this->db->exec('RELEASE SAVEPOINT '.$sp);}catch(Throwable $rollback){throw new RuntimeException('Retour arrière du service non confirmé ; transaction complète à annuler.',0,$e);}throw $e;}
     }

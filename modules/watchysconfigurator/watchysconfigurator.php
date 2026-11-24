@@ -5,7 +5,7 @@ class Watchysconfigurator extends Module
 {
     public function __construct()
     {
-        $this->name='watchysconfigurator'; $this->tab='front_office_features'; $this->version='0.2.2';
+        $this->name='watchysconfigurator'; $this->tab='front_office_features'; $this->version='0.3.0';
         $this->author='Watchys'; $this->need_instance=0; $this->bootstrap=true;
         $this->ps_versions_compliancy=['min'=>'8.2.0','max'=>'8.99.99'];
         parent::__construct();
@@ -18,7 +18,7 @@ class Watchysconfigurator extends Module
     }
     public function install() { return $this->isDev() && parent::install(); }
     protected function catalogFile() { return __DIR__.'/config/catalog.json'; }
-    public function catalog() { return new WatchysCatalog($this->catalogFile()); }
+    public function catalog() { if(class_exists('WatchysNativeRuntime',false)&&WatchysNativeRuntime::scopedCatalog()){return WatchysNativeRuntime::scopedCatalog();}return new WatchysCatalog($this->catalogFile()); }
     public function getContent()
     {
         if (!$this->isDev()) { return $this->displayError('Cette version est réservée au DEV.'); }
@@ -104,6 +104,7 @@ class Watchysconfigurator extends Module
     public function hookActionObjectOrderAddBefore($params)
     {
         if(!$this->cartReady()){return;}
+        if(class_exists('WatchysNativeRuntime',false)&&WatchysNativeRuntime::allowsCart((int)($params['object']->id_cart??0))){return;}
         if($this->cartService()->containsSupport((int)($params['object']->id_cart??0))){throw new PrestaShopException('DEV Watchys : configuration au panier uniquement. La validation de commande attend les tests du cycle de stock.');}
     }
     public function hookActionFrontControllerInitBefore($params)
