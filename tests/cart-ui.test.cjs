@@ -20,6 +20,9 @@ test('Le bouton attend un devis valide ; double clic et reprise réseau conserve
    return{ok:true,json:async()=>({ok:true,result:{cartUrl:'/panier?action=show'}})};
   }});
  vm.runInContext(fs.readFileSync(path.join(__dirname,'../modules/watchysconfigurator/views/js/configurator-cart-v020.js'),'utf8'),ctx);
+ assert.deepEqual(ids['#wy-groups'].children.map(field=>field.children[0].textContent),['case','dial','hands','strap']);
+ assert.deepEqual(details.children.map(figure=>figure.children[0].src),['/case-polished.png','/dial-black.png','/hands-black.png','/strap-black.png']);
+ assert.deepEqual(data.models[0].groups.map(group=>group.id),['dial','strap','hands','case']);
  assert.equal(ids['#wy-add-cart'].disabled,true);await timers.at(-1)();assert.equal(ids['#wy-add-cart'].disabled,false);
  await Promise.all([ids['#wy-add-cart'].listeners.click(),ids['#wy-add-cart'].listeners.click()]);
  let adds=calls.filter(c=>c.url==='/add');assert.equal(adds.length,1);assert.equal(ids['#wy-add-cart'].disabled,false);

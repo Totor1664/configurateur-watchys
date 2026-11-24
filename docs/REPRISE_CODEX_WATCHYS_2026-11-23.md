@@ -1,5 +1,17 @@
 # Reprise actuelle — Configurateur Watchys — 23 novembre 2026
 
+## Dernier état du 24 novembre — interface des choix
+
+Watchys confirme que les miniatures personnalisées fonctionnent correctement dans le panier et le mini-panier. Le correctif précédent est donc installé et validé visuellement ; conserver son actionPresentCart, ses deux fichiers et ses 960 JPEG.
+
+Nouvelle demande : afficher Carrure, Cadran, Aiguilles, Bracelet et remplacer le survol rouge des vignettes par un gris clair. Le correctif `integration/prestashop/dev-choice-display/` est préparé et testé, **pas encore confirmé appliqué sur DEV**. Il trie une copie des groupes côté interface, applique le même ordre aux vues de détail, limite le survol #F2F2F2 aux vignettes et conserve sélection bleue/focus clavier. Le contrôleur renouvelle les versions CSS/JS. Trois fichiers seulement, aucun changement de catalogue, identifiants de choix, prix, stock, images ou moteur SVG.
+
+Les tests d'interface vérifient le nouvel ordre sans mutation du modèle source ; ajout/reprise/double clic restent couverts. La suite complète Node/PHP/construction et la syntaxe PHP passent. Le ZIP est relu et ses empreintes vérifiées. Prochaine action : `installer.php --verifier`, lecture du bilan puis exécution séparée avec plan et OUI. Le script n'écrit pas dans MySQL, ne charge pas PrestaShop et ne modifie aucune accroche. Confirmer visuellement le survol dans Alysum après application.
+
+La commande et le paiement restent bloqués. Le prochain chantier fonctionnel reste le cycle réel du stock, après validation de cette interface. Aucun accès PROD.
+
+---
+
 ## État du 24 novembre 2026 — miniatures personnalisées préparées
 
 Cette section prévaut sur les étapes historiques suivantes. Les 24 composants existent : le contrôle DEV a trouvé 12 stocks déjà à 10 et 12 à ajuster, sans alerte. Watchys confirme l'application du passage à 10, l'activation manuelle des articles et l'ajout des variantes au panier.

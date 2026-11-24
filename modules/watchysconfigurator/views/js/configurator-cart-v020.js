@@ -16,9 +16,13 @@
   let model, selection, offerId, generation = 0, controller, timer;
   const text = (tag, content, className) => { const el=document.createElement(tag);el.textContent=content;if(className)el.className=className;return el; };
   const stockLabel = s => !s.exists || !s.referenceMatches ? 'À vérifier' : !s.active || !s.orderable ? 'À valider' : s.quantity > 0 ? 'En stock' : 'Indisponible';
+  const groupOrder=['case','dial','hands','strap'];
+  const groupRank=id=>groupOrder.includes(id)?groupOrder.indexOf(id):groupOrder.length;
   for (const m of data.models) { const o=text('option',m.label);o.value=m.id;modelSelect.append(o); }
   function chooseModel() {
-    model=data.models.find(m=>m.id===modelSelect.value);selection={};groupsNode.replaceChildren();offersNode.replaceChildren();
+    const selectedModel=data.models.find(m=>m.id===modelSelect.value);
+    model={...selectedModel,groups:[...selectedModel.groups].sort((a,b)=>groupRank(a.id)-groupRank(b.id))};
+    selection={};groupsNode.replaceChildren();offersNode.replaceChildren();
     for (const group of model.groups) {
       selection[group.id]=(group.options.find(o=>o.status.available)||group.options[0]).id;
       const field=document.createElement('fieldset');field.append(text('legend',group.label));

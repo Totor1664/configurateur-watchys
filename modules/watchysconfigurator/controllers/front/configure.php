@@ -10,9 +10,9 @@ class WatchysconfiguratorConfigureModuleFrontController extends ModuleFrontContr
     public function setMedia()
     {
         parent::setMedia();
-        $this->registerStylesheet('watchys-configurator','modules/watchysconfigurator/views/css/configurator.css',['media'=>'all','priority'=>200,'version'=>$this->module->version]);
+        $this->registerStylesheet('watchys-configurator','modules/watchysconfigurator/views/css/configurator.css',['media'=>'all','priority'=>200,'version'=>'choices-20261124']);
         $this->registerJavascript('watchys-preview','modules/watchysconfigurator/views/js/preview-reference-v013.js',['position'=>'bottom','priority'=>190,'version'=>'reference-faec627']);
-        $this->registerJavascript('watchys-configurator','modules/watchysconfigurator/views/js/configurator-cart-v020.js',['position'=>'bottom','priority'=>200,'version'=>$this->module->version]);
+        $this->registerJavascript('watchys-configurator','modules/watchysconfigurator/views/js/configurator-cart-v020.js',['position'=>'bottom','priority'=>200,'version'=>'choices-20261124']);
     }
     public function initContent()
     {
