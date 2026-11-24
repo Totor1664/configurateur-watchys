@@ -1,0 +1,15 @@
+# Classes natives de stock — préparation sur DEV, commandes bloquées
+
+`php preparer.php --verifier` ne charge aucun code natif et n'écrit rien : contrôles du module 0.2.2, catalogue, socle réel vide, sources ObjectModel/StockAvailable/Db et absence de hooks génériques sur l'objet d'essai. Les classes existantes doivent être absentes ou strictement identiques au paquet ; aucune version différente n'est écrasée.
+
+Après lecture du bilan, lancer sans `--verifier` puis saisir OUI. Un journal privé est créé. Le bootstrap réel PrestaShop/AppKernel peut réchauffer ses caches natifs. Il ne s'agit plus d'une exécution entièrement sans écriture de fichiers. Aucun module installé/réinstallé, aucun override ou hook ajouté, aucune commande créée.
+
+Le test crée SIX tables TEMPORARY sur le PDO maître repris de `Db::getInstance()->getLink()`. Une sous-classe de StockAvailable redéclare sa propre définition et pointe uniquement sur la copie du stock. Les méthodes réelles ObjectModel/StockAvailable/Db, l'hydratation et la validation sont conservées ; aucune dépendance de persistance n'est simulée. Le service maître et la garde objet sont instanciés via leurs entrées `fromNative`. Les commandes/lignes utilisées pour les compteurs restent des fixtures SQL, pas des objets Order/OrderDetail natifs.
+
+Cas : objet chargé avant réservation refusé avant update, objet frais écrit avec le vrai ObjectModel, réservations natives fictives + Watchys conservées, panne après update annulée au savepoint, puis rollback complet du PDO. La définition StockAvailable réelle est conservée. Le mode de cache Db/ObjectModel est désactivé dans ce seul processus privé, sans flush global. Les tables temporaires sont supprimées et disparaissent aussi à la fermeture de connexion.
+
+Après réussite seulement : huit fichiers de classes sont ajoutés dans le module. Les fichiers présents identiques sont conservés. Publication exclusive par lien atomique, sans remplacement d'un fichier préexistant. En cas d'erreur, seules les classes ajoutées par cette invocation, encore conformes à son empreinte, peuvent être retirées. Le journal garde le bilan. Le fichier principal reste 0.2.2, inchangé ; aucun parcours utilisateur n'appelle automatiquement les nouvelles classes.
+
+La garde doit capturer un objet AVANT modification. Elle exige la transaction de son appelant, verrouille et compare le snapshot, refuse un stock négatif/une identité différente et relit l'écriture native. Elle n'installe pas d'override et ne coordonne pas seule tous les écrivains. Un objet modifié après rollback doit être rechargé avant réutilisation. Le callback ne doit ni fermer la transaction ni provoquer un effet externe : un commit déjà effectué ne serait pas annulable.
+
+Restent : adaptation de tous les points d'écriture (FO/BO/SQL), frontière complète des commandes mixtes/fractionnées, mouvements natifs/alertes après validation, callbacks de paiement et retours partiels. Les tests précédents à deux connexions ne deviennent pas automatiquement un test du checkout natif. Aucun déblocage de commande/paiement ni accès PROD dans ce paquet.

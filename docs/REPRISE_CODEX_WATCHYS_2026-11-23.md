@@ -1,3 +1,19 @@
+# Point actuel — 24 novembre 2026 : classes natives préparées, application DEV en attente
+
+Le relevé natif a été reçu : sources contrôlées conformes, aucune surcharge ou configuration de service candidate trouvée dans les emplacements examinés. Les accroches existantes restent conservées. Aucune activation automatique n’a été décidée.
+
+Nouvelle classe `WatchysStockObjectGuard` : capture d’un objet AVANT modification, transaction native existante, verrou et comparaison du snapshot, refus d’identité modifiée ou quantité négative, relecture après update et rollback au savepoint. Aucun override installé par cette classe. Tests SQLite locaux réussis (objet périmé, écriture fraîche, échec natif, rollback appelant).
+
+**Prochain paquet :** `integration/prestashop/dev-stock-native-runtime/`, `preparer.php --verifier`, bilan puis exécution distincte avec OUI. Après OUI : vrai bootstrap PrestaShop/AppKernel (réchauffage éventuel des caches), six tables TEMPORARY sur le PDO maître et véritable ObjectModel/StockAvailable/Db. Une sous-classe de stock redéclare sa définition vers la copie, sans changer celle du stock réel. Pas de double de persistance. Les lignes ordinaires utilisées pour la réconciliation restent des fixtures SQL, pas un checkout natif complet.
+
+Si ce test réussit : ajout exclusif de huit classes dans le module, fichiers existants identiques conservés, toute différence refusée. Aucun fichier principal, hook ou override modifié, version toujours 0.2.2. Le journal permet de retirer seulement les nouvelles classes encore conformes en cas d’arrêt. Résultat de cette application **non encore reçu**. Le paquet doit être relu avant toute écriture.
+
+Point à conserver de l’audit : la définition native StockAvailable 8.2.7 ne contient pas les champs reserved_quantity/physical_quantity ; ses recalculs sont gérés séparément. Les anciennes fixtures simulaient plus largement la persistance des compteurs. Le nouvel essai utilise sa vraie méthode update et le vrai ObjectModel, avec vérification de source contre l’empreinte DEV 0d426c… et ObjectModel épinglé 8.2.7.
+
+**Les commandes et paiements restent bloqués.** Les classes préparées ne sont encore appelées par aucune accroche. Restent la frontière des commandes mixtes/fractionnées, tous les écrivains FO/BO/SQL, mouvements/alertes et caches, paiements/notifications, retours partiels et essais natifs simultanés complets. Une preuve sur copie n’active pas à elle seule le checkout.
+
+---
+
 # Point actuel — 24 novembre 2026 : service de commandes préparé, raccordement non activé
 
 Watchys a confirmé la réussite du test MySQL concurrent à deux connexions : témoin périmé reproduit, vente ordinaire ou configuration gagnante, perdant refusé, deux configurations distinctes sans double allocation. Sept tables isolées supprimées et absence relue ; stocks réels et socle inchangés. Le cœur utilisait encore des dépendances simulées : aucune activation native n’en découle.
@@ -6,7 +22,7 @@ Watchys a confirmé la réussite du test MySQL concurrent à deux connexions : t
 
 La classe et ses tests sont dans le dépôt et le paquet privé, **pas publiés dans le module du DEV**. Aucun hook nouveau, module toujours 0.2.2, gardes de commande/paiement conservées. Tests SQL SQLite du service réussis ; le parcours de commande natif complet reste à intégrer.
 
-**Prochaine opération nécessaire :** relevé de compatibilité `integration/prestashop/dev-stock-native-readiness/controler.php --verifier`. Il n’a aucune action d’écriture : empreintes des sources, surcharges candidates, index de classes non exécutés, références textuelles de services et accroches liées. Aucune installation ni bootstrap. Résultat de ce relevé non encore reçu. Il permet de choisir l’adaptation sans écraser une surcharge/module existant.
+**Prochaine opération nécessaire :** relevé de compatibilité `integration/prestashop/dev-stock-native-readiness/controler.php --verifier`. Il n’a aucune action d’écriture : empreintes des sources, surcharges candidates, index de classes non exécutés, références textuelles de services et accroches liées. Aucune installation ni bootstrap. Relevé reçu : sources attendues conformes, aucune surcharge candidate dans les emplacements examinés ni référence textuelle de service candidate ; aucune accroche active sur les points détaillés hors actionOrderStatusPostUpdate existant (dont PayPal). La présence/absence de candidats ne prouve pas le runtime chargé. Il permet de choisir l’adaptation sans écraser une surcharge/module existant.
 
 Points restant bloquants : coordonner tous les écrivains ordinaires sur la vraie frontière transactionnelle, y compris paniers mixtes/fractionnés, objets/caches déjà chargés, recalculs natifs, mouvements/alertes, notifications/paiements et retours partiels. Une accroche OrderDetail ou OrderHistory seule ne couvre pas le cycle. Ne pas déverrouiller le checkout avant ces validations. Toute future publication devra conserver plan, DÉBUT/FIN, journal et OUI avant écriture.
 
