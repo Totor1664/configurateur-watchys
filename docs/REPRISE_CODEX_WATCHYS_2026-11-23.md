@@ -1,3 +1,17 @@
+# Point actuel — 24 novembre 2026 : service de commandes préparé, raccordement non activé
+
+Watchys a confirmé la réussite du test MySQL concurrent à deux connexions : témoin périmé reproduit, vente ordinaire ou configuration gagnante, perdant refusé, deux configurations distinctes sans double allocation. Sept tables isolées supprimées et absence relue ; stocks réels et socle inchangés. Le cœur utilisait encore des dépendances simulées : aucune activation native n’en découle.
+
+`WatchysOrderStockService` prépare désormais la liaison SQL avec les commandes, lignes, personnalisations et historiques natifs. `fromNative` exige le PDO maître de `Db::getInstance()->getLink()` et une transaction existante ; aucune connexion supplémentaire. Les snapshots, quantités fractionnées cumulées et nomenclatures immuables sont vérifiés. Les événements d’historique anciens sont ignorés, les reprises ne redébitent pas et une réactivation reste explicite. Les prix natifs ne sont jamais écrits.
+
+La classe et ses tests sont dans le dépôt et le paquet privé, **pas publiés dans le module du DEV**. Aucun hook nouveau, module toujours 0.2.2, gardes de commande/paiement conservées. Tests SQL SQLite du service réussis ; le parcours de commande natif complet reste à intégrer.
+
+**Prochaine opération nécessaire :** relevé de compatibilité `integration/prestashop/dev-stock-native-readiness/controler.php --verifier`. Il n’a aucune action d’écriture : empreintes des sources, surcharges candidates, index de classes non exécutés, références textuelles de services et accroches liées. Aucune installation ni bootstrap. Résultat de ce relevé non encore reçu. Il permet de choisir l’adaptation sans écraser une surcharge/module existant.
+
+Points restant bloquants : coordonner tous les écrivains ordinaires sur la vraie frontière transactionnelle, y compris paniers mixtes/fractionnés, objets/caches déjà chargés, recalculs natifs, mouvements/alertes, notifications/paiements et retours partiels. Une accroche OrderDetail ou OrderHistory seule ne couvre pas le cycle. Ne pas déverrouiller le checkout avant ces validations. Toute future publication devra conserver plan, DÉBUT/FIN, journal et OUI avant écriture.
+
+---
+
 # Point actuel — 24 novembre 2026 : concurrence isolée préparée
 
 L’allocation sur copies MySQL TEMPORARY a été **confirmée réussie sur DEV**. Les stocks réels et les deux tables de suivi sont restés inchangés. Commande et paiement restent bloqués.
@@ -6,7 +20,7 @@ Nouvelle brique expérimentale non publiée dans le module : `WatchysNativeStock
 
 Tests locaux : réservations cumulées, rupture avant callback, rollback après callback échoué ou débit périmé, expédition ordinaire conservant les réservations Watchys. Le fichier natif 8.2.7 épinglé a aussi été exécuté localement avec dépendances simulées et stockage SQLite. Cela n’est pas une preuve de concurrence MySQL.
 
-**Prochaine opération :** paquet privé `integration/prestashop/dev-stock-concurrency/`, `controler.php --verifier`, bilan puis exécution distincte avec OUI. Sept tables de fixtures InnoDB au préfixe aléatoire sont partagées entre deux connexions, puis supprimées. Aucune table préexistante supprimée ni stock réel écrit. Témoin périmé puis course sur dernière unité : vente native gagnante, configuration gagnante, deux configurations distinctes. Résultat de ce test **pas encore reçu**.
+**Prochaine opération :** paquet privé `integration/prestashop/dev-stock-concurrency/`, `controler.php --verifier`, bilan puis exécution distincte avec OUI. Sept tables de fixtures InnoDB au préfixe aléatoire sont partagées entre deux connexions, puis supprimées. Aucune table préexistante supprimée ni stock réel écrit. Témoin périmé puis course sur dernière unité : vente native gagnante, configuration gagnante, deux configurations distinctes. Résultat **confirmé réussi par Watchys** : course témoin reproduite, dernière unité protégée dans les deux sens et entre deux configurations, sept tables supprimées ; stocks réels/socle inchangés.
 
 Le vrai fichier Core StockManager du DEV est chargé sans bootstrap, avec produit, StockAvailable, services, hooks/cache simulés. Aucun véritable checkout, email, mouvement ou paiement. Les écrivains du site ne sont pas encore raccordés. Avant déploiement : concevoir leur adaptation (y compris BO et SQL direct), caches/chargements antérieurs, réservations, mouvements/alertes, commandes fractionnées et callbacks. Ne pas confondre le verrou testé par fixtures et une intégration complète.
 
