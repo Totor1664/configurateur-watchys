@@ -77,6 +77,19 @@ Les classes WatchysStockPolicy, WatchysStockSchema et WatchysStockJournal sont c
 
 Les tests couvrent 2 880 configurations/formules et des transactions SQLite réelles en mémoire : paiement sans second retrait, annulation/réactivation, expédition, retours partiels/cumulatifs, notification ancienne, conflit d'événement, nomenclature modifiée et rollback. Cela ne prouve pas les verrous MySQL ni la cohérence des écrivains natifs.
 
-Le paquet `integration/prestashop/dev-stock-foundation/` prépare uniquement les deux tables dédiées et vides. Aucun code publié dans le site, hook ajouté, stock réel ni commande modifié. Après OUI, un test du journal sur les deux tables MySQL utilise des références fictives dans une transaction ensuite annulée ; les tables doivent rester vides. Les CREATE TABLE ne sont pas annulables : une création partielle doit être relue et jamais supprimée automatiquement. Ce socle est **préparé, pas encore confirmé installé**.
+Le paquet `integration/prestashop/dev-stock-foundation/` prépare uniquement les deux tables dédiées et vides. Aucun code publié dans le site, hook ajouté, stock réel ni commande modifié. Après OUI, un test du journal sur les deux tables MySQL utilise des références fictives dans une transaction ensuite annulée ; les tables doivent rester vides. Les CREATE TABLE ne sont pas annulables : une création partielle doit être relue et jamais supprimée automatiquement. Ce socle a depuis été **confirmé installé sur DEV** : les deux tables sont vides et le test MySQL annulé a réussi.
 
 La classe Db native 8.2.7 expose getLink(). Le futur adaptateur peut donc vérifier et utiliser le même PDO natif, plutôt qu'une connexion parallèle ; cela reste à intégrer et tester, pas une preuve de sécurité du checkout. Il faudra coordonner journal, débits, écrivains ordinaires et calcul des réservations avant de lever les gardes.
+
+
+## Allocation isolée — étape suivante préparée
+
+`WatchysOrderNomenclature` vérifie le lien panier/personnalisation/support et la concordance des composants enregistrés avec le catalogue. Une ligne native porte sa propre quantité : une commande fractionnée ne doit pas consommer tout le panier. Un changement historique de mapping échoue explicitement au lieu de réattribuer des pièces.
+
+`WatchysStockAllocator` prend le PDO et la transaction du demandeur. Il verrouille les SKU dans un ordre stable, journalise les transitions, valide le besoin cumulé avant les débits et vérifie les compteurs après écriture. Un savepoint annule le lot sans perdre un travail antérieur dans la transaction appelante. La révision du journal et la clé de requête empêchent un second retrait. Un recalcul natif ayant effacé des réservations Watchys est détecté et refusé, pas réparé silencieusement.
+
+Tests locaux : 2 880 nomenclatures, rupture d’une pièce partagée entre deux configurations, répétition, paiement, annulation/réactivation, expédition/retours, snapshot étranger/altéré, panne SQL au deuxième débit après modification du premier, rollback journal + stock préservant le travail extérieur. SQLite n’est pas une preuve de concurrence MySQL.
+
+Le paquet `dev-stock-allocation` teste le même allocateur sur MySQL TEMPORARY : copies privées à la connexion, aucun débit réel, rollback des scénarios, socle réel relu vide. Il ne publie aucun code dans le module. Sa vérification et son application ne sont pas encore confirmées sur DEV.
+
+Les écrivains natifs ordinaires peuvent lire une ancienne quantité avant un verrou et la réécrire ensuite : les verrous et mises à jour conditionnelles de cet allocateur ne suffisent pas à les coordonner. L’adaptateur commun reste à développer, ainsi que la cohérence des réservations natives, caches, mouvements, alertes et commandes/paiements. Gardes de checkout conservées.

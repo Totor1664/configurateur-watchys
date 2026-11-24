@@ -1,99 +1,18 @@
+# Point actuel — 24 novembre 2026 : allocation isolée préparée
+
+Le socle a été **confirmé installé sur DEV par Watchys** : les deux tables `watchys_order_component` et `watchys_stock_ledger` sont présentes et vides ; test MySQL du journal annulé avec succès. Aucun stock réel ou hook modifié. Module toujours 0.2.2, commande et paiement bloqués.
+
+Nouvelle étape codée : `WatchysStockAllocator` (lot transactionnel avec savepoint et contrôle de stock cumulé), `WatchysOrderNomenclature` (pièces depuis instantanés enregistrés, quantité de la vraie ligne native, pas celle de tout le panier). Ces classes ne sont pas publiées dans le site ni raccordées aux commandes.
+
+Les tests locaux prouvent le rollback SQLite après une écriture partielle injectée, la rupture sur pièces partagées, les reprises et les transitions. Les 2 880 nomenclatures sont contrôlées. Ils ne prouvent pas la concurrence MySQL ni la coordination des ventes natives.
+
+**Prochaine opération :** paquet privé `integration/prestashop/dev-stock-allocation/`, `controler.php --verifier`, bilan puis exécution distincte avec OUI. Il crée seulement trois tables TEMPORARY de connexion, copie les stocks, teste sur ces copies et annule les scénarios. Aucun stock réel écrit, aucune table persistante créée, aucun module publié. Résultat MySQL de ce nouveau test **non encore reçu**.
+
+Avant tout déblocage : coordonner les écrivains natifs (lecture puis mise à jour), réservations recalculées, mouvements/alertes/caches, création de commandes fractionnées et callbacks, puis essais concurrents réels. Ne pas considérer ce test isolé comme un checkout prêt.
+
+---
+
 # Reprise actuelle — Configurateur Watchys — 23 novembre 2026
-
-## Dernier état — bilan du stock reçu, socle préparé
-
-Le bilan DEV confirme 27 statuts, les 24 composants actifs à 10 unités (réservé 0, physique 10), gestion de stock active et avancée inactive. Les tables sont InnoDB, les colonnes de personnalisation de commande présentes, aucune commande Watchys historique ; les deux tables de suivi sont absentes. PayPal, PostFinance et virement sont des candidats actifs, sans mode test/réel confirmé.
-
-Les classes WatchysStockPolicy, WatchysStockSchema et WatchysStockJournal sont codées et testées, **pas reliées à la commande ni installées dans le site**. Annulation/erreur 6/8 libèrent le non-expédié, expédié/livré 4/5 soldent les réservations, remboursements 7/18/21 restent financiers ; réactivation explicite et retours cumulatifs bornés. Un événement déjà traité renvoie des deltas nuls et l'état courant. Les mouvements ne s'appliquent jamais à stock_available dans cette brique.
-
-Tests passés : 2 880 configurations/formules, transactions SQLite en mémoire (reprises, conflits, nomenclature, rollback), suites complètes du configurateur et analyse syntaxique PHP. Ils ne prouvent pas la concurrence MySQL/native.
-
-Prochaine action : paquet `integration/prestashop/dev-stock-foundation/`, `preparer.php --verifier`. Ce contrôle est en lecture seule, sans bootstrap. Après bilan, application séparée avec OUI : création des deux seules tables absentes, puis test du journal MySQL sur des lignes fictives annulées par ROLLBACK et tables relues vides. Les CREATE TABLE ne sont pas annulables ; une création partielle reste à contrôler sans DROP. Aucun fichier site, hook, prix, stock réel ni commande n'est modifié.
-
-Le socle est préparé, **pas encore confirmé sur DEV**. La suite sera l'adaptateur d'allocation, le verrouillage commun aux ventes ordinaires et Watchys, la cohérence réservé/physique, le support technique à stock zéro et les essais natifs/retours/fusion de panier. Garder toutes les gardes de commande/paiement actives. Ne pas présenter ces deux tables comme un cycle de stock déjà opérationnel. Aucun accès PROD.
-
-Lire `docs/CYCLE_STOCK_WATCHYS_2026-11-24.md` et le README du socle pour les limites et contrats.
-
----
-
-## Dernier état du 24 novembre — préparation du cycle de stock
-
-Le correctif d'ordre/survol a été appliqué sur DEV avec succès. Le titre « Composez votre montre » a ensuite été demandé et accepté. Watchys a autorisé la phase suivante : définir et préparer le cycle de stock avant de débloquer commande/paiement.
-
-Un audit du cœur 8.2.7 a identifié les retraits natifs à la création de commande, les transitions d'annulation/erreur, le fait qu'actionValidateOrder arrive après les premières écritures, le calcul natif des réservations basé sur les seules lignes OrderDetail et les problèmes de concurrence avec les ventes à l'unité. Le statut de rupture artificielle du support technique et les paniers divisés en plusieurs commandes doivent aussi être traités.
-
-Lire `docs/CYCLE_STOCK_WATCHYS_2026-11-24.md` : règles métier proposées, constats sourcés et limites de l'architecture encore à préciser. Le cycle réel n'est pas codé ni déployé ; aucune garde de checkout n'a été levée.
-
-Prochaine action concrète : exécuter le diagnostic privé `integration/prestashop/dev-stock-audit/controler-cycle-stock.php` sur DEV. Il affiche un plan, demande OUI, utilise une transaction PDO READ ONLY, ne charge aucun module et ne modifie rien. Attendre le bilan des statuts, réglages de stock, modules de paiement candidats, accroches, stocks/structures et signatures du cœur avant de fixer les correspondances et la migration. Aucun détail client ni secret de configuration de paiement n'est demandé ou affiché. La PROD reste exclue.
-
-Le nouveau livrable est un audit, pas une installation du cycle de stock. Après le bilan, coder/tester la politique et le journal, puis préparer une migration séparée avec plan/OUI, et des essais natifs contrôlés sur DEV. Les mouvements et le moment où la cohérence de réservé/physique est rétablie doivent être prouvés avec les écrivains natifs ; un simple appel tardif d'actionValidateOrder n'est pas considéré suffisant.
-
----
-
-## Dernier état du 24 novembre — interface des choix
-
-Watchys confirme que les miniatures personnalisées fonctionnent correctement dans le panier et le mini-panier. Le correctif précédent est donc installé et validé visuellement ; conserver son actionPresentCart, ses deux fichiers et ses 960 JPEG.
-
-Nouvelle demande : afficher Carrure, Cadran, Aiguilles, Bracelet et remplacer le survol rouge des vignettes par un gris clair. Le correctif `integration/prestashop/dev-choice-display/` est préparé et testé, **pas encore confirmé appliqué sur DEV**. Il trie une copie des groupes côté interface, applique le même ordre aux vues de détail, limite le survol #F2F2F2 aux vignettes et conserve sélection bleue/focus clavier. Le contrôleur renouvelle les versions CSS/JS. Trois fichiers seulement, aucun changement de catalogue, identifiants de choix, prix, stock, images ou moteur SVG.
-
-Les tests d'interface vérifient le nouvel ordre sans mutation du modèle source ; ajout/reprise/double clic restent couverts. La suite complète Node/PHP/construction et la syntaxe PHP passent. Le ZIP est relu et ses empreintes vérifiées. Prochaine action : `installer.php --verifier`, lecture du bilan puis exécution séparée avec plan et OUI. Le script n'écrit pas dans MySQL, ne charge pas PrestaShop et ne modifie aucune accroche. Confirmer visuellement le survol dans Alysum après application.
-
-La commande et le paiement restent bloqués. Le prochain chantier fonctionnel reste le cycle réel du stock, après validation de cette interface. Aucun accès PROD.
-
----
-
-## État du 24 novembre 2026 — miniatures personnalisées préparées
-
-Cette section prévaut sur les étapes historiques suivantes. Les 24 composants existent : le contrôle DEV a trouvé 12 stocks déjà à 10 et 12 à ajuster, sans alerte. Watchys confirme l'application du passage à 10, l'activation manuelle des articles et l'ajout des variantes au panier.
-
-La vignette générique du support 8867 est installée avec succès : couverture 16190 et cinq miniatures, six JPEG relus. Elle doit rester en secours, sans remplacer les photos des composants.
-
-Le nouveau correctif `integration/prestashop/dev-cart-thumbnails/` est préparé, **pas encore confirmé installé**. Il génère automatiquement les 960 images visuelles depuis le moteur SVG approuvé, publie deux fichiers de module et 960 JPEG de catalogue, puis enregistre nativement actionPresentCart. Les choix proviennent des configurations effectivement liées au panier de la session. Chaque ligne personnalisée reçoit une image propre ; l'offre et la quantité ne changent pas le visuel. Aucun téléversement d'image client, aucun changement de prix/stock/personnalisation ni de moteur de rendu. La couverture générique est conservée.
-
-Les tests locaux passent : 960 clés uniques concordant entre PHP et JS, lignes distinctes d'un même produit, objets ArrayAccess, conservation des données commerciales, secours sur fichiers ou configurations invalides, suites du panier existant, intégrité/décodage des 960 JPEG et tests PHP du paquet extrait. Les essais locaux utilisent des doubles pour PrestaShop ; l'affichage réel Alysum reste à confirmer.
-
-Prochaine action : exécuter uniquement le nouveau `installer.php --verifier` et lire le bilan, puis application séparée avec plan et OUI. Aucune installation native complète du module. Après succès : vérifier deux montres très différentes dans le panier et le mini-panier. Si le mini-panier utilise une présentation propre au thème, examiner ses templates avant une adaptation ciblée. Les miniatures sont publiques et ne contiennent aucune donnée de client ou de panier.
-
-Ne pas réappliquer les anciens installateurs du module. Commande et paiement Watchys restent bloqués ; décrément des composants, concurrence entre commandes, annulations/retours et fusion de panier restent à développer et tester. DEV uniquement, aucun accès PROD.
-
----
-
-## Dernier état confirmé — fin de séance du 23 novembre 2026
-
-**Cette section prévaut sur les étapes historiques ci-dessous. Reprise prévue le 24 novembre.**
-
-- Le paquet 0.2.2 a été appliqué sur DEV avec succès ; produit technique 8867, référence WCFG-7750-41-CARTDEV, personnalisations et cinq accroches relus. Ne pas réinstaller les anciens paquets.
-- Le vrai ajout au panier fonctionne. Watchys confirme : « ça fonctionne correctement pour chaque version et variante en stock ». La capture montre la formule sans mouvement à 190 CHF HT et les six choix enregistrés. Les formules restent 190 / 510 / 610 CHF HT.
-- Le rendu SVG et les proportions sont validés. Conserver les 29 PNG, le moteur de référence, le catalogue et les tarifs approuvés.
-- La vignette du produit technique est cassée dans le panier : une image générique reste à préparer et associer, puis éventuellement un aperçu fidèle à chaque configuration.
-- Aucun composant n'est décrémenté à l'ajout. Commande et paiement Watchys restent volontairement bloqués. Le cycle de stock réel n'est pas développé ni validé. Les tests locaux avec doubles ne remplacent pas les essais natifs, notamment concurrence, fusion de panier à la connexion, annulations et retours.
-- Les tentatives antérieures ont pu laisser des écritures natives malgré une erreur et une restauration du code. Toujours relire l'état réel, sans présumer un retour arrière complet.
-
-### Priorité décidée pour la prochaine séance : articles et stock DEV
-
-L'utilisateur souhaite d'abord disposer de chaque pièce du configurateur et d'un stock de **10 unités par pièce**, avant de reprendre le développement du cycle de stock. Aucune de ces nouvelles opérations n'a été exécutée aujourd'hui.
-
-1. Lire le catalogue réellement installé et les correspondances PrestaShop sur DEV. Vérifier existence, référence, nom, quantité disponible, statut actif/commandable et images de chaque composant.
-2. Réutiliser les articles existants ; créer uniquement les composants réellement absents, sans doublons. Les articles 8855 à 8866 ont déjà été créés auparavant avec stock 10, initialement désactivés : vérifier leur état actuel avant toute action.
-3. Préparer un plan précis pour fixer la quantité disponible de chaque composant concerné à 10 (pas ajouter 10 à la quantité existante). Le produit technique de panier n'est pas un composant à stocker. Préserver les réservations DEV et la cohérence du stock physique.
-4. Afficher les articles concernés, les quantités avant/après et les créations nécessaires. Sauvegarde et journal avant/après, balises DÉBUT/FIN et confirmation exacte OUI avant écriture. Ne pas activer implicitement tous les articles ; présenter séparément les changements de statut nécessaires aux essais.
-5. Relire les écritures et vérifier les variantes dans le configurateur. Puis traiter la vignette et reprendre le cycle de stock/commande lors d'une étape distincte.
-
-Périmètre : DEV uniquement, aucun accès PROD, aucun changement de prix ni du rendu validé. Aucune sauvegarde supplémentaire de la base serveur n'a été lancée pendant cette clôture ; seul ce point de reprise est enregistré dans GitHub.
-
-### Correspondances déjà connues à contrôler sur DEV
-
-| Famille | Articles |
-| --- | --- |
-| Mouvement inclus selon formule | 7736 (MVT26) |
-| Cadrans | 8188 noir, 8189 anthracite, 8190 bleu, 8191 vert, 8192 gris |
-| Bracelets 20 mm | 8193 noir, 8194 bleu, 8863 rouge, 8864 orange, 8865 vert, 8866 brun |
-| Aiguilles courtes Luminova | 8199 noires, 8200 chrome |
-| Aiguilles dauphine | 8855 chrome, 8856 noires, 8857 bleues, 8858 rouges, 8859 or rose, 8860 or jaune |
-| Carrures 41 mm | 8197 titane poli, 8198 titane sablé, 8861 noir PVD poli, 8862 noir brossé |
-| Support technique hors stock composants | 8867 |
-
----
 
 Ce point complète les documents historiques de préparation. Ne pas déduire l’état actuel des anciennes mentions « module non installé » ou « aperçu provisoire ».
 
